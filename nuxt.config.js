@@ -31,7 +31,6 @@ module.exports = {
       {src: 'https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.4/echarts-en.min.js'}
     ]
   },
-
   /*
   ** Customize the progress-bar color
   */
