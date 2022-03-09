@@ -59,7 +59,13 @@ module.exports = {
   ** Nuxt.js modules
   */
   modules: [],
-
+  axios:{
+    prefix: '/api',
+    proxy:true,
+    credentials:false,
+    debug:true,
+    retrt:true
+  },
   /*
   ** Build configuration
   */

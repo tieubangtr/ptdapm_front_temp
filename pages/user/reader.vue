@@ -1,72 +1,64 @@
 <template>
   <v-container>
-    <!-- <v-row no-gutters>
-        <v-col
-            cols="12"
-            sm="6"
-            md="12"
-        > -->
-            <form @submit.prevent="handleSearch">
-                <div class="form_search">
-                    <div class="form_search_parent">
-                        <input v-model="formSearch.sort" class="form_search_parent_input" placeholder="Nhập thông tin sách cần tìm kiếm">
-                        <button type="submit" class="form_search_parent_btn">
-                            <v-icon class="form_search_parent_icon">
-                            search
-                            </v-icon>
-                        </button>
-                    </div>
-                </div>
-            </form>
-            <table id="customers">
-                <tr>
-                    <th>STT</th>
-                    <th>Mã ND</th>
-                    <th>Họ tên</th>
-                    <th>Giới tính</th>
-                    <th>Địa chỉ</th>
-                    <th>Mật khẩu</th>
-                    <th>SĐT</th>
-                    <th>Email</th>
-                    <th>Ảnh đại diện</th>
-                    <th>Thao tác</th>
-                </tr>
-                <tr v-for="(data,index) in dataUser" :key="index">
-                    <td>{{index+1}}</td>
-                    <td>{{data.id}}</td>
-                    <td>{{data.name}}</td>
-                    <td>{{data.gender}}</td>
-                    <td>{{data.addr}}</td>
-                    <td>
-                        <span class="table_pass">{{data.password}}</span>
-                    </td>
-                    <td>{{data.phone}}</td>
-                    <td>{{data.email}}</td>
-                    <td><img class="table_img" :src="data.img"/></td>
-                    <td>
-                        <span @click="handleModal(data.id,data.name)" class="table_delete">Xóa</span>
-                    </td>
-                </tr>
-            </table>
-            <div class="parentPagging">
-                <div class="parentPagging_pagging">
-                    <span class="parentPagging_pagging_icon"><v-icon>keyboard_arrow_left</v-icon></span>
-                    <span class="parentPagging_pagging_numberPage" @click="searchPage(page)" v-for="(page) in dataPage" :key="page">{{page}}</span>
-                    <span class="parentPagging_pagging_icon"><v-icon>keyboard_arrow_right</v-icon></span>
-                </div>
+    <form @submit.prevent="handleSearch">
+        <div class="form_search">
+            <div class="form_search_parent">
+                <input v-model="formSearch.sort" class="form_search_parent_input" placeholder="Nhập thông tin sách cần tìm kiếm">
+                <button type="submit" class="form_search_parent_btn">
+                    <v-icon class="form_search_parent_icon">
+                    search
+                    </v-icon>
+                </button>
             </div>
-            <div v-if="modal" class="background"></div>
-            <div v-if="modal" @click="modal=false" class="modal">
-                <div class="modal_main">
-                    <div class="modal_main_text">Bạn có chắc chắn muốn xóa {{this.delete.name}}?</div>
-                    <div class="modal_main_btn">
-                        <button @click="modal=false" class="modal_main_btn_back">Hủy</button>
-                        <button @click="handleDelete" class="modal_main_btn_delete">Xóa</button>
-                    </div>
-                </div>
+        </div>
+    </form>
+    <table id="customers">
+        <tr>
+            <th>STT</th>
+            <th>Mã ND</th>
+            <th>Họ tên</th>
+            <th>Giới tính</th>
+            <th>Địa chỉ</th>
+            <th>Mật khẩu</th>
+            <th>SĐT</th>
+            <th>Email</th>
+            <th>Ảnh đại diện</th>
+            <th>Thao tác</th>
+        </tr>
+        <tr v-for="(data,index) in dataUser" :key="index">
+            <td>{{index+1}}</td>
+            <td>{{data.id}}</td>
+            <td>{{data.name}}</td>
+            <td>{{data.gender}}</td>
+            <td>{{data.addr}}</td>
+            <td>
+                <span class="table_pass">{{data.password}}</span>
+            </td>
+            <td>{{data.phone}}</td>
+            <td>{{data.email}}</td>
+            <td><img class="table_img" :src="data.img" alt="Ảnh đại diện" /></td>
+            <td>
+                <span @click="handleModal(data.id,data.name)" class="table_delete">Xóa</span>
+            </td>
+        </tr>
+    </table>
+    <div class="parentPagging">
+        <div class="parentPagging_pagging">
+            <span class="parentPagging_pagging_icon"><v-icon>keyboard_arrow_left</v-icon></span>
+            <span class="parentPagging_pagging_numberPage" @click="searchPage(page)" v-for="(page) in dataPage" :key="page">{{page}}</span>
+            <span class="parentPagging_pagging_icon"><v-icon>keyboard_arrow_right</v-icon></span>
+        </div>
+    </div>
+    <div v-if="modal" class="background"></div>
+    <div v-if="modal" @click="modal=false" class="modal">
+        <div class="modal_main">
+            <div class="modal_main_text">Bạn có chắc chắn muốn xóa {{this.delete.name}}?</div>
+            <div class="modal_main_btn">
+                <button @click="modal=false" class="modal_main_btn_back">Hủy</button>
+                <button @click="handleDelete" class="modal_main_btn_delete">Xóa</button>
             </div>
-        <!-- </v-col>
-    </v-row> -->
+        </div>
+    </div>
   </v-container>
 </template>
 <script>
@@ -85,7 +77,7 @@ export default {
         name: ''
       },
       form:{
-        page: 2,
+        page: 0,
         limit: 5,
         sort: 'id',
       },
@@ -93,7 +85,14 @@ export default {
         page: 0,
         limit: 5,
         sort: '',
-      }
+      },
+      filter:[
+        {
+            field: "roles.id",
+            operator: "EQUALS",
+            value: "3"
+        }
+      ]
     }
   },
   mounted() {
@@ -115,14 +114,29 @@ export default {
       }
     },
     async getUser () {
-      this.form.Authorization
-      const { data } = await axios.get('https://ptdapmback.herokuapp.com/v1/api/users',this.form)
-      this.dataUser = data[0].content
-      this.handlePage(data[9].number)
+        console.log(this.form);
+        const data= await axios.get('https://ptdapmptdapmback.herokuapp.com/v1/api/users',this.form, {
+            headers: {
+                // accept: 'application/json',
+                'Access-Control-Allow-Origin':'*',
+                'Content-Type':'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('accsetToken')}`
+            }
+        })
+        console.log(data);
+        // .then((res) => {
+        // console.log(res.data)
+        // this.dataUser=res.data.content
+        // this.dataPage=res.data.totalPages
+        // })
+        // .catch((error) => {
+        // console.error(error)
+        // })
     },
     async handleSearch(){
-        const {data} = await axios.post('http://localhost:3000/',this.formSearch)
-        this.dataUser=data
+        
+        
+      
     },
     handlePage(page){
         for(let i=1;i<=page;i++){

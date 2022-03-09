@@ -65,6 +65,7 @@
                             <input type="radio" class="register_main_Form_child_radio" value="Nữ" v-model="form.gender"/>Nữ
                         </div>
                     </div>
+                    <span class="noteRegister">{{ this.note }}</span>
                     <div class="register_main_submit">
                         <button type="submit" class="register_main_btn">Đăng Kí</button>
                     </div>
@@ -74,6 +75,10 @@
                 </form>
             </div>
         </div>
+        <div v-if="this.toask" class="toask" @click="handleToask">
+            <span class="toask_text">Vui lòng kiểm tra Email để Xác Nhận</span>
+            <v-icon class='toask_icon'>check_circle_outline</v-icon>
+        </div>
     </div>
     </v-content>
   </v-app>
@@ -81,11 +86,12 @@
 
 <script>
 import axios from 'axios';
-// import '../scss/register.scss'
 export default {
     layout:"none",
     data() {
         return {
+            toask:false,
+            note:'',
             check:{
                 name:'',
                 phone:'',
@@ -158,23 +164,54 @@ export default {
             e.preventDefault();
             console.log(this.form);
             if(!this.check.name&&!this.check.phone&&!this.check.email&&!this.check.password&&!this.check.addr&&!this.check.birthday&&!this.check.gender){
-                const {data}=await axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/signup',this.form)
-                // if(data.apierror){
-                //     this.check.note=data.apierror.debugMessage
-                // }
-                // else{
-                    //mess đki thành côngl
-                    alert(data)
-                    this.$router.push('login')
-                // }
+                axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/signup',this.form)
+                .then((res)=>{
+                    this.toask=true
+                })
+                .catch((err)=>{
+                    this.note='Đăng kí thất bại. Vui lòng kiểm tra lại thông tin!'
+                })
             }
+        },
+        handleToask(){
+            this.toask=false
+            this.$router.push('login')
         }
     }
 }
 
 </script>
 <style scoped lang="css">
-/* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap'); */
+.noteRegister{
+    display:block;
+    text-align:center;
+    color:red;
+    font-style: italic;
+}
+.toask{
+    position: absolute;
+    bottom:20%;
+    z-index: 100;
+    background-color:white;
+    display:flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+    box-shadow: 0 0 10px #999;
+    border-radius: 10px;
+    border: 2px solid green;
+    padding:20px 50px;
+    cursor: pointer;
+    animation:toask 0.5s ease;
+}
+.toask_text{
+    color: rgb(0, 146, 0);
+    font-size:30px;
+}
+.toask_icon{
+    color: rgb(0, 146, 0);
+    font-size:50px;
+}
   #login {
     height: 50%;
     width: 100%;
@@ -206,6 +243,7 @@ export default {
     padding-left: 10px;
 }
 .containerRegister{
+    position: relative;
     width: 100%;
     height: 100vh;
     display: flex;
@@ -306,5 +344,15 @@ export default {
     color:blue;
     padding-left: 5px;
     text-decoration: none;
+}
+@keyframes toask{
+    from{
+        bottom:10%;
+        opacity: 0.6;
+    }
+    to{
+        bottom:20%;
+        opacity: 1;
+    }
 }
 </style>

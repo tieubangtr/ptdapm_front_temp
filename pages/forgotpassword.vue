@@ -67,10 +67,14 @@ export default {
             console.log(this.form);
             if(!this.check.email){
                 try{
-                    const {data}=await axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/forgotPassword',this.form)
-                    if(data){
+                    axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/forgotPassword',this.form)
+                    .then(()=>{
                         localStorage.setItem('tokenPass',data)
-                    }
+                        this.check.email ='Vui lòng kiểm tra Email'
+                    })
+                    .catch((err)=>{
+                        this.check.email ='Vui lòng kiểm tra lại Email'
+                    })
                 }
                 catch(err){
                     console.log(err);

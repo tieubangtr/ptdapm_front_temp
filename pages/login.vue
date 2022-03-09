@@ -90,16 +90,23 @@ import setAuth from '../assets/js/setAuth'
       async login(e){
         this.validate()
         if(!this.check.username&&!this.check.password){
-            const {data}=await axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/login',this.form )
-            console.log(data);
+            axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/login',this.form )
+            .then((res)=>{
+                localStorage.setItem('accsetToken',res.data.token)
+                this.loading = true;
+                this.$router.push('/dashboard');
+            })
+            .catch((err)=>{
+              console.log('err',err);
+              this.check.password = 'Tài khoản hoặc mật khẩu không chính xác!';
+            })
             // if(data.apierror){
             //     this.check.note=data.apierror.debugMessage
             // }
             // else{
-                localStorage.setItem('accsetTokent',data.token)
-                setAuth(data.token)
-                this.loading = true;
-                this.$router.push('/dashboard');
+                // localStorage.setItem('accsetToken',data.token)
+                // this.loading = true;
+                // this.$router.push('/dashboard');
             // }
         }
       }
