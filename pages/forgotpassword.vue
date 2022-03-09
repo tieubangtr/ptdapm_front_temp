@@ -13,8 +13,10 @@
                 <div class="formForgot">
                     <form @submit="handleSubmit" style="width:70%">
                         <div class="change_form_main_formDiv">
-                            <span class="change_form_main_formDiv_text">Email</span>
-                            <input class="change_form_main_formDiv_input" v-model="form.email" @focus="check.email=''"/>
+                            <v-text-field label="Email"
+                            v-model="form.email" 
+                            @focus="check.email=''"
+                            ></v-text-field>
                             <div class="validation">{{this.check.email}}</div>
                         </div>
                         <button type="submit"  class="change_form_main_submit">Xác nhận</button>
@@ -224,12 +226,13 @@ export default {
 .change_form_main_submit{
     width: 100%;
     border-radius: 8px;   
-    background-color: #78ca46;
+    background-color: #1a64ad;
+    color: white;
+    box-shadow: 0 4px 5px #999;
     padding: 15px;
     font-size:15px;
     font-weight:500;
-    border: none; 
-    margin-top:30px;
+    border: none;
 }
 .change_form_main_submit:hover{
     opacity: 0.9;

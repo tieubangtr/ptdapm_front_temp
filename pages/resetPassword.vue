@@ -117,7 +117,8 @@ export default {
 .change_form_main_submit{
     width: 100%;
     border-radius: 8px;   
-    background-color: #78ca46;
+    background-color: rgb(43, 43, 209);
+    color: white;
     padding: 15px;
     font-size:15px;
     font-weight:500;
@@ -262,18 +263,5 @@ export default {
     font-size: 16px;
     border:1px solid rgb(238, 238, 238);
     box-shadow: 0 4px 5px rgb(194, 194, 194);
-}
-.change_form_main_submit{
-    width: 100%;
-    border-radius: 8px;   
-    background-color: #78ca46;
-    padding: 15px;
-    font-size:15px;
-    font-weight:500;
-    border: none; 
-    margin-top:30px;
-}
-.change_form_main_submit:hover{
-    opacity: 0.9;
 }
 </style>
