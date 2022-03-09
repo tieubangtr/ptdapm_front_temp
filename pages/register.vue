@@ -4,34 +4,43 @@
       <div class="containerRegister">
         <div class="register">
             <div class="register_header">
+                <img src="img/logoDHTL.png" alt="" class="register_header_textLogo_logo">
                 <div class="register_header_textLogo">
-                    <span class="register_header_textLogo_text">Đăng Kí</span>
-                    <img src="img/logoDHTL.png" alt="" class="register_header_textLogo_logo">
+                    <h1 class="register_header_textLogo_text flex my-4 primary--text">Đăng Kí Tài Khoản</h1>
                 </div>
             </div>
             <div class="register_main">
                 <form @submit="handleSubmit" style="width:100%;">
                     <div class="register_main_Form">
                         <div class="register_main_Form_childLeft">
-                            <span class="register_main_Form_child_text">Họ Và Tên</span>
-                            <input type="text" class="register_main_Form_child_input" v-model="form.name"  @focus="check.name=''"/>
+                            <v-text-field label="Họ và Tên"
+                            v-model="form.name"  
+                            @focus="check.name=''"
+                            ></v-text-field>
                             <div class="validation">{{this.check.name}}</div>
                         </div>
                         <div class="register_main_Form_childRight">
-                            <span class="register_main_Form_child_text">Số Điện Thoại</span>
-                            <input type="text" class="register_main_Form_child_input" v-model="form.phone"  @focus="check.phone=''"/>
+                            <v-text-field label="Số Điện Thoại"
+                            v-model="form.phone"  
+                            @focus="check.phone=''"
+                            ></v-text-field>
                             <div class="validation">{{this.check.phone}}</div>
                         </div>
                     </div>
                     <div class="register_main_Form">
                         <div class="register_main_Form_childLeft">
-                            <span class="register_main_Form_child_text">Email</span>
-                            <input type="text" class="register_main_Form_child_input" v-model="form.email"  @focus="check.email=''"/>
+                            <v-text-field label="Email"
+                            v-model="form.email"  
+                            @focus="check.email=''"
+                            ></v-text-field>
                             <div class="validation">{{this.check.email}}</div>
                         </div>
                         <div class="register_main_Form_childRight">
-                            <span class="register_main_Form_child_text">Mật khẩu</span>
-                            <input type="password" class="register_main_Form_child_input" v-model="form.password"  @focus="check.password=''"/>
+                            <v-text-field label="Mật Khẩu"
+                            v-model="form.password"  
+                            @focus="check.password=''"
+                            type="password"
+                            ></v-text-field>
                             <div class="validation">{{this.check.password}}</div>
                         </div>
                     </div>
@@ -42,8 +51,10 @@
                             <div class="validation">{{this.check.birthday}}</div>
                         </div>
                         <div class="register_main_Form_childRight">
-                            <span class="register_main_Form_child_text">Địa Chỉ</span>
-                            <input type="text" class="register_main_Form_child_input" v-model="form.addr"  @focus="check.addr=''"/>
+                            <v-text-field label="Địa Chỉ"
+                            v-model="form.addr"  
+                            @focus="check.addr=''"
+                            ></v-text-field>
                             <div class="validation">{{this.check.addr}}</div>
                         </div>
                     </div>
@@ -212,6 +223,9 @@ export default {
 }
 .register_header{
     margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .login_form_header_link{
     display:block;
@@ -222,19 +236,12 @@ export default {
 }
 .register_header_textLogo{
     position: relative;
-    display:flex;
-    justify-content: center;
-    margin: 35px 0;
 }
 .register_header_textLogo_text{
-    font-size:22px;
-    color:#666;
+    text-align: center;
 }
 .register_header_textLogo_logo{
-    position:absolute;
-    height: 60px;
-    right: 0;
-    bottom: 0;
+    height: 70px;
 }
 .register_main_Form{
     display : flex;
@@ -253,13 +260,11 @@ export default {
     text-align: left;
 }
 .register_main_Form_child_input{
-    border-radius: 6px;
     outline: none;
     width: 100%;
-    padding:12px 10px;
     color: #333;
     font-size: 16px;
-    border:2px solid rgb(238, 238, 238);
+    border-bottom: 2px solid #999;
 }
 .register_main_Form_child_input:focus{
     border:2.5px solid blue;
@@ -280,13 +285,13 @@ export default {
     justify-content: center;
 }
 .register_main_btn{
-    padding:15px 50px;
+    padding:15px 120px;
     font-size:16px;
-    background-color:blue;
+    background-color:rgb(62, 62, 235);
     border:none;
     outline: none;
     font-weight: 500;
-    border-radius: 15px;
+    border-radius: 10px;
     color:white;
 }
 .register_main_btn:hover{
