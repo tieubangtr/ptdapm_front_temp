@@ -7,7 +7,7 @@
             <v-card class="elevation-1 pa-3">
               <!-- <v-card-text> -->
                 <div class="layout column align-center">
-                  <img src="../static/img/logoDHTL.png" alt="Logo" width="120" height="120">
+                  <img src="../static/img/logoDHTL.png" alt="Vue Material Admin" width="120" height="120">
                   <h1 class="flex my-4 primary--text">Đổi Mật Khẩu Mới</h1>
                 </div>
                 <div class="change_form_main">
@@ -64,7 +64,11 @@ export default {
             this.form.token=localStorage.getItem('tokenPass')
             e.preventDefault();
             if(!this.check.password){
-                // await axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/reset_password',this.form)
+                await axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/reset_password',this.form,{
+                    headers:{
+                        'Authorization': `Bearer ${localStorage.getItem('tokenPass')}`
+                    }
+                })
                 this.check.note='Đổi mật khẩu thành công.'
                 console.log('oke');
                 // messenger thành công

@@ -7,7 +7,7 @@
             <v-card class="elevation-1 pa-3">
               <!-- <v-card-text> -->
                 <div class="layout column align-center">
-                  <img src="../static/img/logoDHTL.png" alt="Logo" width="120" height="120">
+                  <img src="../static/img/logoDHTL.png" alt="Vue Material Admin" width="120" height="120">
                   <h1 class="flex my-4 primary--text">Quên Mật Khẩu</h1>
                 </div>
                 <div class="formForgot">
@@ -19,7 +19,8 @@
                             ></v-text-field>
                             <div class="validation">{{this.check.email}}</div>
                         </div>
-                        <button type="submit"  class="change_form_main_submit">Xác nhận</button>
+                        <!-- <button type="submit"  class="change_form_main_submit">Xác nhận</button> -->
+                        <v-btn class="change_form_main_submit" block color="primary" type="submit" :loading="loading">Xác nhận</v-btn>
                     </form>
                     <div class="change_form_main_text">Quay lại trang <NuxtLink to="login" class="change_form_main_text_login">Đăng nhập</NuxtLink></div>
                 </div>
@@ -52,8 +53,10 @@ export default {
             }
             if(!this.form.email){
                 this.check.email='Vui lòng nhập dòng này'
+                this.loading=false
             }else if(!this.isEmail(this.form.email)){
                 this.check.email='Dòng này phải là email'
+                this.loading=false
             }
         },
         isEmail(email){
@@ -62,15 +65,22 @@ export default {
             );
         },
         async handleSubmit(e){
+            this.loading=true
             this.validate()
             e.preventDefault();
-            console.log(this.form);
             if(!this.check.email){
                 try{
-                    const {data}=await axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/forgotPassword',this.form)
-                    if(data){
-                        localStorage.setItem('tokenPass',data)
-                    }
+                    axios.post(`https://ptdapmback.herokuapp.com/v1/api/auth/forgotPassword?email=${this.form.email}`,)
+                    .then((res)=>{
+                        this.loading=false
+                        localStorage.setItem('tokenPass',res.data)
+                        this.check.email ='Vui lòng kiểm tra Email để đổi mật khẩu'
+                    })
+                    .catch((err)=>{
+                        this.loading=false
+                        console.log(err.response.data);
+                        this.check.email ='Email không chính xác, vui lòng kiểm tra lại'
+                    })
                 }
                 catch(err){
                     console.log(err);
@@ -229,7 +239,7 @@ export default {
     background-color: #1a64ad;
     color: white;
     box-shadow: 0 4px 5px #999;
-    padding: 15px;
+    padding: 25px 0;
     font-size:15px;
     font-weight:500;
     border: none;
