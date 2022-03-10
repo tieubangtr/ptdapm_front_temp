@@ -7,7 +7,7 @@
             <v-card class="elevation-1 pa-3">
               <!-- <v-card-text> -->
                 <div class="layout column align-center">
-                  <img src="../static/img/logoDHTL.png" alt="Vue Material Admin" width="120" height="120">
+                  <img src="../static/img/logoDHTL.png" alt="logo" width="120" height="120">
                   <h1 class="flex my-4 primary--text">Quên Mật Khẩu</h1>
                 </div>
                 <div class="formForgot">
