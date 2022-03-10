@@ -114,24 +114,36 @@ export default {
       }
     },
     async getUser () {
-        console.log(this.form);
-        const data= await axios.get('https://ptdapmptdapmback.herokuapp.com/v1/api/users',this.form, {
+        // var config = {
+        //   method: 'get',
+        //   url: '/v1/api/users/' + this.form,
+        //   headers: { 
+        //     'Authorization': `Bearer ${localStorage.getItem('accsetToken')}`
+        //   }
+        // };
+        // axios(config)
+        // .then(function (response) {
+        //   console.log(JSON.stringify(response.data));
+        // })
+        // .catch(function (error) {
+        //   console.log(error);
+        // });
+        console.log(localStorage.getItem('accsetToken'));
+        axios.get('https://ptdapmptdapmback.herokuapp.com/v1/api/users',this.form, {
             headers: {
-                // accept: 'application/json',
                 'Access-Control-Allow-Origin':'*',
                 'Content-Type':'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('accsetToken')}`
             }
         })
-        console.log(data);
-        // .then((res) => {
-        // console.log(res.data)
-        // this.dataUser=res.data.content
-        // this.dataPage=res.data.totalPages
-        // })
-        // .catch((error) => {
-        // console.error(error)
-        // })
+        .then((res) => {
+        console.log(res.data)
+        this.dataUser=res.data.content
+        this.dataPage=res.data.totalPages
+        })
+        .catch((error) => {
+        console.error(error)
+        })
     },
     async handleSearch(){
         

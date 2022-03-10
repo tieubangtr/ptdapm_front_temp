@@ -67,7 +67,7 @@
                     </div>
                     <span class="noteRegister">{{ this.note }}</span>
                     <div class="register_main_submit">
-                        <button type="submit" class="register_main_btn">Đăng Kí</button>
+                        <v-btn class="register_main_btn" block color="primary" type="submit" :loading="loading">Đăng Kí</v-btn>
                     </div>
                     <span class="register_main_text">Nếu bạn đã có tài khoản. Vui lòng chọn
                         <NuxtLink to="login" class="register_main_text_link">Đăng nhập</NuxtLink>
@@ -124,30 +124,39 @@ export default {
                 gender:'',
             }
             if(!this.form.name){
+                this.loading=false
                 this.check.name='Vui lòng nhập dòng này'
             }
             if(!this.form.phone){
+                this.loading=false
                 this.check.phone='Vui lòng nhập dòng này'
             }
             else if(!this.isNumber(this.form.phone)){
+                this.loading=false
                 this.check.phone='Vui lòng nhập số điện thoại'
             }
             else if(this.form.phone.length<9){
+                this.loading=false
                 this.check.phone='Số điện thoại phải trên 8 số'
             }
             if(!this.isEmail(this.form.email)){
+                this.loading=false
                 this.check.email='Dòng này phải là email'
             }
             if(!this.form.password){
+                this.loading=false
                 this.check.password='Vui lòng nhập dòng này'
             }
             else if(this.form.password.length<=6){
+                this.loading=false
                 this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
             }
             if(!this.form.birthday){
+                this.loading=false
                 this.check.birthday='Vui lòng nhập dòng này'
             }
             if(!this.form.addr){
+                this.loading=false
                 this.check.addr='Vui lòng nhập dòng này'
             }
         },
@@ -160,15 +169,16 @@ export default {
             return /^-?\d+$/.test(value);
         },
         async handleSubmit(e){
+            this.loading=true
             this.validate()
             e.preventDefault();
-            console.log(this.form);
             if(!this.check.name&&!this.check.phone&&!this.check.email&&!this.check.password&&!this.check.addr&&!this.check.birthday&&!this.check.gender){
                 axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/signup',this.form)
                 .then((res)=>{
                     this.toask=true
                 })
                 .catch((err)=>{
+                    this.loading=false
                     this.note='Đăng kí thất bại. Vui lòng kiểm tra lại thông tin!'
                 })
             }
@@ -323,7 +333,8 @@ export default {
     justify-content: center;
 }
 .register_main_btn{
-    padding:15px 120px;
+    max-width:300px ;
+    padding:25px 0;
     font-size:16px;
     background-color:rgb(62, 62, 235);
     border:none;

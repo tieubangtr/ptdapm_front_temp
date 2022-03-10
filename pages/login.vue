@@ -34,7 +34,7 @@
                   <v-icon color="light-blue">fa fa-twitter fa-lg</v-icon>
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn block color="primary" @click="login" :loading="loading">Login</v-btn>
+                <v-btn block color="primary" type="submit" @click="login" :loading="loading">Login</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -46,12 +46,11 @@
 
 <script>
 import axios from 'axios'
-import setAuth from '../assets/js/setAuth'
   export default {
     layout: 'default',
     data() {
       return {
-        loading: false,
+        loading:false,
           form:{
               username:'',
               password:'',
@@ -73,14 +72,16 @@ import setAuth from '../assets/js/setAuth'
           // this.form.submit=false
           if(!this.isEmail(this.form.username)){
               this.check.username='Dòng này phải là email'
+          this.loading=false
           }
           if(!this.form.password){
               this.check.password='Vui lòng nhập dòng này'
+          this.loading=false
           }
           else if(this.form.password.length<=6){
               this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
+          this.loading=false
           }
-          // return this.form.submit=true
       },
       isEmail(email){
           return email.match(
@@ -88,26 +89,19 @@ import setAuth from '../assets/js/setAuth'
           );
       },
       async login(e){
+        this.loading=true;
         this.validate()
         if(!this.check.username&&!this.check.password){
             axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/login',this.form )
             .then((res)=>{
                 localStorage.setItem('accsetToken',res.data.token)
-                this.loading = true;
                 this.$router.push('/dashboard');
             })
             .catch((err)=>{
               console.log('err',err);
               this.check.password = 'Tài khoản hoặc mật khẩu không chính xác!';
+              this.loading = false;
             })
-            // if(data.apierror){
-            //     this.check.note=data.apierror.debugMessage
-            // }
-            // else{
-                // localStorage.setItem('accsetToken',data.token)
-                // this.loading = true;
-                // this.$router.push('/dashboard');
-            // }
         }
       }
     }

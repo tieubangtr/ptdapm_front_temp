@@ -19,7 +19,8 @@
                             ></v-text-field>
                             <div class="validation">{{this.check.email}}</div>
                         </div>
-                        <button type="submit"  class="change_form_main_submit">Xác nhận</button>
+                        <!-- <button type="submit"  class="change_form_main_submit">Xác nhận</button> -->
+                        <v-btn class="change_form_main_submit" block color="primary" type="submit" :loading="loading">Xác nhận</v-btn>
                     </form>
                     <div class="change_form_main_text">Quay lại trang <NuxtLink to="login" class="change_form_main_text_login">Đăng nhập</NuxtLink></div>
                 </div>
@@ -52,8 +53,10 @@ export default {
             }
             if(!this.form.email){
                 this.check.email='Vui lòng nhập dòng này'
+                this.loading=false
             }else if(!this.isEmail(this.form.email)){
                 this.check.email='Dòng này phải là email'
+                this.loading=false
             }
         },
         isEmail(email){
@@ -62,18 +65,20 @@ export default {
             );
         },
         async handleSubmit(e){
+            this.loading=true
             this.validate()
             e.preventDefault();
-            console.log(this.form);
             if(!this.check.email){
                 try{
                     axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/forgotPassword',this.form)
                     .then(()=>{
                         localStorage.setItem('tokenPass',data)
-                        this.check.email ='Vui lòng kiểm tra Email'
+                        this.check.email ='Vui lòng kiểm tra Email để đổi mật khẩu'
+                        this.loading=false
                     })
                     .catch((err)=>{
-                        this.check.email ='Vui lòng kiểm tra lại Email'
+                        this.loading=false
+                        this.check.email ='Email không chính xác, vui lòng kiểm tra lại'
                     })
                 }
                 catch(err){
@@ -233,7 +238,7 @@ export default {
     background-color: #1a64ad;
     color: white;
     box-shadow: 0 4px 5px #999;
-    padding: 15px;
+    padding: 25px 0;
     font-size:15px;
     font-weight:500;
     border: none;
