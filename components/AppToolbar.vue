@@ -8,21 +8,7 @@
     <v-toolbar-title class="ml-0 pl-3">
       <v-toolbar-side-icon @click.stop="toggleDrawer()"></v-toolbar-side-icon>
     </v-toolbar-title>
-    <v-text-field
-      flat
-      solo-inverted
-      prepend-icon="search"
-      label="Search"
-      class="hidden-sm-and-down"
-    >
-    </v-text-field>
     <v-spacer></v-spacer>
-    <v-btn icon href="https://github.com/moeddami/nuxt-material-admin">
-      <v-icon>fa-2x fa-github</v-icon>
-    </v-btn>
-    <v-btn icon @click="handleFullScreen()">
-      <v-icon>fullscreen</v-icon>
-    </v-btn>
     <v-menu offset-y origin="center center" class="elelvation-1" :nudge-right="140" :nudge-bottom="14" transition="scale-transition">
       <v-btn icon flat slot="activator">
         <v-badge color="red" overlap>
@@ -35,7 +21,7 @@
     <v-menu offset-y origin="center center" :nudge-right="140" :nudge-bottom="10" transition="scale-transition">
       <v-btn icon large flat slot="activator">
         <v-avatar size="30px">
-          <img src="../static/avatar/man_4.jpg" alt="Michael Wang"/>
+          <img src="../static/avatar/avatar.jpg" alt="Michael Wang"/>
         </v-avatar>
       </v-btn>
       <v-list class="pa-0">
@@ -68,7 +54,7 @@
           {
             icon: 'account_circle',
             href: '#',
-            title: 'Profile',
+            title: 'Tài khoản',
             click: (e) => {
               console.log(e);
             }
@@ -76,7 +62,7 @@
           {
             icon: 'settings',
             href: '#',
-            title: 'Settings',
+            title: 'Đổi mật khẩu',
             click: (e) => {
               console.log(e);
             }
@@ -84,7 +70,7 @@
           {
             icon: 'fullscreen_exit',
             href: '#',
-            title: 'Logout',
+            title: 'Đăng xuất',
             click: this.handleLogout
           }
         ],

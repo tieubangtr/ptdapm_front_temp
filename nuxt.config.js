@@ -5,18 +5,30 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
   mode: 'spa',
+<<<<<<< HEAD
 
+=======
+>>>>>>> fix axios, add client
   /*
   ** Headers of the page
   */
   head: {
+<<<<<<< HEAD
     title: 'Vue Material Admin Template',
+=======
+    title: 'Thư viện Đại học Thủy Lợi',
+>>>>>>> fix axios, add client
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
       {
+<<<<<<< HEAD
         hid: 'description', name: 'description', content: 'Vue Material Admin Template is a \n' +
           '    Google Material Design inspired admin dashboard template built with Vue and Vuetify.'
+=======
+        hid: 'description', name: 'description', content: 'hehehe \n' +
+          '    brbrbrbr'
+>>>>>>> fix axios, add client
       }
     ],
     link: [
@@ -57,8 +69,20 @@ module.exports = {
   /*
   ** Nuxt.js modules
   */
+<<<<<<< HEAD
   modules: [],
 
+=======
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/auth'
+  ],
+
+  axios: {
+    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
+    baseURL: '/',
+  },
+>>>>>>> fix axios, add client
   /*
   ** Build configuration
   */
@@ -74,6 +98,17 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
+<<<<<<< HEAD
+=======
+
+    auth: {
+      redirect: {
+          login: '/login',
+          logout: '/login',
+          home: '/'
+      }
+    },
+>>>>>>> fix axios, add client
     extend(config, ctx) {
 
     }

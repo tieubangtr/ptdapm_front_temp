@@ -10,7 +10,7 @@
                   <v-icon dark>account_circle</v-icon>
                 </v-avatar>
                 <v-avatar>
-                  <img src="@/static/avatar/me.jpeg" alt="John">
+                  <img src="@/static/avatar/me.jpeg" alt="John"> 
                 </v-avatar>
                 <v-badge overlap>
                   <span slot="badge">3</span>

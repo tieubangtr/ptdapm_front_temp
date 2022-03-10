@@ -3,7 +3,7 @@
     <v-container grid-list-xl fluid>
       <v-layout row wrap>
         <v-flex sm12>
-          <h3>Danh sách nhân viên</h3>
+          <h3>Danh sách tác giả</h3>
         </v-flex>
         <v-flex lg12>
           <v-card>
@@ -32,16 +32,10 @@
               >
                 <template slot="items" slot-scope="props">
                   <td>
-                    1
-                  </td>
-                  <td>
-                    <v-avatar size="32">
-                      <img :src="props.item.avatar" alt="">
-                    </v-avatar>
+                    {{ props.item.id }}
                   </td>
                   <td>{{ props.item.name }}</td>
-                  <td>{{ props.item.email }}</td>
-                  <td>{{ props.item.phone }}</td>
+                  <td>{{ props.item.createdAt }}</td>
                   <td>
                     <v-btn depressed outline icon fab dark color="blue" small>
                       <v-icon>edit</v-icon>
@@ -75,23 +69,15 @@
           headers: [
             {
               text: '#',
-              value: ''
+              value: 'id'
             },
             {
-              text: 'Ảnh đại diện',
-              value: ''
-            },
-            {
-              text: 'Họ và tên',
+              text: 'Tên tác giả',
               value: 'name'
             },
             {
-              text: 'Email',
-              value: 'email'
-            },
-            {
-              text: 'Số điện thoại',
-              value: 'phone'
+              text: 'Ngày thêm mới',
+              value: 'createdAt'
             },
             {
               text: 'Chức năng',

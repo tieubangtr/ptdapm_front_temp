@@ -3,7 +3,7 @@
     <v-container grid-list-xl fluid>
       <v-layout row wrap>
         <v-flex sm12>
-          <h3>Danh sách nhân viên</h3>
+          <h3>Danh sách độc giả</h3>
         </v-flex>
         <v-flex lg12>
           <v-card>

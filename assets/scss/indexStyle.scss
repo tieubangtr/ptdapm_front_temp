@@ -1,0 +1,29 @@
+.book-rows {
+  margin-top: 10px !important;
+  .pa-2 {
+    padding: 20px !important;
+  }
+}
+
+.theme--light {
+  border: none !important;
+}
+
+.author {
+  margin-top: 10px;
+  hr {
+    width: 65%;
+    color: rgb(107, 107, 107);
+  }
+  span {
+    color: rgb(107, 107, 107);
+    size: 20px;
+  }
+}
+.book-name {
+  margin-top: 15px;
+  a {
+    color: black;
+    text-decoration: none;
+  }
+}
