@@ -46,8 +46,10 @@
 
 <script>
 import axios from 'axios'
+// import {redirect} from '../assets/js/redirect'?
   export default {
-    layout: 'default',
+    layout: 'default',    
+    // middleware:redirect,
     data() {
       return {
         loading:false,
@@ -62,6 +64,15 @@ import axios from 'axios'
           }
       }
     },
+    mounted()
+        {
+          if(!localStorage.getItem('accsetToken')){
+            this.$router.push('/login')
+          }
+          else{
+            this.$router.push('/dashboard')
+          }
+        },
     methods: {
       validate(){
           this.check={
@@ -94,6 +105,8 @@ import axios from 'axios'
         if(!this.check.username&&!this.check.password){
             axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/login',this.form )
             .then((res)=>{
+                // console.log(res.data.roles[0]);
+                localStorage.setItem('permission',res.data.roles[0])
                 localStorage.setItem('accsetToken',res.data.token)
                 this.$router.push('/dashboard');
             })

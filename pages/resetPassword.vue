@@ -64,14 +64,8 @@ export default {
             this.form.token=localStorage.getItem('tokenPass')
             e.preventDefault();
             if(!this.check.password){
-                await axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/reset_password',this.form,{
-                    headers:{
-                        'Authorization': `Bearer ${localStorage.getItem('tokenPass')}`
-                    }
-                })
+                await axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/reset_password',this.form)
                 this.check.note='Đổi mật khẩu thành công.'
-                console.log('oke');
-                // messenger thành công
             }
         }
     }
