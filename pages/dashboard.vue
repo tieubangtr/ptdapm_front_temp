@@ -326,6 +326,15 @@
         },
       ]
     }),
+    mounted()
+        {
+          if(!localStorage.getItem('accsetToken')){
+            this.$router.push('/login')
+          }
+          else{
+            this.$router.push('/dashboard')
+          }
+        },
     computed: {
       activity () {
         return API.getActivity();

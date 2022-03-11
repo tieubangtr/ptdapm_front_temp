@@ -6,7 +6,12 @@
     export default {
         mounted()
         {
-          this.$router.push('/dashboard')
+          if(!localStorage.getItem('accsetToken')){
+            this.$router.push('/login')
+          }
+          else{
+            this.$router.push('/dashboard')
+          }
         }
     }
 </script>

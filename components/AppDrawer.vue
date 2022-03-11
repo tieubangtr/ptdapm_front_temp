@@ -52,7 +52,9 @@
               </v-list-tile>
             </template>
           </v-list-group>
-          <v-subheader v-else-if="item.header" :key="i">{{ item.header }}</v-subheader>
+
+          <!-- quản lí ng dùng -->
+          <v-subheader v-else-if="item.header" :key="i">{{item.header }}</v-subheader>
           <v-divider v-else-if="item.divider" :key="i"></v-divider>
           <!--top-level link-->
           <v-list-tile v-else :to="item.href ? item.href : null" ripple="ripple"
@@ -67,6 +69,8 @@
               <v-icon class="success--text">{{ item.subAction }}</v-icon>
             </v-list-tile-action>
           </v-list-tile>
+
+          <!-- quản lí ng dùng -->
         </template>
       </v-list>
     </vue-perfect-scrollbar>
@@ -88,6 +92,7 @@
       },
     },
     data: () => ({
+      check: localStorage.getItem('permission')=='ROLE_USER',
       mini: false,
       menus: menu,
       scrollSettings: {
