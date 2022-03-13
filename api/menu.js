@@ -38,6 +38,7 @@ const Menu = [
   {divider: true},
   {header: 'Quản lý người dùng'},
   {
+    roles:'admin',
     title: 'Nhân viên',
     group: 'users',
     icon: 'assignment_ind',
@@ -45,6 +46,7 @@ const Menu = [
     href: '/user/employee'
   },
   {
+    roles:'admin',
     title: 'Độc giả',
     group: 'users',
     name: 'Reader',

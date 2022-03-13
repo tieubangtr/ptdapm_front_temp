@@ -18,6 +18,7 @@
                             @focus="check.email=''"
                             ></v-text-field>
                             <div class="validation">{{this.check.email}}</div>
+                            <div class="checkNote">{{this.check.note}}</div>
                         </div>
                         <!-- <button type="submit"  class="change_form_main_submit">Xác nhận</button> -->
                         <v-btn class="change_form_main_submit" block color="primary" type="submit" :loading="loading">Xác nhận</v-btn>
@@ -43,6 +44,7 @@ export default {
             },
             check:{
                 email:'',
+                note:''
             }
         }
     },
@@ -50,6 +52,7 @@ export default {
         validate(){
             this.check={
                 email:'',
+                note:''
             }
             if(!this.form.email){
                 this.check.email='Vui lòng nhập dòng này'
@@ -74,7 +77,7 @@ export default {
                     .then((res)=>{
                         this.loading=false
                         localStorage.setItem('tokenPass',res.data)
-                        this.check.email ='Vui lòng kiểm tra Email để đổi mật khẩu'
+                        this.check.note ='Vui lòng kiểm tra Email để đổi mật khẩu'
                     })
                     .catch((err)=>{
                         this.loading=false
@@ -92,6 +95,9 @@ export default {
 }
 </script>
 <style scoped lang="css">
+.checkNote{
+    color:green;
+}
 .formForgot{
     display:flex;
     flex-direction: column;
