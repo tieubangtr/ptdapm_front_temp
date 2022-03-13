@@ -14,8 +14,14 @@
                         <form @submit="handleSubmit" style="width:70%">
                             <div class="change_form_main_formDiv">
                                 <span class="change_form_main_formDiv_text">Mật khẩu mới</span>
-                                <input class="change_form_main_formDiv_input" v-model="form.password" @focus="check.password=''"/>
+                                <input class="change_form_main_formDiv_input" type="password" v-model="form.password" @focus="check.password=''"/>
                                 <div class="validation">{{this.check.password}}</div>
+                            </div>
+                            <div class="note">{{this.check.note}}</div>
+                            <div class="change_form_main_formDiv">
+                                <span class="change_form_main_formDiv_text">Nhập lại mật khẩu</span>
+                                <input class="change_form_main_formDiv_input" type="password" v-model="form.passwordOld" @focus="check.passwordOld=''"/>
+                                <div class="validation">{{this.check.passwordOld}}</div>
                             </div>
                             <div class="note">{{this.check.note}}</div>
                             <button type="submit"  class="change_form_main_submit">Đổi mật khẩu</button>
@@ -39,10 +45,12 @@ export default {
         return {
             form:{
                 password:'',
+                passwordOld:'',
                 token:''
             },
             check:{
                 password:'',
+                passwordOld:'',
             }
         }
     },
@@ -58,14 +66,25 @@ export default {
             else if(this.form.password.length<=6){
                 this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
             }
+            if(!this.form.passwordOld){
+                this.check.passwordOld='Vui lòng nhập dòng này'
+            }
+            else if(this.form.password!==this.form.passwordOld){
+                this.check.passwordOld='Mật khẩu không khớp nhau'
+            }
         },
-        async handleSubmit(e){
+        handleSubmit(e){
             this.validate()
             this.form.token=localStorage.getItem('tokenPass')
             e.preventDefault();
-            if(!this.check.password){
-                await axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/reset_password',this.form)
-                this.check.note='Đổi mật khẩu thành công.'
+            if(!this.check.password&&!this.check.passwordOld){
+                axios.post(`https://ptdapmback.herokuapp.com/v1/api/auth/reset_password`,this.form)
+                .then((res)=>{
+                    console.log(res.data);
+                })
+                .catch((err)=>{
+                    console.log(err.data);
+                })
             }
         }
     }

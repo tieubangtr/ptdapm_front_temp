@@ -315,7 +315,7 @@ export default {
     border-bottom: 2px solid #999;
 }
 .register_main_Form_child_input:focus{
-    border:2.5px solid blue;
+    border-bottom:2.5px solid blue;
 }
 .register_main_sex{
     padding-left: 20px;

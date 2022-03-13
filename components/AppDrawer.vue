@@ -8,72 +8,76 @@
     v-model="drawer"
     width="260"
   >
-    <v-toolbar color="primary darken-1" dark>
-      <img src="../static/img/logoDHTL.png" height="36" alt="Logo">
-      <v-toolbar-title class="ml-0 pl-3">
-        <span class="hidden-sm-and-down">Thư viện</span>
-      </v-toolbar-title>
-    </v-toolbar>
-    <vue-perfect-scrollbar class="drawer-menu--scroll" :settings="scrollSettings">
-      <v-list dense expand>
-        <template v-for="(item, i) in menus">
-          <!--group with subitems-->
-          <v-list-group v-if="item.items" :key="item.name" :group="item.group" :prepend-icon="item.icon"
-                        no-action="no-action">
-            <v-list-tile slot="activator" ripple="ripple">
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <template v-for="(subItem, i) in item.items">
-              <!--sub group-->
-              <v-list-group v-if="subItem.items" :key="subItem.name" :group="subItem.group" sub-group="sub-group">
-                <v-list-tile slot="activator" ripple="ripple">
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile v-for="(grand, i) in subItem.children" :key="i" :to="grand.href? grand.href : null"
-                             ripple="ripple">
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ grand.title }}</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-              </v-list-group>
-              <!--child item-->
-              <v-list-tile v-else :key="i" :to="subItem.href? subItem.href : null"
-                           :disabled="subItem.disabled" :target="subItem.target" ripple="ripple">
-                <v-list-tile-content>
-                  <v-list-tile-title><span>{{ subItem.title }}</span></v-list-tile-title>
-                </v-list-tile-content>
-                <v-list-tile-action v-if="subItem.action">
-                  <v-icon :class="[subItem.actionClass || 'success--text']">{{ subItem.action }}</v-icon>
-                </v-list-tile-action>
-              </v-list-tile>
-            </template>
-          </v-list-group>
+    <NuxtLink to="/" style="text-decoration: none;">
+      <v-toolbar color="primary darken-1" dark>
+        <img src="../static/img/logoDHTL.png" height="36" alt="Logo">
+        <v-toolbar-title class="ml-0 pl-3">
+          <span class="hidden-sm-and-down">Thư viện</span>
+        </v-toolbar-title>
+      </v-toolbar>
+    </NuxtLink>
+    
 
-          <!-- quản lí ng dùng -->
-          <v-subheader v-else-if="item.header" :key="i">{{item.header }}</v-subheader>
-          <v-divider v-else-if="item.divider" :key="i"></v-divider>
-          <!--top-level link-->
-          <v-list-tile v-else :to="item.href ? item.href : null" ripple="ripple"
-                       :disabled="item.disabled" :target="item.target" rel="noopener" :key="item.name">
-            <v-list-tile-action v-if="item.icon">
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-            </v-list-tile-content>
-            <v-list-tile-action v-if="item.subAction">
-              <v-icon class="success--text">{{ item.subAction }}</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
+    <div class="list">
+      <div class="list_menu">
+        <div class="list_menu_text">Danh mục</div>
+        <NuxtLink to="/book" class="list_menu_conponent">
+          <v-icon class="list_menu_conponent_icon">book</v-icon>
+          <div class="list_menu_conponent_name">Sách</div>
+        </NuxtLink>
+        <NuxtLink to="/author" class="list_menu_conponent">
+          <v-icon class="list_menu_conponent_icon">accessibility</v-icon>
+          <div class="list_menu_conponent_name">Tác giả</div>
+        </NuxtLink>
+        <NuxtLink to="/publisher" class="list_menu_conponent">
+          <v-icon class="list_menu_conponent_icon">account_balance</v-icon>
+          <div class="list_menu_conponent_name">Nhà xuất bản</div>
+        </NuxtLink>
+        <NuxtLink to="/category" class="list_menu_conponent">
+          <v-icon class="list_menu_conponent_icon">dns</v-icon>
+          <div class="list_menu_conponent_name">Thể loại</div>
+        </NuxtLink>
+        <NuxtLink to="/order" class="list_menu_conponent">
+          <v-icon class="list_menu_conponent_icon">compare_arrows</v-icon>
+          <div class="list_menu_conponent_name">Mượn trả</div>
+        </NuxtLink>
+      </div>
+    </div>
 
-          <!-- quản lí ng dùng -->
-        </template>
-      </v-list>
-    </vue-perfect-scrollbar>
+    <!-- Quản lí người dùng -->
+    <div class="list" v-if="!this.check">
+      <div class="list_menu">
+        <div class="list_menu_text">Quản lí người dùng</div>
+        <NuxtLink to="/user/employee" class="list_menu_conponent">
+          <v-icon class="list_menu_conponent_icon">assignment_ind</v-icon>
+          <div class="list_menu_conponent_name">Nhân viên</div>
+        </NuxtLink>
+        <NuxtLink to="/user/reader" class="list_menu_conponent">
+          <v-icon class="list_menu_conponent_icon">face</v-icon>
+          <div class="list_menu_conponent_name">Độc giả</div>
+        </NuxtLink>
+      </div>
+    </div>
+    
+
+    <!-- tài khoản -->
+    <div class="list">
+      <div class="list_menu_last">
+        <div class="list_menu_text">Tài Khoản</div>
+        <NuxtLink to="/account" class="list_menu_conponent">
+          <v-icon class="list_menu_conponent_icon">account_circle</v-icon>
+          <div class="list_menu_conponent_name">Thông tin</div>
+        </NuxtLink>
+        <NuxtLink to="/account/changepass" class="list_menu_conponent">
+          <v-icon class="list_menu_conponent_icon">cached</v-icon>
+          <div class="list_menu_conponent_name">Đổi mật khẩu</div>
+        </NuxtLink>
+        <div class="list_menu_conponent" @click="handleLogout">
+          <v-icon class="list_menu_conponent_icon">exit_to_app</v-icon>
+          <div class="list_menu_conponent_name">Đăng xuất</div>
+        </div>
+      </div>
+    </div>
   </v-navigation-drawer>
 </template>
 <script>
@@ -116,6 +120,10 @@
       }
     },
     methods: {
+      handleLogout () {
+        localStorage.clear();
+        this.$router.push('/login')
+      },
       genChildTarget(item, subItem) {
         if (subItem.href) return;
         if (subItem.component) {
@@ -129,12 +137,51 @@
   };
 </script>
 
-
-<style lang="stylus">
-  #appDrawer
-    overflow: hidden
-    .drawer-menu--scroll
-      height: calc(100vh - 48px)
-      overflow: auto
+<style scoped>
+.list{
+  width: 100%;
+}
+.list_menu{
+  width: 100%;
+  border-bottom: 2px solid #999;
+}
+.list_menu_last{
+  width: 100%;
+  border-bottom:none;
+}
+.list_menu_text{
+  color: #666;
+  margin:10px 0;
+  font-size:18px;
+  padding-left: 10px;
+}
+.list_menu_conponent{
+  display:flex;
+  align-items: center;
+  padding:15px 20px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.list_menu_conponent:hover{
+  background-color:rgb(248, 246, 248);
+}
+.list_menu_conponent:hover .list_menu_conponent_icon {
+  color:blue;
+}
+.list_menu_conponent:hover .list_menu_conponent_name {
+  color:blue;
+}
+.list_menu_conponent:focus {
+  background-color:rgb(225, 225, 225);
+}
+.list_menu_conponent_icon{
+  font-size:18px;
+  padding: 0 5px;
+}
+.list_menu_conponent_name{
+  margin-left:10px;
+  font-size:15px;
+  color: #555;
+}
 
 </style>
