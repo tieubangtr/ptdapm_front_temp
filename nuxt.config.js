@@ -77,8 +77,5 @@ module.exports = {
     extend(config, ctx) {
 
     }
-  },
-  server: {
-    port: 8000
   }
 }
