@@ -66,7 +66,7 @@ import axios from 'axios'
     },
     mounted()
         {
-          if(!localStorage.getItem('accsetToken')){
+          if(!localStorage.getItem('accessToken')){
             this.$router.push('/login')
           }
           else{
@@ -107,7 +107,8 @@ import axios from 'axios'
             .then((res)=>{
                 // console.log(res.data.roles[0]);
                 localStorage.setItem('permission',res.data.roles[0])
-                localStorage.setItem('accsetToken',res.data.token)
+                localStorage.setItem('accessToken',res.data.token)
+                localStorage.setItem('userId', res.data.id)
                 this.$router.push('/dashboard');
             })
             .catch((err)=>{
