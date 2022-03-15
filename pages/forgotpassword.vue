@@ -23,7 +23,7 @@
                         <!-- <button type="submit"  class="change_form_main_submit">Xác nhận</button> -->
                         <v-btn class="change_form_main_submit" block color="primary" type="submit" :loading="loading">Xác nhận</v-btn>
                     </form>
-                    <div class="change_form_main_text">Quay lại trang <NuxtLink to="login" class="change_form_main_text_login">Đăng nhập</NuxtLink></div>
+                    <div class="change_form_main_text">Quay lại trang <NuxtLink to="/login" class="change_form_main_text_login">Đăng nhập</NuxtLink></div>
                 </div>
             </v-card>
           </v-flex>

@@ -13,20 +13,35 @@
                 <div class="change_form_main">
                         <form @submit="handleSubmit" style="width:70%">
                             <div class="change_form_main_formDiv">
-                                <span class="change_form_main_formDiv_text">Mật khẩu mới</span>
-                                <input class="change_form_main_formDiv_input" type="password" v-model="form.password" @focus="check.password=''"/>
+                                <v-text-field 
+                                    append-icon="lock" 
+                                    label="Mật khẩu mới" 
+                                    type="password"
+                                    v-model="form.password" 
+                                    @focus="check.password=''"
+                                ></v-text-field>
+                                <!-- <span class="change_form_main_formDiv_text">Mật khẩu mới</span>
+                                <input class="change_form_main_formDiv_input" type="password" v-model="form.password" @focus="check.password=''"/> -->
                                 <div class="validation">{{this.check.password}}</div>
                             </div>
-                            <div class="note">{{this.check.note}}</div>
                             <div class="change_form_main_formDiv">
-                                <span class="change_form_main_formDiv_text">Nhập lại mật khẩu</span>
-                                <input class="change_form_main_formDiv_input" type="password" v-model="form.passwordOld" @focus="check.passwordOld=''"/>
+                                <v-text-field 
+                                    append-icon="lock" 
+                                    label="Nhập lại mật khẩu" 
+                                    type="password"
+                                    v-model="form.passwordOld" 
+                                    @focus="check.passwordOld=''"
+                                ></v-text-field>
+                                <!-- <span class="change_form_main_formDiv_text">Nhập lại mật khẩu</span>
+                                <input class="change_form_main_formDiv_input" type="password" v-model="form.passwordOld" @focus="check.passwordOld=''"/> -->
                                 <div class="validation">{{this.check.passwordOld}}</div>
                             </div>
+                            <div class="successs">{{this.check.success}}</div>
                             <div class="note">{{this.check.note}}</div>
-                            <button type="submit"  class="change_form_main_submit">Đổi mật khẩu</button>
+                            <!-- <button type="submit"  class="change_form_main_submit">Đổi mật khẩu</button> -->
+                            <v-btn class="register_main_btn" block color="primary" type="submit" :loading="loading">Đổi mật khẩu</v-btn>
                         </form>
-                        <div class="change_form_main_text">Quay lại trang <NuxtLink to="login" class="change_form_main_text_login">Đăng nhập</NuxtLink></div>
+                        <div class="change_form_main_text">Quay lại trang <NuxtLink to="/login" class="change_form_main_text_login">Đăng nhập</NuxtLink></div>
                     </div>
             </v-card>
           </v-flex>
@@ -43,6 +58,7 @@ export default {
     layout:'none',
     data(){
         return {
+            loading: false,
             form:{
                 password:'',
                 passwordOld:'',
@@ -58,32 +74,41 @@ export default {
         validate(){
             this.check={
                 password:'',
+                success:'',
                 note:''
             }
             if(!this.form.password){
                 this.check.password='Vui lòng nhập dòng này'
+                this.loading=false
             }
             else if(this.form.password.length<=6){
                 this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
+                this.loading=false
             }
             if(!this.form.passwordOld){
                 this.check.passwordOld='Vui lòng nhập dòng này'
+                this.loading=false
             }
             else if(this.form.password!==this.form.passwordOld){
                 this.check.passwordOld='Mật khẩu không khớp nhau'
+                this.loading=false
             }
         },
         handleSubmit(e){
+            this.loading=true
             this.validate()
             this.form.token=localStorage.getItem('tokenPass')
             e.preventDefault();
             if(!this.check.password&&!this.check.passwordOld){
-                axios.post(`https://ptdapmback.herokuapp.com/v1/api/auth/reset_password`,this.form)
+                axios.put(`https://ptdapmback.herokuapp.com/v1/api/auth/reset_password?token=${this.form.token}&newPassword=${this.form.password}`)
                 .then((res)=>{
-                    console.log(res.data);
+                    this.check.success='Đổi mật khẩu thành công'
+                    localStorage.removeItem('tokenPass')
+                    this.loading=false
                 })
                 .catch((err)=>{
-                    console.log(err.data);
+                    this.check.note='Đổi mật khẩu không thành công!Vui lòng kiểm tra lại'
+                    this.loading=false
                 })
             }
         }
@@ -91,6 +116,12 @@ export default {
 }
 </script>
 <style scoped lang="css">
+.successs{
+    color:green;
+}
+.note{
+    color:red;
+}
 .formForgot{
     display:flex;
     flex-direction: column;
