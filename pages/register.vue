@@ -176,9 +176,11 @@ export default {
                 axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/signup',this.form)
                 .then((res)=>{
                     this.toask=true
+                    this.loading=false
                 })
                 .catch((err)=>{
                     this.loading=false
+                    console.log(err.response.data);
                     this.note='Đăng kí thất bại. Vui lòng kiểm tra lại thông tin!'
                 })
             }

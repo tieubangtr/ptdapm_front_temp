@@ -4,6 +4,9 @@ const pkg = require('./package')
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
+  server: {
+    port: 8000
+  },
   mode: 'spa',
   /*
   ** Headers of the page

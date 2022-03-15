@@ -11,16 +11,21 @@
                   <h1 class="flex my-4 primary--text">Đăng Nhập</h1>
                 </div>
                 <v-form>
-                  <v-text-field append-icon="person" name="login" label="Login" type="text"
+                  <v-text-field append-icon="person" name="email" label="Email" type="text"
                                 v-model="form.username" @focus=" check.username=''"></v-text-field>
                   <div class="validation">{{this.check.username}}</div>
-                  <v-text-field append-icon="lock" name="password" label="Password" id="password" type="password"
-                                v-model="form.password" @focus=" check.password=''"></v-text-field>
+                  <v-text-field 
+                    append-icon="lock" 
+                    label="Password" 
+                    type="password"
+                    v-model="form.password" 
+                    @focus="check.password=''"
+                  ></v-text-field>
                   <div class="validation">{{this.check.password}}</div>
                 </v-form>
                 <div class="text">
-                  <NuxtLink to='forgotpassword' class="text_forgotPass">Quên mật khẩu?</NuxtLink>
-                  <NuxtLink to='register' class="text_register">Đăng kí</NuxtLink>
+                  <NuxtLink to='/forgotpassword' class="text_forgotPass">Quên mật khẩu?</NuxtLink>
+                  <NuxtLink to='/register' class="text_register">Đăng kí</NuxtLink>
                 </div>
               </v-card-text>
               <v-card-actions>
@@ -52,6 +57,7 @@ import axios from 'axios'
     // middleware:redirect,
     data() {
       return {
+        checkRed:true,
         loading:false,
           form:{
               username:'',
@@ -65,15 +71,18 @@ import axios from 'axios'
       }
     },
     mounted()
-        {
-          if(!localStorage.getItem('accessToken')){
-            this.$router.push('/login')
-          }
-          else{
-            this.$router.push('/dashboard')
-          }
-        },
+    {
+      this.handleRedirect()
+    },
     methods: {
+      handleRedirect(){
+        if(!localStorage.getItem('accessToken')){
+          this.$router.push('/login')
+        }
+        else{
+          this.$router.push('/dashboard')
+        }
+      },
       validate(){
           this.check={
               username:'',
@@ -109,7 +118,7 @@ import axios from 'axios'
                 localStorage.setItem('permission',res.data.roles[0])
                 localStorage.setItem('accessToken',res.data.token)
                 localStorage.setItem('userId', res.data.id)
-                this.$router.push('/dashboard');
+                this.$router.push('/dashboard')
             })
             .catch((err)=>{
               console.log(err.response.data);
@@ -123,6 +132,10 @@ import axios from 'axios'
   };
 </script>
 <style scoped lang="css">
+.v-input__slot:before {
+    /* border-color: rgba(0,0,0,0.42); */
+    border-color: red !important;
+}
 .validation{
     color:red;
     margin-bottom:10px;
