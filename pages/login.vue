@@ -80,7 +80,7 @@ import axios from 'axios'
           this.$router.push('/login')
         }
         else{
-          this.$router.push('/dashboard')
+          this.$router.push('/homePage')
         }
       },
       validate(){
@@ -115,10 +115,17 @@ import axios from 'axios'
             axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/login',this.form )
             .then((res)=>{
                 // console.log(res.data.roles[0]);
+                debugger
                 localStorage.setItem('permission',res.data.roles[0])
                 localStorage.setItem('accessToken',res.data.token)
                 localStorage.setItem('userId', res.data.id)
-                this.$router.push('/dashboard')
+                localStorage.setItem('login?', true)
+                if(res.data.roles[0] == 'ROLE_USER') {
+                  this.$router.push('/homePage')
+                } else {
+                  this.$router.push('/dashboard')
+                }
+
             })
             .catch((err)=>{
               console.log(err.response.data);
