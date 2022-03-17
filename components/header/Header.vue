@@ -10,11 +10,12 @@
                     </v-flex>
                     <v-flex>
                         <div class="authenticate-user">
-                            <div class="have-not-login">
-                                <nuxt-link>Logout</nuxt-link>
+                            <div v-if="this.user" class="have-not-login" @click="handleLogout">
+                                {{ this.user.username }} - 
+                                Logout
                             </div>
-                            <div class="logined">
-                                <nuxt-link to="/login">Đăng nhập</nuxt-link> | <nuxt-link to="/register">Đăng kí</nuxt-link>
+                            <div v-if="!this.user" class="logined">
+                                <NuxtLink to="/login">Đăng nhập</NuxtLink> | <NuxtLink to="/register">Đăng kí</NuxtLink>
                             </div>
                         </div>
                     </v-flex>
@@ -53,11 +54,20 @@
 <script>
 export default {
     data () {
+        return {
+            user:JSON.parse(localStorage.getItem('User'))
+        }
+    },
+    methods: {
+        handleLogout () {
+            localStorage.clear()
+            this.$router.push('/login')
+        }
     }
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
     .container {
         padding: 0px !important
     }
@@ -70,19 +80,19 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        .authenticate-user {
-            text-align: center;
-            a {
-                text-decoration: none;
-                color: black;
-            }
-        }
+        
     }
-    .logo {
-        img {
-            width: 360px;
-            height: 60px;
-        }
+    .authenticate-user {
+        text-align: center;
+        
+    }
+    .authenticate-user a {
+        text-decoration: none;
+        color: black;
+    }
+    .logo img {
+        width: 360px;
+        height: 60px;
     }
     .v-header {
         max-width: 37.3%;
@@ -90,8 +100,13 @@ export default {
     .v-search {
         margin-right: 40px;
     }
+    .v-booking{
+        display: flex;
+        align-items: center;
+        justify-content:center;
+    }
     .notification {
         float: left;
-        margin-right: 5px;
+        padding-right: 25px;
     }
-</style>>
+</style>

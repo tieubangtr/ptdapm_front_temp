@@ -114,8 +114,8 @@ import axios from 'axios'
         if(!this.check.username&&!this.check.password){
             axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/login',this.form )
             .then((res)=>{
-                // console.log(res.data.roles[0]);
-                debugger
+                localStorage.setItem('User',JSON.stringify(res.data));
+                
                 localStorage.setItem('permission',res.data.roles[0])
                 localStorage.setItem('accessToken',res.data.token)
                 localStorage.setItem('userId', res.data.id)
