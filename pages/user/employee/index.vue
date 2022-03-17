@@ -17,7 +17,7 @@
                 hide-details
                 class="hidden-sm-and-down"
               ></v-text-field>
-              <v-btn text color='primary' @click='showUserDataDialog = true'>
+              <v-btn text color='primary' @click='showUserInsertDialog = true'>
                 <v-icon>add</v-icon>
                 Thêm mới
               </v-btn>
@@ -90,7 +90,77 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
-              <UserDataForm :visible="showUserDataDialog" @close="showUserDataDialog = false" />
+              <v-dialog v-model="showUserInsertDialog" persistent max-width="500px">
+                <v-card>
+                    <v-card-title>
+                    <span class="headline">Thêm mới nhân viên</span>
+                    </v-card-title>
+                    <v-divider></v-divider>
+                    <v-card-text>
+                      <v-container grid-list-md>
+                          <v-form ref="form">
+                              <v-card-text>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field v-model="userData.name" label="Họ và tên" />
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="email" v-model="userData.email" label="Email"/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field v-model="userData.phone" label="Số điện thoại" />
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="date" v-model="userData.birthday" label="Ngày sinh"/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-select
+                                      v-model="userData.gender"
+                                      :items="gender"
+                                      item-text="gender"
+                                      item-value="gender"
+                                      label="Giới tính"
+                                      persistent-hint
+                                      single-line
+                                      ></v-select>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="text" v-model="userData.addr" label="Địa chỉ"/>
+                                  </v-col>
+                                  </v-row>
+                              </v-card-text>
+                          </v-form>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="error"
+                      text
+                      @click="closeInsertDialog()"
+                    >
+                      Hủy bỏ
+                    </v-btn>
+                    <v-btn
+                      color="success"
+                      text
+                      @click="insertConfirm()"
+                    >
+                      Thêm mới
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
           </template>
         </v-flex>
       </v-layout>
@@ -101,6 +171,7 @@
 <script>
   import {Items as Users} from '@/api/user';
   import UserDataForm from '@/components/user/UserDataForm'
+  import UserAdd from '@/components/user/UserAdd'
   import axios from 'axios';
   export default {
     layout: 'dashboard',
@@ -108,21 +179,29 @@
       return {
         search: '',
         listData: [],
+        defaultDate: new Date().toLocaleDateString('en-CA'),
         userData: {
-          "addr": "",
-          "birthday": "",
-          "email": "",
-          "gender": "",
-          "name": "",
-          "password": "1234567",
-          "phone": ""
-        },
-        gender: [
-          { gId: '0', gender: 'Nam' },
-          { gId: '1', gender: 'Nữ' },
-        ],
+            "addr": '',
+            "birthday": this.defaultDate,
+            "email": "",
+            "gender": "",
+            "id": 0,
+            "img": "null",
+            "name": "",
+            "noneLocked": true,
+            "password": "1234567",
+            "phone": "",
+            "roles": [
+              {
+                "id": 1,
+                "name": "ADMIN"
+              }
+            ]
+          },
+        gender: ['Nam', 'Nữ'],
         showDialogDeleteConfirm: false,
         showUserDataDialog: false,
+        showUserInsertDialog: false,
         currentSelectedUser: -1,
         complex: {
           selected: [],
@@ -156,17 +235,42 @@
       };
     },
     components:{
-      UserDataForm
+      UserDataForm,
+      UserAdd
     },
     mounted () {
       this.initialize()
     },
     methods: {
+      setToDefault(){
+        this.userData = {
+          "addr": '',
+          "birthday": "2022-03-12",
+          "email": "",
+          "gender": "",
+          "id": 0,
+          "img": "null",
+          "name": "",
+          "noneLocked": true,
+          "password": "1234567",
+          "phone": "",
+          "roles": [
+            {
+              "id": 1,
+              "name": "ADMIN"
+            }
+          ]
+        }
+      },
+      validate(object){
+        delete object.img;
+        return Object.values(object).every(x => x === null || x === '');
+      },
       initialize () {
         var data = '';
         var config = {
           method: 'get',
-          url: 'https://ptdapmback.herokuapp.com/v1/api/users?page=0&limit=10&sort=id&filter-field=roles.id&filter-operator=EQUALS&filter-value=3',
+          url: 'https://ptdapmback.herokuapp.com/v1/api/users?page=0&limit=10&sort=id&filter-field=roles.id&filter-operator=EQUALS&filter-value=1',
           headers: { 
             'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
           },
@@ -200,48 +304,35 @@
           console.log(error);
         });
       },
-      insert(){
+      insertConfirm(){
         console.log(this.userData);
-        // if(this.userData != null){
-        //   // var data = JSON.stringify({
-        //   //   "addr": "string",
-        //   //   "birthday": "2022-03-12",
-        //   //   "email": "string",
-        //   //   "gender": "string",
-        //   //   "id": 0,
-        //   //   "img": "null",
-        //   //   "name": "string",
-        //   //   "noneLocked": true,
-        //   //   "password": "string",
-        //   //   "phone": "string",
-        //   //   "roles": [
-        //   //     {
-        //   //       "id": 0,
-        //   //       "name": "ROLE_USER"
-        //   //     }
-        //   //   ]
-        //   // });
-        //   var data = JSON.stringify(this.userData);
-
-        //   var config = {
-        //     method: 'post',
-        //     url: 'https://ptdapmback.herokuapp.com/v1/api/users/',
-        //     headers: { 
-        //       'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
-        //     },
-        //     data : data
-        //   };
-        //   axios(config)
-        //   .then(response => {
-        //     console.log(response)
-        //     //Notice: Success message here, delay ???
-        //     this.userDataDialog = false
-        //     this.$router.go()
-        //   })
-        //   .catch(error => {
-        //     console.log(error);
-        //   });
-        // }
+        if(this.userData != null && !this.validate(this.userData)){
+          var data = JSON.stringify(this.userData);
+          console.log(data);
+          console.log(this.validate(this.userData));
+          var config = {
+            method: 'post',
+            url: 'https://ptdapmback.herokuapp.com/v1/api/users/',
+            headers: { 
+              'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
+            },
+            data : data
+          };
+          axios(config)
+          .then(response => {
+            console.log(response)
+            // Notice: Success message here, delay ???
+            this.userDataDialog = false
+            this.$router.go()
+          })
+          .catch(error => {
+            console.log(error);
+          });
+        }
+      },
+      closeInsertDialog(){
+        this.setToDefault();
+        this.showUserInsertDialog = false;
       },
       update(){
         console.log(this.userData);

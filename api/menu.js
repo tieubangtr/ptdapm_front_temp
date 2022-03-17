@@ -63,13 +63,6 @@ const Menu = [
     href: '/account'
   },
   {
-    title: 'Đổi mật khẩu',
-    group: 'account',
-    name: 'Changepass',
-    icon: 'cached',
-    href: '/account/changepass'
-  },
-  {
     title: 'Đăng xuất',
     group: 'account',
     name: 'Logout',
