@@ -5,10 +5,10 @@
       <v-img :src="require('../../assets/images/banner.jpeg')" />
     </v-banner>
     <Menu/>
-    <!-- <Product/> -->
+    <Product/>
     <!-- <Deltail/> -->
     <!-- <BorrowBook/> -->
-    <Cart :checkRegister="checkRegister" @update-check="updateCheck" />
+    <!-- <Cart :checkRegister="checkRegister" @update-check="updateCheck" /> -->
     <div v-if="this.checkRegister" class="background"></div>
     <div v-if="this.checkRegister" class="dialog">
       <div class="main">

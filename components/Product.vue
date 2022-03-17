@@ -27,7 +27,7 @@
                                 <div class="nameBook">
                                     đại số tuyến tính
                                 </div>
-                                <div class="btnAdd">
+                                <div class="btnAdd" @click="handleCheck">
                                     <v-icon class="btnAdd_icon">shopping_basket</v-icon>
                                     Thêm vào giỏ
                                 </div>
@@ -55,7 +55,7 @@
                     </div>    
                 </div>
                 <div class="sumCmt">
-                    <div class="sumBooks_child">
+                    <div class="sumBooks_child" @click="Log">
                         <v-icon class="sumBooks_child_icon">grading</v-icon>
                         <span class="textSum">Bình luận</span>
                         <span class="numberSum">2,200</span>
@@ -67,7 +67,21 @@
 </template>
 <script>
 export default {
-    
+    data() {
+        return {
+            user:JSON.parse(localStorage.getItem('User'))
+        }
+    },
+    methods: {
+        handleCheck() {
+            if(!localStorage.getItem('accessToken')){
+                window.location.href='/login'
+            }
+            else{
+                alert('thêm hàng thành công')
+            }
+        },
+    }
 }
 </script>
 <style scoped>
