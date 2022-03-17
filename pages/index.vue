@@ -4,14 +4,8 @@
 
 <script>
     export default {
-        mounted()
-        {
-          if(!localStorage.getItem('accsetToken')){
-            this.$router.push('/login')
-          }
-          else{
-            this.$router.push('/dashboard')
-          }
+        mounted() {
+          this.$router.push('/homePage')
         }
     }
 </script>

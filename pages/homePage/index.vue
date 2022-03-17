@@ -1,5 +1,6 @@
 <template>
   <div id="pageDashboard">
+    <Header/>
     <v-banner>
       <v-img :src="require('../../assets/images/banner.jpeg')" />
     </v-banner>
@@ -24,13 +25,15 @@
   import Deltail from '../../components/Deltail.vue'
   import BorrowBook from '../../components/BorrowBook.vue'
   import Cart from '../../components/Cart.vue'
+  import Header from '../../components/header/Header.vue'
   export default {
     components: {
       Menu,
       Product,
       Deltail,
       BorrowBook,
-      Cart
+      Cart,
+      Header
     },
     data(){
       return {
@@ -42,15 +45,6 @@
         this.checkRegister =check
       }
     },
-    mounted()
-        {
-          if(!localStorage.getItem('accessToken')){
-            this.$router.push('/login')
-          }
-        //   else{
-        //     this.$router.push('/dashboard')
-        //   }
-        },
   };
 </script>
 <style scoped>
