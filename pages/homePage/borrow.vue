@@ -5,19 +5,36 @@
       <v-img :src="require('../../assets/images/banner.jpeg')" />
     </v-banner>
     <Menu/>
-    <Product/>
+    <BorrowBook :checkRegister="checkRegister" @update-check="updateCheck" />
+    <div v-if="this.checkRegister" class="background"></div>
+    <div v-if="this.checkRegister" class="dialog">
+      <div class="main">
+        <span class="text">Phiếu mượn của bạn đang chờ xác nhận từ thủ thư</span>
+        <button class="btn" @click="checkRegister=false">Đồng ý</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
   import Menu from '../../components/Menu.vue'
-  import Product from '../../components/Product.vue'
+  import BorrowBook from '../../components/BorrowBook.vue'
   import Header from '../../components/header/Header.vue'
   export default {
     components: {
       Menu,
-      Product,
+      BorrowBook,
       Header
+    },
+    data(){
+      return {
+        checkRegister:false
+      }
+    },
+    methods: {
+      updateCheck(check){
+        this.checkRegister =check
+      }
     },
   };
 </script>

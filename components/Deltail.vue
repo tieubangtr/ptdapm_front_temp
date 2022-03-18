@@ -4,7 +4,7 @@
         <v-layout row wrap class="x-grid-lg">
             <v-flex lg6 sm12 xs12 class="pa-2">
                 <div class="outImg">
-                    <img src="img/sach1.jfif" alt="" class="Img">
+                    <img src="/img/sach1.jfif" alt="" class="Img">
                 </div>
             </v-flex>
             <v-flex lg6 sm12 xs12 class="info pa-2">

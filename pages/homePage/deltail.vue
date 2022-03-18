@@ -5,18 +5,18 @@
       <v-img :src="require('../../assets/images/banner.jpeg')" />
     </v-banner>
     <Menu/>
-    <Product/>
+    <Deltail/>
   </div>
 </template>
 
 <script>
   import Menu from '../../components/Menu.vue'
-  import Product from '../../components/Product.vue'
+  import Deltail from '../../components/Deltail.vue'
   import Header from '../../components/header/Header.vue'
   export default {
     components: {
       Menu,
-      Product,
+      Deltail,
       Header
     },
   };

@@ -20,7 +20,7 @@
                     <NuxtLink to='' style="text-decoration: none;">
                         <v-card flat tile class="setImg">
                             <div class="imgOut">
-                                <img class="imgOut_img" src='img/sach1.jfif' alt="">
+                                <img class="imgOut_img" src='/img/sach1.jfif' alt="">
                             </div>
                             <div class="parent">
                                 <div class="nameAuthor">Tác giả : Phạm Huy hiệp </div>
@@ -55,7 +55,7 @@
                     </div>    
                 </div>
                 <div class="sumCmt">
-                    <div class="sumBooks_child" @click="Log">
+                    <div class="sumBooks_child">
                         <v-icon class="sumBooks_child_icon">grading</v-icon>
                         <span class="textSum">Bình luận</span>
                         <span class="numberSum">2,200</span>
@@ -153,6 +153,7 @@ export default {
 .imgOut{
     margin: 10px 0;
     width: 95%;
+    height: 250px;
     display: flex;
     justify-content: center;
     transition:all 0.5s ease;

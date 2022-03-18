@@ -34,8 +34,11 @@
                         <v-text-field
                             solo
                             label="Nhập từ khoá tìm kiếm"
-                            append-icon="search"
+                            v-model="searchForm"
                         />
+                        <NuxtLink :to="'/homepage/search?name='+this.searchForm" class="btnSearch">
+                            <v-icon>search</v-icon>
+                        </NuxtLink>
                     </div>
                 </v-flex>
                 <v-flex class="v-booking">
@@ -55,14 +58,15 @@
 export default {
     data () {
         return {
-            user:JSON.parse(localStorage.getItem('User'))
+            user:JSON.parse(localStorage.getItem('User')),
+            searchForm:''
         }
     },
     methods: {
         handleLogout () {
             localStorage.clear()
             this.$router.push('/login')
-        }
+        },
     }
 }
 </script>
@@ -108,5 +112,21 @@ export default {
     .notification {
         float: left;
         padding-right: 25px;
+    }
+    .search-by-keyword{
+        position: relative;
+    }
+    .btnSearch{
+        position: absolute;
+        top: 0;
+        right: 0;
+        height:48px;
+        width:50px;
+        border-radius:3px;
+        display: flex;
+        align-items: center;
+        justify-content:center;
+        cursor: pointer;
+        text-decoration: none;
     }
 </style>
