@@ -307,8 +307,6 @@
         console.log(this.userData);
         if(this.userData != null && !this.validate(this.userData)){
           var data = JSON.stringify(this.userData);
-          console.log(data);
-          console.log(this.validate(this.userData));
           var config = {
             method: 'post',
             url: 'https://ptdapmback.herokuapp.com/v1/api/users/',

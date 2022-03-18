@@ -12,13 +12,14 @@
                 flat
                 solo
                 prepend-icon="search"
-                placeholder="Tìm kiếm"
+                placeholder="Tìm kiếm..."
                 v-model="search"
                 hide-details
                 class="hidden-sm-and-down"
               ></v-text-field>
-              <v-btn icon>
-                <v-icon>filter_list</v-icon>
+              <v-btn text color="primary" @click="showInsertDialog = true">
+                <v-icon>add</v-icon>
+                Thêm mới
               </v-btn>
             </v-toolbar>
             <v-divider></v-divider>
@@ -26,24 +27,37 @@
               <v-data-table
                 :headers="complex.headers"
                 :search="search"
-                :items="complex.items"
+                :items="listData"
                 class="elevation-1"
                 item-key="name"
               >
                 <template slot="items" slot-scope="props">
-                  <td>
-                    {{ props.item.id }}
-                  </td>
+                  <td>{{ props.item.id }}</td>
                   <td>{{ props.item.name }}</td>
-                  <td>{{ props.item.createdAt }}</td>
+                  <td>{{ standardDateFormat(props.item.createdAt) }}</td>
                   <td>
-                    <v-btn depressed outline icon fab dark color="blue" small>
+                    <v-btn
+                      depressed
+                      outline
+                      icon
+                      fab
+                      dark
+                      color="orange"
+                      small
+                      @click="getDetail(props.item.id, 'update')"
+                    >
                       <v-icon>edit</v-icon>
                     </v-btn>
-                    <v-btn depressed outline icon fab dark color="orange darken-3" small>
-                      <v-icon>edit</v-icon>
-                    </v-btn>
-                    <v-btn depressed outline icon fab dark color="pink" small>
+                    <v-btn
+                      depressed
+                      outline
+                      icon
+                      fab
+                      dark
+                      color="pink"
+                      small
+                      @click="getDetail(props.item.id, 'delete')"
+                    >
                       <v-icon>delete</v-icon>
                     </v-btn>
                   </td>
@@ -51,6 +65,116 @@
               </v-data-table>
             </v-card-text>
           </v-card>
+          <!-- Delete user dialog -->
+          <template>
+            <!-- Confirm dialog -->
+            <v-dialog
+              v-model="showDeleteDialog"
+              persistent
+              max-width="500px"
+            >
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Xóa tác giả</span>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-spacer></v-spacer>
+                <v-card-text class="d-flex justify-center">
+                  <h4 class="d-inline-block">
+                    Xóa xong thì là mất, đừng có đi tìm nhé ?
+                  </h4>
+                </v-card-text>
+                <v-spacer></v-spacer>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="error"
+                    text
+                    @click="closeDialog('delete')"
+                  >
+                    Hủy bỏ
+                  </v-btn>
+                  <v-btn color="primary" text @click="removeConfirm()">
+                    Xác nhận
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog
+              v-model="showInsertDialog"
+              persistent
+              max-width="500px"
+            >
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Thêm mới tác giả</span>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                  <v-container grid-list-md>
+                    <v-form ref="form">
+                      <v-card-text>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              v-model="defaultData.name"
+                              label="Tên tác giả"
+                            />
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-form>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="error" text @click="closeDialog('insert')">
+                    Hủy bỏ
+                  </v-btn>
+                  <v-btn color="success" text @click="insertConfirm()">
+                    Thêm mới
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog
+              v-model="showUpdateDialog"
+              persistent
+              max-width="500px"
+            >
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Chỉnh sửa thông tin</span>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                  <v-container grid-list-md>
+                    <v-form ref="form">
+                      <v-card-text>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              v-model="defaultData.name"
+                              label="Tên tác giả"
+                            />
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-form>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="error" text @click="closeDialog('update')">
+                    Hủy bỏ
+                  </v-btn>
+                  <v-btn color="success" text @click="updateConfirm()">
+                    Chỉnh sửa
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </template>
         </v-flex>
       </v-layout>
     </v-container>
@@ -58,40 +182,220 @@
 </template>
 
 <script>
-  import {Items as Users} from '@/api/user';
-  export default {
-    layout: 'dashboard',
-    data() {
-      return {
-        search: '',
-        complex: {
-          selected: [],
-          headers: [
-            {
-              text: '#',
-              value: 'id'
-            },
-            {
-              text: 'Tên tác giả',
-              value: 'name'
-            },
-            {
-              text: 'Ngày thêm mới',
-              value: 'createdAt'
-            },
-            {
-              text: 'Chức năng',
-              value: ''
-            },
-          ],
-          items: Users
+import axios from "axios";
+export default {
+  layout: "dashboard",
+  data() {
+    return {
+      search: "",
+      listData: [],
+      defaultDate: new Date().toLocaleDateString("en-CA"),
+      defaultData: {
+        createdAt: "",
+        createdBy: 0,
+        id: 0,
+        name: "",
+        updatedAt: "",
+        updatedBy: 0
+      },
+      showDetailDialog: false,
+      showInsertDialog: false,
+      showUpdateDialog: false,
+      showDeleteDialog: false,
+      complex: {
+        selected: [],
+        headers: [
+          {
+            text: "#",
+            value: "id",
+          },
+          {
+            text: "Tên tác giả",
+            value: "name",
+          },
+          {
+            text: "Ngày thêm mới",
+            value: "createdAt",
+          },
+          {
+            text: "Chức năng",
+            value: "action",
+          },
+        ],
+      },
+    };
+  },
+  mounted() {
+    this.initialize();
+  },
+  methods: {
+    standardDateFormat(date){
+      return new Date(date).toLocaleDateString('en-GB');
+    },
+    setToDefault() {
+      this.defaultData = {
+        createdAt: "",
+        createdBy: 0,
+        id: 0,
+        name: "",
+        updatedAt: "",
+        updatedBy: 0
+      }
+    },
+    validate(object) {
+      delete object.img;
+      return Object.values(object).every((x) => x === null || x === "");
+    },
+    initialize() {
+        var accessToken = localStorage.getItem("accessToken");
+        var config = {
+          method: "get",
+          url: "https://ptdapmback.herokuapp.com/v1/api/authors?page=0&limit=100&sort=id",
+          headers: {
+            'Authorization': 'Bearer ' + accessToken,
+          },
+        };
+
+      axios(config)
+        .then((response) => {
+            this.listData = response.data.content;
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    },
+    getDetail(objectId, requestType) {
+      var config = {
+        method: "get",
+        url: "https://ptdapmback.herokuapp.com/v1/api/authors/" + objectId,
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
         },
       };
+      axios(config)
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+          this.currentSelectedObjectId = response.data.id;
+          this.defaultData = response.data;
+          if(requestType == 'update'){
+            this.showUpdateDialog = true;
+          }else if(requestType == 'detail'){
+            this.showDetailDialog = true;
+          }else if(requestType == 'delete'){
+            this.showDeleteDialog = true;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
-    methods: {
-      getDetail(userId){
-        axios.get("")
+    insertConfirm() {
+      console.log(JSON.stringify(this.defaultData));
+      if (this.defaultData != null /*&& !this.validate(this.defaultData)*/) {
+        var data = JSON.stringify(this.defaultData);
+        console.log(data);
+        // console.log(this.validate(this.defaultData));
+        var config = {
+          method: "post",
+          url: "https://ptdapmback.herokuapp.com/v1/api/authors/",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer " + localStorage.getItem("accessToken"),
+          },
+          data: data,
+        };
+        axios(config)
+          .then((response) => {
+            console.log(response);
+            // Notice: Success message here, delay ???
+            this.setToDefault();
+            this.showInsertDialog = false;
+            this.$router.go();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
-    }
-  };
+    },
+    closeDialog(requestType) {
+      this.setToDefault();
+      if(requestType == 'update'){
+        this.showUpdateDialog = false;
+      }else if(requestType == 'insert'){
+        this.showInsertDialog = false;
+      }else if(requestType == 'delete'){
+        this.showDeleteDialog = false;
+      }
+    },
+    updateConfirm() {
+      if (this.defaultData != null) {
+        // var data = JSON.stringify({
+        //   "addr": "string",
+        //   "birthday": "2022-03-12",
+        //   "email": "string",
+        //   "gender": "string",
+        //   "id": 0,
+        //   "img": "null",
+        //   "name": "string",
+        //   "noneLocked": true,
+        //   "password": "string",
+        //   "phone": "string",
+        //   "roles": [
+        //     {
+        //       "id": 0,
+        //       "name": "ROLE_USER"
+        //     }
+        //   ]
+        // });
+        var data = JSON.stringify(this.defaultData);
+        console.log(data);
+        var accessToken = localStorage.getItem("accessToken");
+        var config = {
+          method: "put",
+          url:
+            "https://ptdapmback.herokuapp.com/v1/api/authors/" + this.defaultData.id,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accessToken,
+          },
+          data: data,
+        };
+        axios(config)
+          .then((response) => {
+            console.log(response);
+            //Notice: Success message here, delay ???
+            this.showdefaultDataDialog = false;
+            this.$router.go();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    removeConfirm() {
+      if (this.defaultData.id > 0) {
+        var config = {
+            method: 'delete',
+            url: "https://ptdapmback.herokuapp.com/v1/api/authors/" + this.defaultData.id,
+            headers: { 
+              "Authorization": "Bearer " + localStorage.getItem("accessToken")
+            },
+        };
+        axios(config)
+          .then(response => {
+            console.log(response);
+            this.showDeleteDialog = false;
+            this.$router.go();
+            //Notice: Do some thing to remove datatable data
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      } else {
+        this.showDeleteDialog = false;
+      }
+    },
+  },
+};
 </script>
+  

@@ -17,7 +17,7 @@
                 hide-details
                 class="hidden-sm-and-down"
               ></v-text-field>
-              <v-btn text color='primary' @click='showUserInsertDialog = true'>
+              <v-btn text color="primary" @click="showInsertDialog = true">
                 <v-icon>add</v-icon>
                 Thêm mới
               </v-btn>
@@ -39,13 +39,40 @@
                   <td>{{ loadAuthors(props.item.authors) }}</td>
                   <td>{{ props.item.count }}</td>
                   <td>
-                    <v-btn depressed outline icon fab dark color="primary" small @click="getDetail(props.item.id)">
+                    <v-btn
+                      depressed
+                      outline
+                      icon
+                      fab
+                      dark
+                      color="primary"
+                      small
+                      @click="getDetail(props.item.id, 'insert')"
+                    >
                       <v-icon>visibility</v-icon>
                     </v-btn>
-                    <v-btn depressed outline icon fab dark color="orange" small @click="getDetail(props.item.id)">
+                    <v-btn
+                      depressed
+                      outline
+                      icon
+                      fab
+                      dark
+                      color="orange"
+                      small
+                      @click="getDetail(props.item.id, 'update')"
+                    >
                       <v-icon>edit</v-icon>
                     </v-btn>
-                    <v-btn depressed outline icon fab dark color="pink" small @click="remove(props.item.id)"> 
+                    <v-btn
+                      depressed
+                      outline
+                      icon
+                      fab
+                      dark
+                      color="pink"
+                      small
+                      @click="getDetail(props.item.id, 'delete')"
+                    >
                       <v-icon>delete</v-icon>
                     </v-btn>
                   </td>
@@ -55,108 +82,146 @@
           </v-card>
           <!-- Delete user dialog -->
           <template>
-              <!-- Confirm dialog -->
-              <v-dialog v-model="showDialogDeleteConfirm" persistent max-width="500px">
-                <v-card>
-                  <v-card-title>
-                    <span class="headline">Xóa người dùng</span>
-                  </v-card-title>
-                  <v-divider></v-divider>
+            <!-- Confirm dialog -->
+            <v-dialog
+              v-model="showDeleteDialog"
+              persistent
+              max-width="500px"
+            >
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Xóa người dùng</span>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-spacer></v-spacer>
+                <v-card-text class="d-flex justify-center">
+                  <h4 class="d-inline-block">
+                    Xóa xong thì là mất, đừng có đi tìm nhé ?
+                  </h4>
+                </v-card-text>
+                <v-spacer></v-spacer>
+                <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-card-text class="d-flex justify-center">
-                    <h4 class="d-inline-block">Xóa xong thì là mất, đừng có đi tìm nhé ?</h4>
-                  </v-card-text>
+                  <v-btn
+                    color="error"
+                    text
+                    @click="closeDialog('delete')"
+                  >
+                    Hủy bỏ
+                  </v-btn>
+                  <v-btn color="primary" text @click="removeConfirm()">
+                    Xác nhận
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog
+              v-model="showInsertDialog"
+              persistent
+              max-width="500px"
+            >
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Thêm mới sách</span>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                  <v-container grid-list-md>
+                    <v-form ref="form">
+                      <v-card-text>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              v-model="bookData.name"
+                              label="Tên sách"
+                            />
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-select
+                            v-model="bookData.categoryId"
+                              :items="listCategory"
+                              item-text="name"
+                                item-value="id"
+                              label="Thể loại"
+                            ></v-select>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              type="number"
+                              v-model="bookData.count"
+                              label="Số lượng"
+                            />
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-select
+                                v-model="bookData.authors"
+                                :items="listAuthor"
+                                item-text="name"
+                                item-value="id"
+                                label="Tác giả"
+                                multiple
+                                return-object
+                            ></v-select>
+                          </v-col>
+                        </v-row>
+
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-select
+                              v-model="bookData.publisherId"
+                              :items="listPublisher"
+                              item-text="name"
+                                item-value="id"
+                              label="Nhà xuất bản"
+                            ></v-select>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              type="number"
+                              v-model="bookData.publishAt"
+                              label="Năm xuất bản"
+                            />
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-textarea
+                                label="Mô tả"
+                            ></v-textarea>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <input
+                              type="file"
+                              label="Ảnh minh họa"
+                              @change="onFileChanged"
+                            />
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-form>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="error"
-                      text
-                      @click="showDialogDeleteConfirm = false"
-                    >
-                      Hủy bỏ
-                    </v-btn>
-                    <v-btn
-                      color="primary"
-                      text
-                      @click="removeConfirm()"
-                    >
-                      Xác nhận
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-              <v-dialog v-model="showUserInsertDialog" persistent max-width="500px">
-                <v-card>
-                    <v-card-title>
-                    <span class="headline">Thêm mới sách</span>
-                    </v-card-title>
-                    <v-divider></v-divider>
-                    <v-card-text>
-                      <v-container grid-list-md>
-                          <v-form ref="form">
-                              <v-card-text>
-                                  <v-row>
-                                  <v-col cols="12" sm="6">
-                                      <v-text-field v-model="bookData.name" label="Họ và tên" />
-                                  </v-col>
-                                  </v-row>
-                                  <v-row>
-                                  <v-col cols="12" sm="6">
-                                      <v-text-field type="email" v-model="bookData.email" label="Email"/>
-                                  </v-col>
-                                  </v-row>
-                                  <v-row>
-                                  <v-col cols="12" sm="6">
-                                      <v-text-field v-model="bookData.phone" label="Số điện thoại" />
-                                  </v-col>
-                                  </v-row>
-                                  <v-row>
-                                  <v-col cols="12" sm="6">
-                                      <v-text-field type="date" v-model="bookData.birthday" label="Ngày sinh"/>
-                                  </v-col>
-                                  </v-row>
-                                  <v-row>
-                                  <v-col cols="12" sm="6">
-                                      <v-select
-                                      v-model="bookData.gender"
-                                      :items="gender"
-                                      item-text="gender"
-                                      item-value="gender"
-                                      label="Giới tính"
-                                      persistent-hint
-                                      single-line
-                                      ></v-select>
-                                  </v-col>
-                                  </v-row>
-                                  <v-row>
-                                  <v-col cols="12" sm="6">
-                                      <v-text-field type="text" v-model="bookData.addr" label="Địa chỉ"/>
-                                  </v-col>
-                                  </v-row>
-                              </v-card-text>
-                          </v-form>
-                      </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="error"
-                      text
-                      @click="closeInsertDialog()"
-                    >
-                      Hủy bỏ
-                    </v-btn>
-                    <v-btn
-                      color="success"
-                      text
-                      @click="insertConfirm()"
-                    >
-                      Thêm mới
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
+                  <v-btn color="error" text @click="closeDialog('insert')">
+                    Hủy bỏ
+                  </v-btn>
+                  <v-btn color="success" text @click="insertConfirm()">
+                    Thêm mới
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </template>
         </v-flex>
       </v-layout>
@@ -165,285 +230,296 @@
 </template>
 
 <script>
-  import axios from 'axios';
-  export default {
-    layout: 'dashboard',
-    data() {
-      return {
-        search: '',
-        listData: [],
-        defaultDate: new Date().toLocaleDateString('en-CA'),
-        bookData: {
-            "id": -1,
-            "createdBy": 1,
-            "createdAt": "2022-03-17T16:01:27",
-            "updatedBy": 1,
-            "updatedAt": "2022-03-17T16:01:27",
-            "name": "CSDL",
-            "image": "book.jpeg",
-            "count": 10,
-            "publishAt": 0,
-            "content": "string",
-            "category": {
-                "id": 4,
-                "createdBy": 1,
-                "createdAt": "2022-03-17T15:56:43",
-                "updatedBy": 1,
-                "updatedAt": "2022-03-17T15:56:43",
-                "name": "Van hoc"
-            },
-            "publisher": {
-                "id": 4,
-                "createdBy": 1,
-                "createdAt": "2022-03-17T16:01:05",
-                "updatedBy": 1,
-                "updatedAt": "2022-03-17T16:01:05",
-                "name": "HCM"
-            },
-            "authors": [
-                {
-                "id": 4,
-                "createdBy": 1,
-                "createdAt": "2022-03-17T15:55:49",
-                "updatedBy": 1,
-                "updatedAt": "2022-03-17T15:55:49",
-                "name": "Huy Can"
-                }
-            ]
+import axios from "axios";
+export default {
+  layout: "dashboard",
+  data() {
+    return {
+      search: "",
+      listData: [],
+      listCategory: [],
+      listAuthor: [],
+      listPublisher: [],
+      selectedBookImage: null,
+      formData: new FormData(),
+      defaultDate: new Date().toLocaleDateString("en-CA"),
+      bookData: {
+        id: -1,
+        createdBy: -1,
+        createdAt: "",
+        updatedBy: -1,
+        updatedAt: "",
+        name: "",
+        image: "",
+        count: 0,
+        publishAt: 2000,
+        content: "",
+        categoryId: -1,
+        publisherId: -1,
+        category: {},
+        publisher: {},
+        authors: [],
+      },
+      showDeleteDialog: false,
+      showDataDialog: false,
+      showInsertDialog: false,
+      showUpdateDialog: false,
+      complex: {
+        selected: [],
+        headers: [
+          {
+            text: "#",
+            value: "id",
+          },
+          {
+            text: "Tên sách",
+            value: "name",
+          },
+          {
+            text: "Nhà xuất bản",
+            value: "publisher",
+          },
+          {
+            text: "Thể loại",
+            value: "category",
+          },
+          {
+            text: "Tác giả",
+            value: "author",
+          },
+          {
+            text: "Số lượng",
+            value: "count",
+          },
+          {
+            text: "Chức năng",
+            value: "action",
+          },
+        ],
+      },
+    };
+  },
+  mounted() {
+    this.initialize();
+  },
+  methods: {
+    loadAuthors(object) {
+      var resultString = "";
+      for (let i = 0; i < object.length; i++) {
+        resultString += object[i].name + " ";
+      }
+      return resultString;
+    },
+    setToDefault() {
+      this.bookData = {
+        id: -1,
+        createdBy: -1,
+        createdAt: "",
+        updatedBy: -1,
+        updatedAt: "",
+        name: "",
+        image: "",
+        count: 0,
+        publishAt: 2000,
+        content: "",
+        category: {
         },
-        showDialogDeleteConfirm: false,
-        showbookDataDialog: false,
-        showUserInsertDialog: false,
-        currentSelectedUser: -1,
-        complex: {
-          selected: [],
-          headers: [
-            {
-              text: '#',
-              value: 'id'
-            },
-            {
-              text: 'Tên sách',
-              value: 'name'
-            },
-            {
-              text: 'Nhà xuất bản',
-              value: 'publisher'
-            },
-            {
-              text: 'Thể loại',
-              value: 'category'
-            },
-            {
-              text: 'Tác giả',
-              value: 'author'
-            },
-            {
-              text: 'Số lượng',
-              value: 'count'
-            },
-            {
-              text: 'Chức năng',
-              value: 'action'
-            },
-          ],
+        publisher: {
+          
         },
+        authors: [
+          
+        ],
+      }
+    },
+    validate(object) {
+      delete object.img;
+      return Object.values(object).every((x) => x === null || x === "");
+    },
+    initialize() {
+        var accessToken = localStorage.getItem("accessToken");
+      var config = {
+        method: "get",
+        url: "https://ptdapmback.herokuapp.com/v1/api/books?page=0&limit=100&sort=id",
       };
-    },
-    mounted () {
-      this.initialize()
-    },
-    methods: {
-        loadAuthors(object){
-            var resultString = "";
-            for(let i = 0; i < object.length; i++){
-                resultString += object[i].name + " ";
-            }
-            return resultString;
-        },
-        setToDefault(){
-            this.bookData = {
-                "id": -1,
-                "createdBy": 1,
-                "createdAt": "2022-03-17T16:01:27",
-                "updatedBy": 1,
-                "updatedAt": "2022-03-17T16:01:27",
-                "name": "CSDL",
-                "image": "book.jpeg",
-                "count": 10,
-                "publishAt": 0,
-                "content": "string",
-                "category": {
-                    "id": 4,
-                    "createdBy": 1,
-                    "createdAt": "2022-03-17T15:56:43",
-                    "updatedBy": 1,
-                    "updatedAt": "2022-03-17T15:56:43",
-                    "name": "Van hoc"
-                },
-                "publisher": {
-                    "id": 4,
-                    "createdBy": 1,
-                    "createdAt": "2022-03-17T16:01:05",
-                    "updatedBy": 1,
-                    "updatedAt": "2022-03-17T16:01:05",
-                    "name": "HCM"
-                },
-                "authors": [
-                    {
-                    "id": 4,
-                    "createdBy": 1,
-                    "createdAt": "2022-03-17T15:55:49",
-                    "updatedBy": 1,
-                    "updatedAt": "2022-03-17T15:55:49",
-                    "name": "Huy Can"
-                    }
-                ]
-            }
-        },
-        validate(object){
-            delete object.img;
-            return Object.values(object).every(x => x === null || x === '');
-        },
-        initialize () {
-            var data = '';
-            var config = {
-            method: 'get',
-            url: 'https://ptdapmback.herokuapp.com/v1/api/books?page=0&limit=100&sort=id',
-            data : data
-            };
 
-            axios(config)
-            .then(response => {
-            this.listData = response.data.content
-            })
-            .catch(error => {
+      axios(config)
+        .then((response) => {
+            this.listData = response.data.content;
+        })
+        .catch((error) => {
             console.log(error);
-            });
-        },
-        getDetail(userId){
-            var config = {
-            method: 'get',
-            url: 'https://ptdapmback.herokuapp.com/v1/api/books/' + userId,
-            headers: { 
-                'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
-            }
-            };
-            axios(config)
-            .then(response => {
-            console.log(JSON.stringify(response.data));
-            this.currentSelectedUser = response.data.id;
-            this.bookData = response.data;
-            this.showbookDataDialog = true;
-            })
-            .catch(error => {
+        });
+        axios.get("https://ptdapmback.herokuapp.com/v1/api/categories?page=0&limit=100&sort=id", { headers: { Authorization: accessToken } }
+        ).then(response =>{
+            this.listCategory = response.data.content;
+            console.log(this.listCategory);
+        }).catch(error => {
             console.log(error);
-            });
-        },
-        insertConfirm(){
-            console.log(this.bookData);
-            if(this.bookData != null && !this.validate(this.bookData)){
-            var data = JSON.stringify(this.bookData);
-            console.log(data);
-            console.log(this.validate(this.bookData));
-            var config = {
-                method: 'post',
-                url: 'https://ptdapmback.herokuapp.com/v1/api/books/',
-                headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
-                },
-                data : data
-            };
-            axios(config)
-            .then(response => {
-                console.log(response)
-                // Notice: Success message here, delay ???
-                this.setToDefault();
-                this.showUserInsertDialog = false;
-                this.$router.go()
-            })
-            .catch(error => {
-                console.log(error);
-            });
-            }
-        },
-        closeInsertDialog(){
+        })
+        axios.get("https://ptdapmback.herokuapp.com/v1/api/publishers?page=0&limit=100&sort=id", { headers: { Authorization: accessToken } }
+        ).then(response =>{
+            this.listPublisher = response.data.content;
+            console.log(this.listPublisher);
+        }).catch(error => {
+            console.log(error);
+        })
+        axios.get("https://ptdapmback.herokuapp.com/v1/api/authors?page=0&limit=100&sort=id", { headers: { Authorization: accessToken } }
+        ).then(response =>{
+            this.listAuthor = response.data.content;
+            console.log(this.listAuthor);
+        }).catch(error => {
+            console.log(error);
+        })
+    },
+    getDetail(objectId, requestType) {
+      var config = {
+        method: "get",
+        url: "https://ptdapmback.herokuapp.com/v1/api/books/" + objectId,
+      };
+      axios(config)
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+          this.bookData = response.data;
+          if(requestType == 'update'){
+            this.showUpdateDialog = true;
+          }else if(requestType == 'detail'){
+            this.showDetailDialog = true;
+          }else if(requestType == 'delete'){
+            this.showDeleteDialog = true;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    insertConfirm() {
+      console.log(JSON.stringify(this.bookData));
+      if (this.bookData != null /*&& !this.validate(this.bookData)*/) {
+        var data = JSON.stringify(this.bookData);
+        var accessToken = localStorage.getItem("accessToken");
+        console.log(this.validate(this.bookData));
+        var config = {
+          method: "post",
+          url: "https://ptdapmback.herokuapp.com/v1/api/books/",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + accessToken
+          },
+          data: data,
+        };
+        axios(config)
+          .then((response) => {
+            console.log(response);
+            // Notice: Success message here, delay ???
+              for (var value of this.formData.values()) {
+                console.log(value);
+              }
+              axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/files', this.formData, {
+                  headers: {
+                      'Content-Type': 'multipart/form-data',
+                      'Authorization': 'Bearer ' + accessToken
+                  }
+              }).then(response => {
+                  console.log(JSON.stringify(response.data));
+                  this.$router.go();
+              }).catch(error => {
+                  console.log(error);
+                  alert("Lỗi rồi cha nội, check console đi !");
+              })
             this.setToDefault();
-            this.showUserInsertDialog = false;
-        },
-        update(){
-            console.log(this.bookData);
-            if(this.bookData != null){
-            // var data = JSON.stringify({
-            //   "addr": "string",
-            //   "birthday": "2022-03-12",
-            //   "email": "string",
-            //   "gender": "string",
-            //   "id": 0,
-            //   "img": "null",
-            //   "name": "string",
-            //   "noneLocked": true,
-            //   "password": "string",
-            //   "phone": "string",
-            //   "roles": [
-            //     {
-            //       "id": 0,
-            //       "name": "ROLE_USER"
-            //     }
-            //   ]
-            // });
-            var data = JSON.stringify(this.bookData);
-
-            var config = {
-                method: 'put',
-                url: 'https://ptdapmback.herokuapp.com/v1/api/users/' + this.currentSelectedUser,
-                headers: { 
-                'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
-                },
-                data : data
-            };
-            axios(config)
-            .then(response => {
-                console.log(response)
-                //Notice: Success message here, delay ???
-                this.showbookDataDialog = false
-                this.$router.go()
-            })
-            .catch(error => {
-                console.log(error);
-            });
-            }
-        },
-        remove(userId){
-            this.showDialogDeleteConfirm = true
-            this.currentSelectedUser = userId
-            console.log(userId);
-            console.log(this.currentSelectedUser)
-        },
-        removeConfirm(){
-            if(this.currentSelectedUser > 0){
-            var config = {
-                method: 'delete',
-                url: 'https://ptdapmback.herokuapp.com/v1/api/users/' + this.currentSelectedUser,
-                headers: { 
-                'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
-                }
-            };
-            axios(config)
-            .then(response => {
-                console.log(response)
-                this.showDialogDeleteConfirm = false;
-                this.$router.go();
-                //Notice: Do some thing to remove datatable data
-            })
-            .catch(error => {
-                console.log(error);
-            });
-            }else{
-            this.showDialogDeleteConfirm = false
-            }
-        },
+            this.showInsertDialog = false;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
-  }
+    closeDialog(requestType) {
+      this.setToDefault();
+      if(requestType == 'insert'){
+        this.showInsertDialog = false;
+      }else if(requestType == 'update'){
+        this.showUpdateDialog = false;
+      }else if(requestType == 'delete'){
+        this.showDeleteDialog = false;
+      }
+    },
+    update() {
+      console.log(this.bookData);
+      if (this.bookData != null) {
+        // var data = JSON.stringify({
+        //   "addr": "string",
+        //   "birthday": "2022-03-12",
+        //   "email": "string",
+        //   "gender": "string",
+        //   "id": 0,
+        //   "img": "null",
+        //   "name": "string",
+        //   "noneLocked": true,
+        //   "password": "string",
+        //   "phone": "string",
+        //   "roles": [
+        //     {
+        //       "id": 0,
+        //       "name": "ROLE_USER"
+        //     }
+        //   ]
+        // });
+        var data = JSON.stringify(this.bookData);
+
+        var config = {
+          method: "put",
+          url:
+            "https://ptdapmback.herokuapp.com/v1/api/users/" +
+            this.currentSelectedUser,
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("accessToken"),
+          },
+          data: data,
+        };
+        axios(config)
+          .then((response) => {
+            console.log(response);
+            //Notice: Success message here, delay ???
+            this.showbookDataDialog = false;
+            this.$router.go();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    removeConfirm() {
+      if (this.bookData.id > 0) {
+        var config = {
+            method: 'delete',
+            url: "https://ptdapmback.herokuapp.com/v1/api/books/" + this.bookData.id,
+            headers: { 
+              "Authorization": "Bearer " + localStorage.getItem("accessToken")
+            },
+        };
+        axios(config)
+          .then(response => {
+            console.log(response);
+            this.showDeleteDialog = false;
+            this.$router.go();
+            //Notice: Do some thing to remove datatable data
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      } else {
+        this.showDeleteDialog = false;
+      }
+    },
+    onFileChanged(e) {
+        this.selectedFile = e.target.files[0];
+        console.log(this.selectedFile)
+        this.formData = new FormData();
+        this.formData.append('file', this.selectedFile);
+        this.bookData.image = this.selectedFile.name;
+    }
+  },
+};
 </script>
