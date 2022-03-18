@@ -66,7 +66,7 @@
                             </v-card-title>
                         </v-layout>
                     </v-img>
-                    <v-img v-else :src="userData.img">
+                    <v-img v-else :src="('https://ptdapmback.herokuapp.com/v1/api/auth/files/' + userData.img)">
                         <v-layout column class="media ma-0">
                             <v-card-title>
                             <v-spacer></v-spacer>
