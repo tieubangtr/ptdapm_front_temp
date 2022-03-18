@@ -191,7 +191,8 @@
                         method: 'put',
                         url: 'https://ptdapmback.herokuapp.com/v1/api/users/' + this.userData.id,
                         headers: { 
-                        'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
                         },
                         data : data
                     };
@@ -201,8 +202,8 @@
                         // Notice: Success message here, delay ???
                         this.$router.go()
                     })
-                    .catch(error => {
-                        console.log(error);
+                    .catch((error) => {
+                        console.log(error.data);
                     });
                 }
             },

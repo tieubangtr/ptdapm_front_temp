@@ -193,8 +193,7 @@
             "phone": "",
             "roles": [
               {
-                "id": 1,
-                "name": "ADMIN"
+                "id": 1
               }
             ]
           },
@@ -314,6 +313,7 @@
             method: 'post',
             url: 'https://ptdapmback.herokuapp.com/v1/api/users/',
             headers: { 
+              'Content-Type': 'application/json',
               'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
             },
             data : data
@@ -322,7 +322,8 @@
           .then(response => {
             console.log(response)
             // Notice: Success message here, delay ???
-            this.userDataDialog = false
+            this.setToDefault();
+            this.showUserInsertDialog = false;
             this.$router.go()
           })
           .catch(error => {
@@ -395,7 +396,8 @@
           axios(config)
           .then(response => {
             console.log(response)
-            this.showDialogDeleteConfirm = false
+            this.showDialogDeleteConfirm = false;
+            this.$router.go();
             //Notice: Do some thing to remove datatable data
           })
           .catch(error => {
