@@ -11,27 +11,70 @@
             </div>
             <hr/>
             <span class="note">Đảm bảo số lượng sách, mỗi độc giả mượn tối thiểu mỗi quyển 1 loại *</span>
-            <v-layout row wrap class="cartProduct x-grid-lg">
+            <!-- for -->
+            <v-layout v-for="(data,index) in datas" :key="index" row wrap class="cartProduct x-grid-lg">
                 <v-flex lg2 sm12 xs12 class="pa-2">
                     <div class="outImg">
-                        <img src="/img/sach1.jfif" alt="" class="img">
+                        <img :src="data.book.image" alt="ảnh Sách" class="img">
                     </div>
                 </v-flex>
                 <v-flex lg10 sm12 xs12 class="infoCart pa-2">
-                    <h3 class="name">Hướng dẫn đẹp trai lên một cách lạ thường</h3>
-                    <span class="author">Khá Bách</span>
-                    <span class="author">ID:S1319714</span>
+                    <h3 class="name">{{data.book.name}}</h3>
+                    <span class="author">{{data.book.authors[0].name}}</span>
+                    <span class="author">ID:{{data.book.id}}</span>
                     <span class="btnDelete">Xóa sách</span>
                 </v-flex>
             </v-layout>
+            <!-- for -->
             <div class="Register">
-                <NuxtLink to="borrow" class="btnRegister" >Tạo phiếu mượn</NuxtLink>
+                <NuxtLink to="borrow" class="btnRegister" @click="handleBorrow">Tạo phiếu mượn</NuxtLink>
             </div>
         </v-container>
     </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
+    data(){
+        return {
+            getData:{
+                page:0,
+                limit:4,
+                sort:'id'
+            },
+            datas:[],
+            token:JSON.parse(localStorage.getItem('User')).token,
+            form:{
+                userId:JSON.parse(localStorage.getItem('User')).id,
+                borrowingItems:{
+                bookId: 4,
+                id: 0,
+                status: false
+                }
+            }
+        }
+    },
+    mounted (){
+        // this.getData=JSON.stringify(this.getData)
+        axios.get('https://ptdapmback.herokuapp.com/v1/api/cartItems?page=0&limit=5&sort=id',{
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`,
+            }
+        })
+        .then((res)=>{
+            this.datas=res.data.content
+            console.log(this.datas);
+        })
+        .catch((err)=>{
+            console.log(err.response.data);
+        })
+    },
+    methods:{
+        handleBorrow() {
+
+        }
+    }
 }
 </script>
 

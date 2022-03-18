@@ -4,26 +4,27 @@
         <v-layout row wrap class="x-grid-lg">
             <v-flex lg6 sm12 xs12 class="pa-2">
                 <div class="outImg">
-                    <img src="/img/sach1.jfif" alt="" class="Img">
+                    <img :src="datas.img" alt="ảnh sách" class="Img">
                 </div>
             </v-flex>
             <v-flex lg6 sm12 xs12 class="info pa-2">
-                <h2 class="name">Tên sách</h2>
+                <h2 class="name">{{datas.name}}</h2>
                 <v-layout row wrap class="x-grid-lg">
                     <v-flex lg4 sm12 xs12 class="pa-2">
-                        <span class="author">Tác phẩm</span>
+                        <span class="author">Tác giả</span>
                         <span class="author">Nhà xuất bản</span>
                         <span class="author">Năm xuất bản</span>
                         <span class="author">ID:S9164146</span>
                     </v-flex>
                     <v-flex lg8 sm12 xs12 class="pa-2">
-                        <span class="content">Phạm Huy Hiệp</span>
-                        <span class="content">Anh Hịp</span>
-                        <span class="content">2000</span>
+                        <span class="content">{{author}}</span>
+                        <span class="content">{{publisher}}</span>
+                        <span class="content">{{datas.publishAt}}</span>
                     </v-flex>
                 </v-layout>
                 <div class="btnBorrow">
-                    <span class="btn">Mượn</span>
+                    <div class="btn" @click="handleAddcart">Thêm giỏ hàng</div>
+                    <NuxtLink :to="'/homepage/borrow?bookId='+datas.id" class="btn successss">Mượn sách</NuxtLink>
                 </div>
                 <hr/>
                 <v-layout row wrap class="x-grid-lg">
@@ -33,7 +34,7 @@
                     </v-flex>
                     <v-flex lg8 sm12 xs12 class="pa-2">
                         <span class="content">N/A</span>
-                        <span class="content">Văn học</span>
+                        <span class="content">{{category}}</span>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -41,8 +42,51 @@
     </v-container>
 </template>
 <script>
+import axios from 'axios'
 export default {
-    
+    data(){
+        return {
+            datas:[],
+            auhor:'',
+            publisher:'',
+            category:'',
+            form:{
+                bookId:+this.$route.query.bookId,
+                cartId:JSON.parse(localStorage.getItem('User')).id
+            }
+        }
+    },
+    mounted (){
+        axios.get(`https://ptdapmback.herokuapp.com/v1/api/books/${this.form.bookId}`)
+        .then((res)=>{
+            this.datas=res.data
+            this.author=res.data.authors[0].name
+            this.category=res.data.category.name
+            this.publisher=res.data.publisher.name
+            console.log(this.datas);
+        })
+        .catch((err)=>{
+            console.log(err.response.data);
+        })
+    },
+    methods: {
+        handleAddcart(){
+            this.form=JSON.stringify(this.form)
+            axios.post('https://ptdapmback.herokuapp.com/v1/api/cartItems',this.form,{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization:`Bearer ${JSON.parse(localStorage.getItem('User')).token}`
+                }
+            })
+            .then((res)=>{
+                console.log(res.data);
+                alert('thêm thành công')
+            })
+            .catch((err)=>{
+                console.log(err.response.data);
+            })
+        }
+    }
 }
 </script>
 <style scoped>
@@ -83,16 +127,24 @@ export default {
 }
 .btnBorrow{
     margin:20px 10px 50px 10px ;
+    display: flex;
 }
 .btn{
-    padding:15px 80px;
+    padding:15px 30px;
     background-color: #f5f5f5;
     color: red;
     box-shadow: 0 2px 5px #999;
     font-weight: 600;
     border-radius:3px;
+    text-decoration: none;
+    margin-right:20px;
+    cursor: pointer;
+}
+.successss{
+    background-color: green;
+    color:white;
 }
 .btn:hover{
-    background-color: rgb(230, 230, 230);
+    opacity: 0.8;
 }
 </style>

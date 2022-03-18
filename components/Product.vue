@@ -16,16 +16,16 @@
             <hr>
             <v-layout row wrap class="books x-grid-lg">
                 <!-- v for -->
-                <v-flex lg3 sm12 xs12 class="pa-2">
-                    <NuxtLink to='' style="text-decoration: none;">
+                <v-flex v-for="(data,index) in datas" :key="index" lg3 sm12 xs12 class="pa-2">
+                    <NuxtLink :to="'/homepage/deltail?bookId='+data.id" style="text-decoration: none;">
                         <v-card flat tile class="setImg">
                             <div class="imgOut">
-                                <img class="imgOut_img" src='/img/sach1.jfif' alt="">
+                                <img class="imgOut_img" :src='("https://ptdapmback.herokuapp.com/v1/api/files/"+data.image)' alt="">
                             </div>
                             <div class="parent">
-                                <div class="nameAuthor">Tác giả : Phạm Huy hiệp </div>
+                                <div class="nameAuthor">Tác giả : {{ data.authors[0].name }} </div>
                                 <div class="nameBook">
-                                    đại số tuyến tính
+                                    {{ data.name }}
                                 </div>
                                 <div class="btnAdd" @click="handleCheck">
                                     <v-icon class="btnAdd_icon">shopping_basket</v-icon>
@@ -66,11 +66,23 @@
     </div>
 </template>
 <script>
+import axios from "axios"
 export default {
     data() {
         return {
-            user:JSON.parse(localStorage.getItem('User'))
+            user:JSON.parse(localStorage.getItem('User')),
+            datas:[]
         }
+    },
+    mounted (){
+        axios.get('https://ptdapmback.herokuapp.com/v1/api/books?page=0&limit=4&sort=id')
+        .then((res)=>{
+            this.datas=res.data.content
+            console.log(this.datas);
+        })
+        .catch((err)=>{
+            console.log(err.response.data);
+        })
     },
     methods: {
         handleCheck() {

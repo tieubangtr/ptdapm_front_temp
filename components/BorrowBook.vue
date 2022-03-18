@@ -17,40 +17,34 @@
                             <h3 class="header_text">Thông tin của bạn</h3>
                             <v-text-field 
                                 label="Họ tên"
-                                v-model="form.name"
+                                v-model="this.getData.name"
                                 @focus="check.name=''"
+                                disabled="disabled"
                             ></v-text-field>
                             <div class="validation">{{this.check.name}}</div>
                             <v-text-field 
-                                v-model="form.email"
                                 label="Email" 
+                                v-model="this.getData.email"
                                 @focus="check.email=''"
+                                disabled="disabled"
                             ></v-text-field>
                             <div class="validation">{{this.check.email}}</div>
                             <v-text-field 
-                                v-model="form.addr"
+                                v-model="this.getData.addr"
                                 label="Địa chỉ" 
                                 @focus="check.addr=''"
+                                disabled="disabled"
                             ></v-text-field>
                             <div class="validation">{{this.check.addr}}</div>
                             <span class="note">Hạn trả sách trong vòng 30 ngày*</span>
                             <h3 class="header_text">Thông tin phiếu mượn</h3>
-                            <v-text-field 
-                                v-model="form.code"
-                                label="Mã phiếu mượn"
-                                @focus="check.code=''"
-                            ></v-text-field>
-                            <div class="validation">{{this.check.code}}</div>
-                            <div class="register_main_Form_childLeft">
-                                <span class="register_main_Form_child_text">Ngày mượn</span>
-                                <input type="date" class="register_main_Form_child_input" v-model="form.createDate" @focus="check.createDate=''"/>
-                                <div class="validation">{{this.check.createDate}}</div>
-                            </div>
-                            <div class="register_main_Form_childLeft">
-                                <span class="register_main_Form_child_text">Ngày trả</span>
-                                <input type="date" class="register_main_Form_child_input" v-model="form.payDate" @focus="check.payDate=''"/>
-                                <div class="validation">{{this.check.payDate}}</div>
-                            </div>
+                            <label for="cars">Ngày trả:</label>
+                            <select name="payDate" id="payDate">
+                                <option value="3">3 ngày</option>
+                                <option value="7">7 ngày</option>
+                                <option value="14">14 ngày</option>
+                                <option value="30">1 tháng</option>
+                            </select>
                         </div>
                     </div>
                 </v-flex>
@@ -64,9 +58,9 @@
                                 </div>
                             </v-flex>
                             <v-flex lg8 sm12 xs12 class="infoCart pa-2">
-                                <h3 class="name">Hướng dẫn đẹp trai lên một cách lạ thường</h3>
-                                <span class="author">Khá Bách</span>
-                                <span class="author">ID:S1319714</span>
+                                <h3 class="name">{{datas.name}}</h3>
+                                <span class="author">{{author}}</span>
+                                <span class="author">ID:{{datas.id}}</span>
                                 <span class="btnDelete">Xóa sách</span>
                             </v-flex>
                         </v-layout>
@@ -80,82 +74,87 @@
     </div>
 </template>
 <script>
+import axios from "axios"
 export default {
     props:{
         checkRegister:Boolean
     },
     data() {
       return {
+        author:'',
+        datas:[],
+        getData:{
+            name:JSON.parse(localStorage.getItem('User')).username,
+            email:JSON.parse(localStorage.getItem('User')).username,
+            addr:'Thái Bình'
+        },
+        date:'',
         check:this.checkRegister,
         checkRed:true,
         loading:false,
           form:{
-              name:'',
-              email:'',
-              addr:'',
-              code:'',
-              createDate:'',
-              payDate:'',
+            userId:JSON.parse(localStorage.getItem('User')).id,
+            borrowedDate:'',
+            borrowingItems: [
+                {
+                    bookId: this.$route.query.bookId,
+                    status: false
+                }
+            ]
           },
-          check:{
-              name:'',
-              email:'',
-              addr:'',
-              code:'',
-              createDate:'',
-              payDate:'',
-          }
       }
     },
+    mounted (){
+        axios.get(`https://ptdapmback.herokuapp.com/v1/api/books/${this.$route.query.bookId}`)
+        .then((res)=>{
+            console.log(res.data);
+            this.datas=res.data
+            this.author=res.data.authors[0].name
+        })
+        .catch((err)=>{
+            console.log(err.response.data);
+        })
+    },
     methods: {
-        validate(){
-            this.check={
-                name:'',
-                email:'',
-                addr:'',
-                code:'',
-                createDate:'',
-                payDate:'',
-            }
-            if(!this.isEmail(this.form.email)){
-                this.check.email='Dòng này phải là email'
-                this.loading=false
-            }
-            if(!this.form.name){
-                this.check.name='Vui lòng nhập dòng này'
-                this.loading=false
-            }
-            if(!this.form.addr){
-                this.check.addr='Vui lòng nhập dòng này'
-                this.loading=false
-            }
-            if(!this.form.code){
-                this.check.code='Vui lòng nhập dòng này'
-                this.loading=false
-            }
-            if(!this.form.createDate){
-                this.check.createDate='Vui lòng nhập dòng này'
-                this.loading=false
-            }
-            if(!this.form.payDate){
-                this.check.payDate='Vui lòng nhập dòng này'
-                this.loading=false
-            }
-        },
-        isEmail(email){
-            return email.match(
-                /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            );
-        },
         register(){
-            // this.validate()
+            const apointment= new Date()
+            apointment.setDate(apointment.getDate()+this.date)
+            this.form.borrowedDate=apointment.toLocaleDateString('en-CA')
             this.check=true
             this.$emit("update-check", this.check);
+            this.form=JSON.stringify(this.form)
+            console.log(this.form);
+            axios.post('https://ptdapmback.herokuapp.com/v1/api/borrowings/',this.form,{
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`,
+                }
+            })
+            .then((err)=>{
+                console.log(err.data);
+            })
+            .catch((err)=>{
+                console.log(err.response.data);
+            })
+        },
+        getid(){
+            this.date=document.getElementById('payDate').value
         }
     }
 }
 </script>
 <style scoped>
+select{
+    color:red;
+    width:100px;
+    border-bottom:2px solid black;
+    outline: none;
+    text-align:center;
+}
+.option{
+    background-color:red;
+    text-align:center;
+}
 .validation{
     color:red;
     font-size:14px;

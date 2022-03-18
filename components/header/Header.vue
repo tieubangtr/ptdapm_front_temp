@@ -46,7 +46,9 @@
                         <v-icon size="35px">notifications</v-icon>
                     </div>
                     <div class="book-borrow-item">
-                        <v-icon size="35px">shopping_cart</v-icon>
+                        <NuxtLink style="text-decoration: none;" to="/homepage/cart">
+                            <v-icon size="35px">shopping_cart</v-icon>
+                        </NuxtLink>
                     </div>
                 </v-flex>
             </v-layout>

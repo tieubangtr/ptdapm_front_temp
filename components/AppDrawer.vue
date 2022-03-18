@@ -41,6 +41,10 @@
           <v-icon class="list_menu_conponent_icon">compare_arrows</v-icon>
           <div class="list_menu_conponent_name">Mượn trả</div>
         </NuxtLink>
+        <NuxtLink to="/statistical" class="list_menu_conponent">
+          <v-icon class="list_menu_conponent_icon">leaderboard</v-icon>
+          <div class="list_menu_conponent_name">Thống kê</div>
+        </NuxtLink>
       </div>
     </div>
 
