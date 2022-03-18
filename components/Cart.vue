@@ -14,7 +14,7 @@
             <v-layout row wrap class="cartProduct x-grid-lg">
                 <v-flex lg2 sm12 xs12 class="pa-2">
                     <div class="outImg">
-                        <img src="img/sach1.jfif" alt="" class="img">
+                        <img src="/img/sach1.jfif" alt="" class="img">
                     </div>
                 </v-flex>
                 <v-flex lg10 sm12 xs12 class="infoCart pa-2">
@@ -25,27 +25,13 @@
                 </v-flex>
             </v-layout>
             <div class="Register">
-                <span class="btnRegister" @click="changeRegister">Tạo phiếu mượn</span>
+                <NuxtLink to="borrow" class="btnRegister" >Tạo phiếu mượn</NuxtLink>
             </div>
         </v-container>
     </div>
 </template>
 <script>
 export default {
-    props:{
-        checkRegister:Boolean
-    },
-    data(){
-        return {
-            check:this.checkRegister
-        }
-    },
-    methods: {
-        changeRegister(){
-            this.check=true
-            this.$emit("update-check", this.check);
-        }
-    }
 }
 </script>
 
@@ -138,6 +124,7 @@ export default {
     font-weight: 500;
     border-radius: 3px;
     cursor: pointer;
+    text-decoration: none;
 }
 .btnRegister:hover{
     opacity: 0.9;

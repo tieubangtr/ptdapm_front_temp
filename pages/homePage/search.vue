@@ -5,18 +5,18 @@
       <v-img :src="require('../../assets/images/banner.jpeg')" />
     </v-banner>
     <Menu/>
-    <Product/>
+    <Search />
   </div>
 </template>
 
 <script>
   import Menu from '../../components/Menu.vue'
-  import Product from '../../components/Product.vue'
+  import Search from '../../components/Search.vue'
   import Header from '../../components/header/Header.vue'
   export default {
     components: {
       Menu,
-      Product,
+      Search,
       Header
     },
   };

@@ -60,7 +60,7 @@
                         <v-layout row wrap class="cartProduct x-grid-lg">
                             <v-flex lg4 sm12 xs12 class="pa-2">
                                 <div class="outImg">
-                                    <img src="img/sach1.jfif" alt="" class="img">
+                                    <img src="/img/sach1.jfif" alt="" class="img">
                                 </div>
                             </v-flex>
                             <v-flex lg8 sm12 xs12 class="infoCart pa-2">
@@ -81,8 +81,12 @@
 </template>
 <script>
 export default {
+    props:{
+        checkRegister:Boolean
+    },
     data() {
       return {
+        check:this.checkRegister,
         checkRed:true,
         loading:false,
           form:{
@@ -144,8 +148,9 @@ export default {
             );
         },
         register(){
-            this.validate()
-            console.log('oke');
+            // this.validate()
+            this.check=true
+            this.$emit("update-check", this.check);
         }
     }
 }
