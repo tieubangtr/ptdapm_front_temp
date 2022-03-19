@@ -49,18 +49,25 @@
                     <div class="book-borrow-item">
                         <v-icon @click="handleCart" size="35px">shopping_cart</v-icon>
                     </div>
+                    <NuxtLink v-if="roles" to='/dashboard' class="admin">Admin</NuxtLink>
                 </v-flex>
             </v-layout>
         </v-container>
     </div>
 </template>
-
 <script>
 export default {
     data () {
         return {
             user:JSON.parse(localStorage.getItem('User')),
-            searchForm:''
+            searchForm:'',
+            roles:true
+        }
+    },
+    mounted (){
+        if(JSON.parse(localStorage.getItem('User')).roles[0]=='ROLE_USER'){
+            this.roles=false
+            console.log('oke');
         }
     },
     methods: {
@@ -81,6 +88,21 @@ export default {
 </script>
 
 <style scoped>
+    .admin{
+        padding:10px 40px;
+        border-radius:15px;
+        box-shadow: 0 0 4px red ;
+        color:red;
+        font-size:18px;
+        font-weight: 500;
+        margin-left: 50px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .admin:hover{
+        background-color:red;
+        color:white;
+    }
     .container {
         padding: 0px !important
     }
