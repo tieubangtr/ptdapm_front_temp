@@ -27,7 +27,27 @@
     </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
+    data() {
+        return {
+            datas:[],
+        }
+    },
+    mounted () {
+        axios.get('https://ptdapmback.herokuapp.com/v1/api/borrowings?page=0&limit=5&sort=id&filter-field=user.id&filter-operator=EQUALS&filter-value=114',{
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`
+            }
+        })
+        .then((res)=>{
+            console.log(res.data);
+            this.datas=res.data
+        })
+        .catch((err)=>{
+            console.log(err.response.data);
+        })
+    }
 }
 </script>
 

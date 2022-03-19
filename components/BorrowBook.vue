@@ -18,24 +18,18 @@
                             <v-text-field 
                                 label="Họ tên"
                                 v-model="this.getData.name"
-                                @focus="check.name=''"
                                 disabled="disabled"
                             ></v-text-field>
-                            <div class="validation">{{this.check.name}}</div>
                             <v-text-field 
                                 label="Email" 
                                 v-model="this.getData.email"
-                                @focus="check.email=''"
                                 disabled="disabled"
                             ></v-text-field>
-                            <div class="validation">{{this.check.email}}</div>
                             <v-text-field 
                                 v-model="this.getData.addr"
                                 label="Địa chỉ" 
-                                @focus="check.addr=''"
                                 disabled="disabled"
                             ></v-text-field>
-                            <div class="validation">{{this.check.addr}}</div>
                             <span class="note">Hạn trả sách trong vòng 30 ngày*</span>
                             <h3 class="header_text">Thông tin phiếu mượn</h3>
                             <label for="cars">Ngày trả:</label>
@@ -54,13 +48,13 @@
                         <v-layout row wrap class="cartProduct x-grid-lg">
                             <v-flex lg4 sm12 xs12 class="pa-2">
                                 <div class="outImg">
-                                    <img src="/img/sach1.jfif" alt="" class="img">
+                                    <img :src='("https://ptdapmback.herokuapp.com/v1/api/auth/files/"+datas.image)' alt="" class="img">
                                 </div>
                             </v-flex>
                             <v-flex lg8 sm12 xs12 class="infoCart pa-2">
-                                <h3 class="name">{{datas.name}}</h3>
+                                <h3 class="name">{{name}}</h3>
                                 <span class="author">{{author}}</span>
-                                <span class="author">ID:{{datas.id}}</span>
+                                <span class="author">ID:{{publisher}}</span>
                                 <span class="btnDelete">Xóa sách</span>
                             </v-flex>
                         </v-layout>
@@ -82,26 +76,28 @@ export default {
     data() {
       return {
         author:'',
+        name:'',
+        publisher:'',
         datas:[],
         getData:{
-            name:JSON.parse(localStorage.getItem('User')).username,
+            name:'',
             email:JSON.parse(localStorage.getItem('User')).username,
-            addr:'Thái Bình'
+            addr:''
         },
         date:'',
         check:this.checkRegister,
         checkRed:true,
         loading:false,
-          form:{
-            userId:JSON.parse(localStorage.getItem('User')).id,
-            borrowedDate:'',
+        form:{
+            userId:'',
             borrowingItems: [
                 {
+                    payday:'',
                     bookId: this.$route.query.bookId,
                     status: false
                 }
             ]
-          },
+        },
       }
     },
     mounted (){
@@ -109,7 +105,25 @@ export default {
         .then((res)=>{
             console.log(res.data);
             this.datas=res.data
-            this.author=res.data.authors[0].name
+            this.author=res.data.authors[0].name,
+            this.name=res.data.name,
+            this.publisher=res.data.publisher.name
+
+            
+
+            axios.get(`https://ptdapmback.herokuapp.com/v1/api/users/${JSON.parse(localStorage.getItem('User')).id}`,{
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`
+                }
+            })
+            .then((res)=>{
+                console.log(res.data);
+                this.getData.name=res.data.name;
+                this.getData.addr=res.data.addr;
+            })
+            .catch((err)=>{
+                console.log(err.response.data);
+            })
         })
         .catch((err)=>{
             console.log(err.response.data);
@@ -117,11 +131,14 @@ export default {
     },
     methods: {
         register(){
-            const apointment= new Date()
-            apointment.setDate(apointment.getDate()+this.date)
-            this.form.borrowedDate=apointment.toLocaleDateString('en-CA')
             this.check=true
             this.$emit("update-check", this.check);
+            this.date=document.getElementById('payDate').value
+            this.form.userId=JSON.parse(localStorage.getItem('User')).id
+            const apointment= new Date()
+            this.date=+this.date
+            apointment.setDate(apointment.getDate()+ this.date)
+            this.form.borrowingItems[0].payday=apointment.toLocaleDateString('en-CA')
             this.form=JSON.stringify(this.form)
             console.log(this.form);
             axios.post('https://ptdapmback.herokuapp.com/v1/api/borrowings/',this.form,{
@@ -132,13 +149,14 @@ export default {
             })
             .then((err)=>{
                 console.log(err.data);
+                let myToast = this.$toasted.success("Holla !!");
+                myToast.text("Mượn sách thành công").goAway(2000);
             })
             .catch((err)=>{
                 console.log(err.response.data);
+                let myToast = this.$toasted.error("Holla !!");
+                myToast.text("Mượn sách thất bại").goAway(2000);
             })
-        },
-        getid(){
-            this.date=document.getElementById('payDate').value
         }
     }
 }

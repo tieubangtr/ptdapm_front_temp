@@ -3,19 +3,20 @@
         <div class="header-top">
             <v-container>
                 <v-layout row>
-                    <v-flex>
+                    <v-flex lg6>
                         <div class="contact">
-                            <v-icon size="18px">email</v-icon><span style="pading: 2px">tlu@e.edu.tlu.vn</span>
+                            <v-icon style="color:#d71010" size="18px">email</v-icon><span style="pading: 2px">tlu@e.edu.tlu.vn</span>
                         </div>
                     </v-flex>
-                    <v-flex>
+                    <v-flex lg6>
                         <div class="authenticate-user">
-                            <div v-if="this.user" class="have-not-login" @click="handleLogout">
-                                {{ this.user.username }} - 
-                                Logout
+                            <div v-if="this.user" class="have-not-login" >
+                                <span class="name">{{ this.user.username }}</span> 
+                                <span class="logout" @click="handleLogout">Logout</span>
                             </div>
                             <div v-if="!this.user" class="logined">
-                                <NuxtLink to="/login">Đăng nhập</NuxtLink> | <NuxtLink to="/register">Đăng kí</NuxtLink>
+                                <NuxtLink class="login" to="/login">Đăng nhập</NuxtLink>
+                                <NuxtLink class="register" to="/register">Đăng kí</NuxtLink>
                             </div>
                         </div>
                     </v-flex>
@@ -46,9 +47,7 @@
                         <v-icon size="35px">notifications</v-icon>
                     </div>
                     <div class="book-borrow-item">
-                        <NuxtLink style="text-decoration: none;" to="/homepage/cart">
-                            <v-icon size="35px">shopping_cart</v-icon>
-                        </NuxtLink>
+                        <v-icon @click="handleCart" size="35px">shopping_cart</v-icon>
                     </div>
                 </v-flex>
             </v-layout>
@@ -69,6 +68,14 @@ export default {
             localStorage.clear()
             this.$router.push('/login')
         },
+        handleCart(){
+            if(JSON.parse(localStorage.getItem('User'))){
+                this.$router.push('/homepage/cart')
+            }
+            else{
+                this.$router.push('/login')
+            }
+        }
     }
 }
 </script>
@@ -94,7 +101,63 @@ export default {
     }
     .authenticate-user a {
         text-decoration: none;
-        color: black;
+    }
+    .logined{
+        display:flex;
+        align-items: center;
+        justify-content:right;
+    }
+    .login{
+        padding:10px 20px;
+        background-color: rgb(38, 38, 248);
+        border-radius:15px;
+        box-shadow: 0 0 2px rgb(17, 0, 255);
+        color: white;
+        margin-right: 10px;
+    }
+    .login:hover{
+        background-color:rgb(6, 6, 219);
+    }
+    .register{
+        padding:10px 20px;
+        background-color: green;
+        border-radius:15px;
+        box-shadow: 0 0 2px rgb(0, 255, 42);
+        color: white;
+        margin-left: 10px;
+    }
+    .register:hover{
+        opacity: 0.8;
+    }
+    .contact{
+        box-shadow: 0 0 2px red;
+        width:200px;
+        display: flex;
+        align-items: center;
+        justify-content:center;
+        padding:5px 0;
+        border-radius: 3px;
+    }
+    .have-not-login{
+        display: flex;
+        justify-content:right;
+        align-items: center;
+    }
+    .name{
+        color: #333;
+        font-weight: 400;
+        font-size: 18px;
+    }
+    .logout{
+        padding:10px 20px;
+        margin-left: 20px;
+        border-radius: 6px;
+        background:black;
+        box-shadow: 0 2px 3px rgb(255, 255, 197);
+        font-weight: 400;
+        color:white;
+        font-weight: 400;
+        cursor: pointer;
     }
     .logo img {
         width: 360px;
