@@ -8,9 +8,9 @@
         <NuxtLink to='' class="menu_list_link">
           <li class="menu_list_link_item">THỂ LOẠI</li>
         </NuxtLink>
-        <NuxtLink to='' class="menu_list_link">
+        <div @click="handlePayment" to='/homepage/payment' class="menu_list_link">
           <li class="menu_list_link_item">MƯỢN-TRẢ</li>
-        </NuxtLink>
+        </div>
         <NuxtLink to='' class="menu_list_link">
           <li class="menu_list_link_item">GIỚI THIỆU</li>
         </NuxtLink>
@@ -21,6 +21,20 @@
     </div>
   </grid>
 </template>
+<script>
+export default {
+  methods:{
+    handlePayment(){
+      if(JSON.parse(localStorage.getItem('User'))){
+        this.$router.push('/homepage/payment')
+      }
+      else{
+        this.$router.push('/login')
+      }
+    }
+  }
+}
+</script>
 <style scoped>
 .menu{
   width: 100%;
