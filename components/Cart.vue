@@ -2,12 +2,12 @@
     <div class="out">
         <div class="outurl">
             <v-container>
-                <div class="url">Trang chủ > Giỏ sách</div>
+                <div class="url">Trang chủ > Giỏ hàng</div>
             </v-container>
         </div>
         <v-container>
             <div class="header">
-                Giỏ sách <span class="headertext">(có 2 quyển sách trong giỏ hàng của bạn)</span>
+                <!-- Giỏ sách <span class="headertext">(có {{total_book_item()}} quyển sách trong giỏ hàng của bạn)</span> -->
             </div>
             <hr/>
             <span class="note">Đảm bảo số lượng sách, mỗi độc giả mượn tối thiểu mỗi quyển 1 loại *</span>
@@ -20,16 +20,16 @@
                 </v-flex>
                 <v-flex lg10 sm12 xs12 class="infoCart pa-2">
                     <h3 class="name">{{data.book.name}}</h3>
-                    <span class="author" v-for="(author,index) in data.book.authors" :key="index">
-                        {{ author.name }}
-                    </span>
+                    <span class="author">{{data.book.authors[0].name}}</span>
                     <span class="author">ID:{{data.id}}</span>
                     <span class="btnDelete" @click="handleDelete(data.id,index)">Xóa sách</span>
                 </v-flex>
             </v-layout>
             <!-- for -->
             <div class="Register">
-                <NuxtLink to="borrow" class="btnRegister">Tạo phiếu mượn</NuxtLink>
+                <nuxt-link :to="homepage/borrow">
+                    <v-btn class="btnRegister">Tạo phiếu mượn</v-btn>
+                </nuxt-link>
             </div>
         </v-container>
     </div>
@@ -45,15 +45,8 @@ export default {
                 sort:'id'
             },
             datas:[],
-            token:JSON.parse(localStorage.getItem('User')).token,
-            form:{
-                userId:JSON.parse(localStorage.getItem('User')).id,
-                borrowingItems:{
-                bookId: 4,
-                id: 0,
-                status: false
-                }
-            }
+            // token:JSON.parse(localStorage.getItem('User')).token,
+            // user: JSON.parse(localStorage.getItem('User'))
         }
     },
     mounted (){
@@ -84,13 +77,13 @@ export default {
         handleDelete(id,index){
             axios.delete(`https://ptdapmback.herokuapp.com/v1/api/cartItems/${id}`,{
                 headers: {
-                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`
+                    Authorization: `Bearer ${this.token}`
                 }
             })
             .then((res)=>{
                 console.log(res);
                 let myToast = this.$toasted.success("Holla !!");
-                myToast.text("Xóa sách khỏi giỏ thành công").goAway(2000);
+                myToast.text("Xóa sản phẩm thành công").goAway(2000);
                 console.log(index);
                 this.datas.splice(index,1)
             })
