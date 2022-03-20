@@ -6,6 +6,7 @@
     </v-banner>
     <Menu/>
     <Cart />
+    <Footter/>
   </div>
 </template>
 
@@ -13,11 +14,13 @@
   import Menu from '../../components/Menu.vue'
   import Cart from '../../components/Cart.vue'
   import Header from '../../components/header/Header.vue'
+  import Footter from '../../components/footter'
   export default {
     components: {
       Menu,
       Cart,
-      Header
+      Header,
+      Footter
     },
   };
 </script>

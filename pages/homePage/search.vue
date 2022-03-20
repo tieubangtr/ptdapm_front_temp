@@ -6,6 +6,7 @@
     </v-banner>
     <Menu/>
     <Search />
+    <Footter/>
   </div>
 </template>
 
@@ -13,11 +14,13 @@
   import Menu from '../../components/Menu.vue'
   import Search from '../../components/Search.vue'
   import Header from '../../components/header/Header.vue'
+  import Footter from '../../components/footter'
   export default {
     components: {
       Menu,
       Search,
-      Header
+      Header,
+      Footter,
     },
   };
 </script>

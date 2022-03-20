@@ -55,7 +55,6 @@
                                 <h3 class="name">{{name}}</h3>
                                 <span class="author">{{author}}</span>
                                 <span class="author">ID:{{publisher}}</span>
-                                <span class="btnDelete">Xóa sách</span>
                             </v-flex>
                         </v-layout>
                         <div class="Register">
