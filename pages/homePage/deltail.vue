@@ -6,6 +6,7 @@
     </v-banner>
     <Menu/>
     <Deltail/>
+    <Footter/>
   </div>
 </template>
 
@@ -13,11 +14,13 @@
   import Menu from '../../components/Menu.vue'
   import Deltail from '../../components/Deltail.vue'
   import Header from '../../components/header/Header.vue'
+  import Footter from '../../components/footter'
   export default {
     components: {
       Menu,
       Deltail,
-      Header
+      Header,
+      Footter,
     },
   };
 </script>

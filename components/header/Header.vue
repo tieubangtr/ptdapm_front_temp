@@ -11,8 +11,13 @@
                     <v-flex lg6>
                         <div class="authenticate-user">
                             <div v-if="this.user" class="have-not-login" >
-                                <span class="name">{{ this.user.username }}</span> 
-                                <span class="logout" @click="handleLogout">Logout</span>
+                                <span class="name">
+                                    {{ this.user.username }}
+                                    <ul class="list">
+                                        <NuxtLink to='InfoUser' style="text-decoration: none;"><li class="item">Tài khoản của tôi</li></NuxtLink>
+                                        <li @click="handleLogout" class="item">Logout</li>
+                                    </ul>
+                                </span> 
                             </div>
                             <div v-if="!this.user" class="logined">
                                 <NuxtLink class="login" to="/login">Đăng nhập</NuxtLink>
@@ -26,9 +31,9 @@
         <v-container>
             <v-layout row>
                 <v-flex class="v-header">
-                    <div class="logo">
+                    <NuxtLink to='/homepage' class="logo">
                         <img class="imgOut_img" src='../../assets/images/logo.png' alt="">
-                    </div>
+                    </NuxtLink>
                 </v-flex>
                 <v-flex class="v-search">
                     <div class="search-by-keyword">
@@ -49,18 +54,30 @@
                     <div class="book-borrow-item">
                         <v-icon @click="handleCart" size="35px">shopping_cart</v-icon>
                     </div>
+                    <NuxtLink v-if="roles" to='/dashboard' class="admin">Admin</NuxtLink>
                 </v-flex>
             </v-layout>
         </v-container>
     </div>
 </template>
-
 <script>
 export default {
     data () {
         return {
             user:JSON.parse(localStorage.getItem('User')),
-            searchForm:''
+            searchForm:'',
+            roles:true
+        }
+    },
+    mounted (){
+        if(JSON.parse(localStorage.getItem('User'))){
+            if(JSON.parse(localStorage.getItem('User')).roles[0]=='ROLE_USER'){
+                this.roles=false
+                console.log('oke');
+            }
+        }
+        else{
+            this.roles=false
         }
     },
     methods: {
@@ -81,6 +98,51 @@ export default {
 </script>
 
 <style scoped>
+    .list{
+        margin:0;
+        padding:0;
+        border-radius:3px;
+        display:none;
+        position:absolute;
+        box-shadow: 0 0 3px #333;
+    }
+    .item{
+        padding:10px;
+        color:#333;
+        background-color:#f5f5f5;
+        list-style: none;
+        cursor: pointer;
+        border-bottom: 1px solid rgb(141, 44, 44);
+        z-index: 100;
+    }
+    .item:hover{
+        background-color:rgb(56, 140, 0);
+        color:white;
+    }
+    .item:first-child{
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+    }
+    .item:last-child{
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        border-bottom: none;
+    }
+    .admin{
+        padding:10px 40px;
+        border-radius:15px;
+        box-shadow: 0 0 4px red ;
+        color:red;
+        font-size:18px;
+        font-weight: 500;
+        margin-left: 50px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .admin:hover{
+        background-color:red;
+        color:white;
+    }
     .container {
         padding: 0px !important
     }
@@ -147,6 +209,11 @@ export default {
         color: #333;
         font-weight: 400;
         font-size: 18px;
+        position: relative;
+        cursor: pointer;
+    }
+    .name:hover .list{
+        display:block;
     }
     .logout{
         padding:10px 20px;
