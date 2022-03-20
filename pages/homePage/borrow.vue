@@ -6,6 +6,7 @@
     </v-banner>
     <Menu/>
     <BorrowBook :checkRegister="checkRegister" @update-check="updateCheck" />
+    <Footter/>
     <div v-if="this.checkRegister" class="background"></div>
     <div v-if="this.checkRegister" class="dialog">
       <div class="main">
@@ -20,11 +21,13 @@
   import Menu from '../../components/Menu.vue'
   import BorrowBook from '../../components/BorrowBook.vue'
   import Header from '../../components/header/Header.vue'
+  import Footter from '../../components/footter'
   export default {
     components: {
       Menu,
       BorrowBook,
-      Header
+      Header,
+      Footter,
     },
     data(){
       return {

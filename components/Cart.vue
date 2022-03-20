@@ -15,19 +15,19 @@
             <v-layout v-for="(data,index) in datas" :key="index" row wrap class="cartProduct x-grid-lg">
                 <v-flex lg2 sm12 xs12 class="pa-2">
                     <div class="outImg">
-                        <img :src="data.book.image" alt="ảnh Sách" class="img">
+                        <img :src='("https://ptdapmback.herokuapp.com/v1/api/auth/files/"+data.book.image)' alt="ảnh Sách" class="img">
                     </div>
                 </v-flex>
                 <v-flex lg10 sm12 xs12 class="infoCart pa-2">
                     <h3 class="name">{{data.book.name}}</h3>
                     <span class="author">{{data.book.authors[0].name}}</span>
-                    <span class="author">ID:{{data.book.id}}</span>
-                    <span class="btnDelete">Xóa sách</span>
+                    <span class="author">ID:{{data.id}}</span>
+                    <span class="btnDelete" @click="handleDelete(data.id,index)">Xóa sách</span>
                 </v-flex>
             </v-layout>
             <!-- for -->
             <div class="Register">
-                <NuxtLink to="borrow" class="btnRegister" @click="handleBorrow">Tạo phiếu mượn</NuxtLink>
+                <NuxtLink to="borrow" class="btnRegister">Tạo phiếu mượn</NuxtLink>
             </div>
         </v-container>
     </div>
@@ -56,23 +56,40 @@ export default {
     },
     mounted (){
         // this.getData=JSON.stringify(this.getData)
-        axios.get('https://ptdapmback.herokuapp.com/v1/api/cartItems?page=0&limit=5&sort=id',{
+        axios.get(`https://ptdapmback.herokuapp.com/v1/api/carts?page=0&limit=5&sort=id&filter-field=user.id&filter-operator=EQUALS&filter-value=${this.form.userId}`,{
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`,
             }
         })
         .then((res)=>{
-            this.datas=res.data.content
+            this.datas=res.data.content[0].cartItems
             console.log(this.datas);
+            console.log(res.data);
         })
         .catch((err)=>{
             console.log(err.response.data);
         })
     },
     methods:{
-        handleBorrow() {
-
+        handleDelete(id,index){
+            axios.delete(`https://ptdapmback.herokuapp.com/v1/api/cartItems/${id}`,{
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`
+                }
+            })
+            .then((res)=>{
+                console.log(res);
+                let myToast = this.$toasted.success("Holla !!");
+                myToast.text("Xóa sản phẩm thành công").goAway(2000);
+                console.log(index);
+                this.datas.splice(index,1)
+            })
+            .catch((err)=>{
+                console.log(err.response.data);
+                let myToast = this.$toasted.error("Holla !!");
+                myToast.text("Xóa sản phẩm thất bại").goAway(2000);
+            })
         }
     }
 }

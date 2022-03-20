@@ -28,19 +28,9 @@
                   <NuxtLink to='/register' class="text_register">Đăng kí</NuxtLink>
                 </div>
               </v-card-text>
-              <v-card-actions>
-                <v-btn icon>
-                  <v-icon color="blue">fa fa-facebook-square fa-lg</v-icon>
-                </v-btn>
-                <v-btn icon>
-                  <v-icon color="red">fa fa-google fa-lg</v-icon>
-                </v-btn>
-                <v-btn icon>
-                  <v-icon color="light-blue">fa fa-twitter fa-lg</v-icon>
-                </v-btn>
-                <v-spacer></v-spacer>
-                <v-btn block color="primary" type="submit" @click="login" :loading="loading">Login</v-btn>
-              </v-card-actions>
+              <div class="btlLogin">
+                <v-btn class="btnbtnlogin" color="primary" type="submit" @click="login" :loading="loading">Login</v-btn>
+              </div>
             </v-card>
           </v-flex>
         </v-layout>
@@ -139,6 +129,15 @@ import axios from 'axios'
   };
 </script>
 <style scoped lang="css">
+.btlLogin{
+  width: 100%;
+  display: flex;
+  justify-content:center;
+  align-items: center;
+}
+.btnbtnlogin{
+  padding:20px 80px;
+}
 .v-input__slot:before {
     /* border-color: rgba(0,0,0,0.42); */
     border-color: red !important;

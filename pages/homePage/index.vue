@@ -6,6 +6,7 @@
     </v-banner>
     <Menu/>
     <Product/>
+    <Footter/>
   </div>
 </template>
 
@@ -13,11 +14,13 @@
   import Menu from '../../components/Menu.vue'
   import Product from '../../components/Product.vue'
   import Header from '../../components/header/Header.vue'
+  import Footter from '../../components/footter'
   export default {
     components: {
       Menu,
       Product,
-      Header
+      Header,
+      Footter
     },
   };
 </script>

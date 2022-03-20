@@ -4,7 +4,7 @@
         <v-layout row wrap class="x-grid-lg">
             <v-flex lg6 sm12 xs12 class="pa-2">
                 <div class="outImg">
-                    <img :src="datas.img" alt="ảnh sách" class="Img">
+                    <img :src='("https://ptdapmback.herokuapp.com/v1/api/auth/files/"+datas.image)' alt="ảnh sách" class="Img">
                 </div>
             </v-flex>
             <v-flex lg6 sm12 xs12 class="info pa-2">
@@ -14,7 +14,7 @@
                         <span class="author">Tác giả</span>
                         <span class="author">Nhà xuất bản</span>
                         <span class="author">Năm xuất bản</span>
-                        <span class="author">ID:S9164146</span>
+                        <span class="author">ID:{{datas.id}}</span>
                     </v-flex>
                     <v-flex lg8 sm12 xs12 class="pa-2">
                         <span class="content">{{author}}</span>
@@ -24,7 +24,7 @@
                 </v-layout>
                 <div class="btnBorrow">
                     <div class="btn" @click="handleAddcart">Thêm giỏ hàng</div>
-                    <NuxtLink :to="'/homepage/borrow?bookId='+datas.id" class="btn successss">Mượn sách</NuxtLink>
+                    <div @click="handleBorrow" class="btn successss">Mượn sách</div>
                 </div>
                 <hr/>
                 <v-layout row wrap class="x-grid-lg">
@@ -52,7 +52,6 @@ export default {
             category:'',
             form:{
                 bookId:+this.$route.query.bookId,
-                cartId:JSON.parse(localStorage.getItem('User')).id
             }
         }
     },
@@ -71,20 +70,40 @@ export default {
     },
     methods: {
         handleAddcart(){
-            this.form=JSON.stringify(this.form)
-            axios.post('https://ptdapmback.herokuapp.com/v1/api/cartItems',this.form,{
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization:`Bearer ${JSON.parse(localStorage.getItem('User')).token}`
+            if(JSON.parse(localStorage.getItem('User'))){
+                const form={
+                    bookId:+this.$route.query.bookId,
+                    cartId:JSON.parse(localStorage.getItem('User')).id
                 }
-            })
-            .then((res)=>{
-                console.log(res.data);
-                alert('thêm thành công')
-            })
-            .catch((err)=>{
-                console.log(err.response.data);
-            })
+                const forms=JSON.stringify(form)
+                axios.post('https://ptdapmback.herokuapp.com/v1/api/cartItems',forms,{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization:`Bearer ${JSON.parse(localStorage.getItem('User')).token}`
+                    }
+                })
+                .then((res)=>{
+                    console.log(res.data);
+                    let myToast = this.$toasted.success("Holla !!");
+                    myToast.text("Thêm sản phẩm vào giỏ hàng thành công").goAway(2000);
+                })
+                .catch((err)=>{
+                    console.log(err.response.data);
+                    let myToast = this.$toasted.error("Holla !!");
+                    myToast.text("Sản phẩm đã có trong giỏ hàng").goAway(2000);
+                })
+            }
+            else{
+                this.$router.push('/login')
+            }
+        },
+        handleBorrow(){
+            if(JSON.parse(localStorage.getItem('User'))){
+               this.$router.push(`/homepage/borrow?bookId=${this.datas.id}`)
+            }
+            else{
+                this.$router.push('/login')
+            }
         }
     }
 }

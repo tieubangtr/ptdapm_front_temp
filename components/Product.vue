@@ -17,23 +17,25 @@
             <v-layout row wrap class="books x-grid-lg">
                 <!-- v for -->
                 <v-flex v-for="(data,index) in datas" :key="index" lg3 sm12 xs12 class="pa-2">
-                    <NuxtLink :to="'/homepage/deltail?bookId='+data.id" style="text-decoration: none;">
-                        <v-card flat tile class="setImg">
+                    <v-card flat tile class="product">
+                        <div class="setImg" @click="handleDetail(data.id)" >
                             <div class="imgOut">
-                                <img class="imgOut_img" :src='("https://ptdapmback.herokuapp.com/v1/api/files/"+data.image)' alt="">
+                                <img class="imgOut_img" :src='("https://ptdapmback.herokuapp.com/v1/api/auth/files/"+data.image)' alt="">
                             </div>
                             <div class="parent">
                                 <div class="nameAuthor">Tác giả : {{ data.authors[0].name }} </div>
                                 <div class="nameBook">
                                     {{ data.name }}
                                 </div>
-                                <div class="btnAdd" @click="handleCheck">
-                                    <v-icon class="btnAdd_icon">shopping_basket</v-icon>
-                                    Thêm vào giỏ
-                                </div>
                             </div>
-                        </v-card>
-                    </NuxtLink>
+                        </div>
+                        <div class="btn">
+                            <div class="btnAdd" @click="handleCheck(data.id)">
+                                <v-icon class="btnAdd_icon">shopping_basket</v-icon>
+                                Thêm vào giỏ
+                            </div>
+                        </div>
+                    </v-card>
                 </v-flex>
                 <!-- v-for -->
             </v-layout>
@@ -71,7 +73,7 @@ export default {
     data() {
         return {
             user:JSON.parse(localStorage.getItem('User')),
-            datas:[]
+            datas:[],
         }
     },
     mounted (){
@@ -85,12 +87,37 @@ export default {
         })
     },
     methods: {
-        handleCheck() {
+        handleDetail(id) {
+            this.$router.push(`/homepage/deltail?bookId=${id}`)
+        },
+        handleCheck(id) {
             if(!localStorage.getItem('accessToken')){
-                window.location.href='/login'
+                this.$router.push('/login')
             }
             else{
-                alert('thêm hàng thành công')
+                const form={
+                    bookId:id,
+                    cartId:JSON.parse(localStorage.getItem('User')).id
+                }
+                const forms=JSON.stringify(form)
+                axios.post(`https://ptdapmback.herokuapp.com/v1/api/cartItems`,forms,{
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization:`Bearer ${JSON.parse(localStorage.getItem('User')).token}`
+                    }
+                })
+                .then((res)=>{
+                    console.log(res.data);
+                    console.log('ok');
+                    let myToast = this.$toasted.success("Holla !!");
+                    myToast.text("Thêm thành công").goAway(2000);
+                })
+                .catch((err)=>{
+                    if(err.response.data.apierror.message){
+                        let myToast = this.$toasted.error("Holla !!");
+                        myToast.text("Sản phẩm đã tồn tại trong giỏ hàng").goAway(2000);
+                    }
+                })
             }
         },
     }
@@ -153,11 +180,10 @@ export default {
 .setImg:hover .imgOut{
     overflow:hidden;
 }
-.setImg:hover{
+.product:hover{
     box-shadow: 0 0 8px rgb(77, 77, 77);
 }
 .setImg{
-    box-shadow: 0 0 2px #999;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -170,12 +196,15 @@ export default {
     justify-content: center;
     transition:all 0.5s ease;
 }
+.product{
+    box-shadow: 0 0 2px #999;
+}
 .imgOut_img{
     width: 100%;
 }
 .parent{
     width: 100%;
-    padding:0 20px 10px 20px;
+    padding:0 20px 0 20px;
 }
 .nameAuthor{
     color: #666;
@@ -200,8 +229,14 @@ export default {
     overflow: hidden;
     margin: 20px 0;
 }
+.btn{
+    display:flex;
+    justify-content: center;
+    padding-bottom: 10px;
+}
 .btnAdd{
-    width: 100%;
+    cursor: pointer;
+    width: 80%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -210,7 +245,8 @@ export default {
     background-image:linear-gradient(45deg,rgb(20, 204, 20),rgb(15, 110, 23));
     border-radius: 4px;
     color:white;
-    padding-bottom: 10px
+    padding-bottom: 10px;
+    z-index: 9;
 }
 .btnAdd:hover{
     opacity: 0.8;
