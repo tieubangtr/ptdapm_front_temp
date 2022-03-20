@@ -72,10 +72,6 @@
           <v-icon class="list_menu_conponent_icon">account_circle</v-icon>
           <div class="list_menu_conponent_name">Thông tin</div>
         </NuxtLink>
-        <NuxtLink to="/account/changepass" class="list_menu_conponent">
-          <v-icon class="list_menu_conponent_icon">cached</v-icon>
-          <div class="list_menu_conponent_name">Đổi mật khẩu</div>
-        </NuxtLink>
         <div class="list_menu_conponent" @click="handleLogout">
           <v-icon class="list_menu_conponent_icon">exit_to_app</v-icon>
           <div class="list_menu_conponent_name">Đăng xuất</div>

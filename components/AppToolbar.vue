@@ -60,14 +60,6 @@
             }
           },
           {
-            icon: 'settings',
-            href: '#',
-            title: 'Đổi mật khẩu',
-            click: (e) => {
-              console.log(e);
-            }
-          },
-          {
             icon: 'fullscreen_exit',
             href: '#',
             title: 'Đăng xuất',
