@@ -1,8 +1,8 @@
 {
   "name": "nuxt-material-admin",
   "version": "1.0.0",
-  "description": "vue-material-admin integration with Nuxt.js",
-  "author": "Mohamed Eddami",
+  "description": "Brrrr brrrrrr",
+  "author": "Nhom 3",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/toast": "^3.3.1",
     "cross-env": "^5.2.0",
     "font-awesome": "^4.7.0",
     "lodash.truncate": "^4.4.2",

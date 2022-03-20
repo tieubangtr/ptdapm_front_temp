@@ -34,7 +34,7 @@
                 <template slot="items" slot-scope="props">
                   <td>{{ props.item.id }}</td>
                   <td>{{ props.item.name }}</td>
-                  <td>{{ standardDateFormat(props.item.createdAt) }}</td>
+                  <td>{{ props.item.createdAt }}</td>
                   <td>
                     <v-btn
                       depressed
@@ -75,7 +75,7 @@
             >
               <v-card>
                 <v-card-title>
-                  <span class="headline">Xóa người dùng</span>
+                  <span class="headline">Xóa thể loại sách</span>
                 </v-card-title>
                 <v-divider></v-divider>
                 <v-spacer></v-spacer>
@@ -330,24 +330,6 @@ export default {
     },
     updateConfirm() {
       if (this.defaultData != null) {
-        // var data = JSON.stringify({
-        //   "addr": "string",
-        //   "birthday": "2022-03-12",
-        //   "email": "string",
-        //   "gender": "string",
-        //   "id": 0,
-        //   "img": "null",
-        //   "name": "string",
-        //   "noneLocked": true,
-        //   "password": "string",
-        //   "phone": "string",
-        //   "roles": [
-        //     {
-        //       "id": 0,
-        //       "name": "ROLE_USER"
-        //     }
-        //   ]
-        // });
         var data = JSON.stringify(this.defaultData);
         console.log(data);
         var accessToken = localStorage.getItem("accessToken");

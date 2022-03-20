@@ -47,7 +47,7 @@
                       dark
                       color="primary"
                       small
-                      @click="getDetail(props.item.id, 'insert')"
+                      @click="getDetail(props.item.id, 'detail')"
                     >
                       <v-icon>visibility</v-icon>
                     </v-btn>
@@ -83,14 +83,10 @@
           <!-- Delete user dialog -->
           <template>
             <!-- Confirm dialog -->
-            <v-dialog
-              v-model="showDeleteDialog"
-              persistent
-              max-width="500px"
-            >
+            <v-dialog v-model="showDeleteDialog" persistent max-width="500px">
               <v-card>
                 <v-card-title>
-                  <span class="headline">Xóa người dùng</span>
+                  <span class="headline">Xóa sách</span>
                 </v-card-title>
                 <v-divider></v-divider>
                 <v-spacer></v-spacer>
@@ -102,11 +98,7 @@
                 <v-spacer></v-spacer>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    color="error"
-                    text
-                    @click="closeDialog('delete')"
-                  >
+                  <v-btn color="error" text @click="closeDialog('delete')">
                     Hủy bỏ
                   </v-btn>
                   <v-btn color="primary" text @click="removeConfirm()">
@@ -115,11 +107,7 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <v-dialog
-              v-model="showInsertDialog"
-              persistent
-              max-width="500px"
-            >
+            <v-dialog v-model="showInsertDialog" persistent max-width="500px">
               <v-card>
                 <v-card-title>
                   <span class="headline">Thêm mới sách</span>
@@ -140,10 +128,10 @@
                         <v-row>
                           <v-col cols="12" sm="6">
                             <v-select
-                            v-model="bookData.categoryId"
+                              v-model="bookData.categoryId"
                               :items="listCategory"
                               item-text="name"
-                                item-value="id"
+                              item-value="id"
                               label="Thể loại"
                             ></v-select>
                           </v-col>
@@ -160,24 +148,23 @@
                         <v-row>
                           <v-col cols="12" sm="6">
                             <v-select
-                                v-model="bookData.authors"
-                                :items="listAuthor"
-                                item-text="name"
-                                item-value="id"
-                                label="Tác giả"
-                                multiple
-                                return-object
+                              v-model="bookData.authors"
+                              :items="listAuthor"
+                              item-text="name"
+                              item-value="id"
+                              label="Tác giả"
+                              multiple
+                              return-object
                             ></v-select>
                           </v-col>
                         </v-row>
-
                         <v-row>
                           <v-col cols="12" sm="6">
                             <v-select
                               v-model="bookData.publisherId"
                               :items="listPublisher"
                               item-text="name"
-                                item-value="id"
+                              item-value="id"
                               label="Nhà xuất bản"
                             ></v-select>
                           </v-col>
@@ -194,16 +181,18 @@
                         <v-row>
                           <v-col cols="12" sm="6">
                             <v-textarea
-                                label="Mô tả"
+                              label="Mô tả"
+                              v-model="bookData.content"
+                              value="bookData.content"
                             ></v-textarea>
                           </v-col>
                         </v-row>
                         <v-row>
                           <v-col cols="12" sm="6">
-                            <input
+                            <v-text-field
                               type="file"
                               label="Ảnh minh họa"
-                              @change="onFileChanged"
+                              @change="onFileUploadChanged"
                             />
                           </v-col>
                         </v-row>
@@ -218,6 +207,210 @@
                   </v-btn>
                   <v-btn color="success" text @click="insertConfirm()">
                     Thêm mới
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="showDetailDialog" persistent max-width="700px">
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Chi tiết sách</span>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                  <v-container grid-list-md>
+                    <v-form ref="form">
+                      <v-card-text>
+                        <v-row>
+                          <v-col cols="12">
+                            <v-img
+                              :src="
+                                'https://ptdapmback.herokuapp.com/v1/api/auth/files/' +
+                                bookData.image
+                              "
+                              max-width="500px"
+                            />
+                            <v-text-field
+                              v-model="bookData.name"
+                              label="Tên sách"
+                              readonly
+                            />
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field
+                              type="text"
+                              v-model="bookData.category.name"
+                              label="Thể loại"
+                              readonly
+                            />
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              type="number"
+                              v-model="bookData.count"
+                              label="Số lượng"
+                              readonly
+                            />
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-select
+                              v-model="bookData.authors"
+                              :items="listAuthor"
+                              item-text="name"
+                              item-value="id"
+                              label="Tác giả"
+                              multiple
+                              return-object
+                              readonly
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field
+                              type="text"
+                              v-model="bookData.publisher.name"
+                              label="Nhà xuất bản"
+                              readonly
+                            />
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field
+                              type="number"
+                              v-model="bookData.publishAt"
+                              label="Năm xuất bản"
+                              readonly
+                            />
+                          </v-col>
+                          <v-col cols="12">
+                            <v-textarea
+                              label="Mô tả"
+                              v-model="bookData.content"
+                              value="bookData.content"
+                              readonly
+                            ></v-textarea>
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-form>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="error" text @click="closeDialog('detail')">
+                    Đóng
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="showUpdateDialog" persistent max-width="800px">
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Chỉnh sửa thông tin sách</span>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                  <v-container grid-list-md>
+                    <v-form ref="form">
+                      <v-card-text>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              v-model="bookData.name"
+                              label="Tên sách"
+                            />
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-select
+                              v-model="bookData.category"
+                              :items="listCategory"
+                              item-text="name"
+                              item-value="id"
+                              label="Thể loại"
+                              return-object
+                            ></v-select>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              type="number"
+                              v-model="bookData.count"
+                              label="Số lượng"
+                            />
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-select
+                              v-model="bookData.authors"
+                              :items="listAuthor"
+                              item-text="name"
+                              item-value="id"
+                              label="Tác giả"
+                              multiple
+                              return-object
+                            ></v-select>
+                          </v-col>
+                        </v-row>
+
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-select
+                              v-model="bookData.publisher"
+                              :items="listPublisher"
+                              item-text="name"
+                              item-value="id"
+                              label="Nhà xuất bản"
+                              return-object
+                            ></v-select>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              type="number"
+                              v-model="bookData.publishAt"
+                              label="Năm xuất bản"
+                            />
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-textarea
+                              label="Mô tả"
+                              v-model="bookData.content"
+                              value="bookData.content"
+                            ></v-textarea>
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-img
+                            id="update-img"
+                            :src="
+                              'https://ptdapmback.herokuapp.com/v1/api/auth/files/' +
+                              bookData.image
+                            "
+                            max-width="500px"
+                            
+                          />
+                          <v-text-field
+                            type="file"
+                            label="File input"
+                            @change="onFileUploadChanged"
+                          ></v-text-field>
+                        </v-row>
+                      </v-card-text>
+                    </v-form>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="error" text @click="closeDialog('update')">
+                    Hủy bỏ
+                  </v-btn>
+                  <v-btn color="warning" text @click="updateConfirm()">
+                    Chỉnh sửa
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -261,7 +454,7 @@ export default {
         authors: [],
       },
       showDeleteDialog: false,
-      showDataDialog: false,
+      showDetailDialog: false,
       showInsertDialog: false,
       showUpdateDialog: false,
       complex: {
@@ -322,22 +515,17 @@ export default {
         count: 0,
         publishAt: 2000,
         content: "",
-        category: {
-        },
-        publisher: {
-          
-        },
-        authors: [
-          
-        ],
-      }
+        category: {},
+        publisher: {},
+        authors: [],
+      };
     },
     validate(object) {
       delete object.img;
       return Object.values(object).every((x) => x === null || x === "");
     },
     initialize() {
-        var accessToken = localStorage.getItem("accessToken");
+      var accessToken = localStorage.getItem("accessToken");
       var config = {
         method: "get",
         url: "https://ptdapmback.herokuapp.com/v1/api/books?page=0&limit=100&sort=id",
@@ -345,32 +533,47 @@ export default {
 
       axios(config)
         .then((response) => {
-            this.listData = response.data.content;
+          this.listData = response.data.content;
         })
         .catch((error) => {
-            console.log(error);
+          console.log(error);
         });
-        axios.get("https://ptdapmback.herokuapp.com/v1/api/categories?page=0&limit=100&sort=id", { headers: { Authorization: accessToken } }
-        ).then(response =>{
-            this.listCategory = response.data.content;
-            console.log(this.listCategory);
-        }).catch(error => {
-            console.log(error);
+      axios
+        .get(
+          "https://ptdapmback.herokuapp.com/v1/api/categories?page=0&limit=100&sort=id",
+          { headers: { Authorization: accessToken } }
+        )
+        .then((response) => {
+          this.listCategory = response.data.content;
+          console.log(this.listCategory);
         })
-        axios.get("https://ptdapmback.herokuapp.com/v1/api/publishers?page=0&limit=100&sort=id", { headers: { Authorization: accessToken } }
-        ).then(response =>{
-            this.listPublisher = response.data.content;
-            console.log(this.listPublisher);
-        }).catch(error => {
-            console.log(error);
+        .catch((error) => {
+          console.log(error);
+        });
+      axios
+        .get(
+          "https://ptdapmback.herokuapp.com/v1/api/publishers?page=0&limit=100&sort=id",
+          { headers: { Authorization: accessToken } }
+        )
+        .then((response) => {
+          this.listPublisher = response.data.content;
+          console.log(this.listPublisher);
         })
-        axios.get("https://ptdapmback.herokuapp.com/v1/api/authors?page=0&limit=100&sort=id", { headers: { Authorization: accessToken } }
-        ).then(response =>{
-            this.listAuthor = response.data.content;
-            console.log(this.listAuthor);
-        }).catch(error => {
-            console.log(error);
+        .catch((error) => {
+          console.log(error);
+        });
+      axios
+        .get(
+          "https://ptdapmback.herokuapp.com/v1/api/authors?page=0&limit=100&sort=id",
+          { headers: { Authorization: accessToken } }
+        )
+        .then((response) => {
+          this.listAuthor = response.data.content;
+          console.log(this.listAuthor);
         })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     getDetail(objectId, requestType) {
       var config = {
@@ -380,12 +583,13 @@ export default {
       axios(config)
         .then((response) => {
           console.log(JSON.stringify(response.data));
+          console.log(this.listPublisher);
           this.bookData = response.data;
-          if(requestType == 'update'){
+          if (requestType == "update") {
             this.showUpdateDialog = true;
-          }else if(requestType == 'detail'){
+          } else if (requestType == "detail") {
             this.showDetailDialog = true;
-          }else if(requestType == 'delete'){
+          } else if (requestType == "delete") {
             this.showDeleteDialog = true;
           }
         })
@@ -403,8 +607,8 @@ export default {
           method: "post",
           url: "https://ptdapmback.herokuapp.com/v1/api/books/",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + accessToken
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + accessToken,
           },
           data: data,
         };
@@ -412,21 +616,28 @@ export default {
           .then((response) => {
             console.log(response);
             // Notice: Success message here, delay ???
-              for (var value of this.formData.values()) {
-                console.log(value);
-              }
-              axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/files', this.formData, {
+            for (var value of this.formData.values()) {
+              console.log(value);
+            }
+            axios
+              .post(
+                "https://ptdapmback.herokuapp.com/v1/api/auth/files",
+                this.formData,
+                {
                   headers: {
-                      'Content-Type': 'multipart/form-data',
-                      'Authorization': 'Bearer ' + accessToken
-                  }
-              }).then(response => {
-                  console.log(JSON.stringify(response.data));
-                  this.$router.go();
-              }).catch(error => {
-                  console.log(error);
-                  alert("Lỗi rồi cha nội, check console đi !");
+                    "Content-Type": "multipart/form-data",
+                    Authorization: "Bearer " + accessToken,
+                  },
+                }
+              )
+              .then((response) => {
+                console.log(JSON.stringify(response.data));
+                this.$router.go();
               })
+              .catch((error) => {
+                console.log(error);
+                alert("Lỗi rồi cha nội, check console đi !");
+              });
             this.setToDefault();
             this.showInsertDialog = false;
           })
@@ -437,44 +648,30 @@ export default {
     },
     closeDialog(requestType) {
       this.setToDefault();
-      if(requestType == 'insert'){
+      if (requestType == "insert") {
         this.showInsertDialog = false;
-      }else if(requestType == 'update'){
+      } else if (requestType == "update") {
         this.showUpdateDialog = false;
-      }else if(requestType == 'delete'){
+      } else if (requestType == "delete") {
         this.showDeleteDialog = false;
+      } else if (requestType == "detail") {
+        this.showDetailDialog = false;
       }
     },
-    update() {
-      console.log(this.bookData);
-      if (this.bookData != null) {
-        // var data = JSON.stringify({
-        //   "addr": "string",
-        //   "birthday": "2022-03-12",
-        //   "email": "string",
-        //   "gender": "string",
-        //   "id": 0,
-        //   "img": "null",
-        //   "name": "string",
-        //   "noneLocked": true,
-        //   "password": "string",
-        //   "phone": "string",
-        //   "roles": [
-        //     {
-        //       "id": 0,
-        //       "name": "ROLE_USER"
-        //     }
-        //   ]
-        // });
+    updateConfirm() {
+      if (this.bookData != null && this.bookData.id > 0) {
+        this.bookData.categoryId = this.bookData.category.id;
+        this.bookData.publisherId = this.bookData.publisher.id;
         var data = JSON.stringify(this.bookData);
-
+        var accessToken = localStorage.getItem("accessToken");
+        console.log(data);
         var config = {
           method: "put",
           url:
-            "https://ptdapmback.herokuapp.com/v1/api/users/" +
-            this.currentSelectedUser,
+            "https://ptdapmback.herokuapp.com/v1/api/books/" + this.bookData.id,
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("accessToken"),
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + accessToken,
           },
           data: data,
         };
@@ -493,33 +690,36 @@ export default {
     removeConfirm() {
       if (this.bookData.id > 0) {
         var config = {
-            method: 'delete',
-            url: "https://ptdapmback.herokuapp.com/v1/api/books/" + this.bookData.id,
-            headers: { 
-              "Authorization": "Bearer " + localStorage.getItem("accessToken")
-            },
+          method: "delete",
+          url:
+            "https://ptdapmback.herokuapp.com/v1/api/books/" + this.bookData.id,
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("accessToken"),
+          },
         };
         axios(config)
-          .then(response => {
+          .then((response) => {
             console.log(response);
             this.showDeleteDialog = false;
             this.$router.go();
             //Notice: Do some thing to remove datatable data
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
           });
       } else {
         this.showDeleteDialog = false;
       }
     },
-    onFileChanged(e) {
-        this.selectedFile = e.target.files[0];
-        console.log(this.selectedFile)
-        this.formData = new FormData();
-        this.formData.append('file', this.selectedFile);
-        this.bookData.image = this.selectedFile.name;
-    }
+    onFileUploadChanged(e) {
+      this.selectedFile = e.target.files[0];
+      console.log(this.selectedFile);
+      this.formData = new FormData();
+      this.formData.append("file", this.selectedFile);
+      this.bookData.image = this.selectedFile.name;
+      // var imgUpdate = document.getElementById('update-img');
+      // imgUpdate.src = URL.createObjectURL(this.selectedFile);
+    },
   },
 };
 </script>

@@ -34,7 +34,7 @@
                 <template slot="items" slot-scope="props">
                   <td>{{ props.item.id }}</td>
                   <td>{{ props.item.name }}</td>
-                  <td>{{ standardDateFormat(props.item.createdAt) }}</td>
+                  <td>{{ props.item.createdAt }}</td>
                   <td>
                     <v-btn
                       depressed
