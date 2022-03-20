@@ -41,8 +41,20 @@
                   <td v-else-if="props.item.status == 2" class="red--text">
                     Đã từ chối
                   </td>
-                  <td v-if="props.item.status == 0">
-                    <v-btn
+                  <td>
+                      <v-btn
+                      depressed
+                      outline
+                      icon
+                      fab
+                      dark
+                      color="primary"
+                      small
+                      @click="getDetail(props.item.id, 'detail')"
+                    >
+                      <v-icon>info</v-icon>
+                    </v-btn>
+                    <v-btn v-if="props.item.status == 0"
                       depressed
                       outline
                       icon
@@ -54,7 +66,7 @@
                     >
                       <v-icon>check</v-icon>
                     </v-btn>
-                    <v-btn
+                    <v-btn v-if="props.item.status == 0"
                       depressed
                       outline
                       icon
@@ -66,9 +78,7 @@
                     >
                       <v-icon>close</v-icon>
                     </v-btn>
-                  </td>
-                  <td v-else-if="props.item.status == 1">
-                    <v-btn
+                    <v-btn v-if="props.item.status == 1"
                       depressed
                       outline
                       icon
@@ -80,9 +90,7 @@
                     >
                       <v-icon>edit</v-icon>
                     </v-btn>
-                  </td>
-                  <td v-else-if="props.item.status == 2">
-                    <v-btn
+                    <v-btn v-if="props.item.status == 2"
                       depressed
                       outline
                       icon
@@ -155,10 +163,10 @@
                           </v-list-tile>
                           <v-list-tile>
                             <v-list-tile-content>
-                              <v-list-tile-title 
-                                >Trạng thái phiếu: <span class="orange--text">Chờ duyệt</span>
-                                </v-list-tile-title
-                              >
+                              <v-list-tile-title
+                                >Trạng thái phiếu:
+                                <span class="orange--text">Chờ duyệt</span>
+                              </v-list-tile-title>
                             </v-list-tile-content>
                           </v-list-tile>
                         </v-list>
@@ -223,7 +231,124 @@
                         <template>
               <v-layout row justify-center>
                 <v-dialog
-                  v-model="showAcceptDialog"
+                  v-model="showDetailDialog"
+                  fullscreen
+                  hide-overlay
+                  transition="dialog-bottom-transition"
+                >
+                  <v-card>
+                    <v-toolbar dark color="primary">
+                      <v-btn icon dark @click="showDetailDialog = false">
+                        <v-icon>close</v-icon>
+                      </v-btn>
+                      <v-toolbar-title>Thông tin phiếu mượn</v-toolbar-title>
+                      <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-layout row>
+                      <v-flex xs5>
+                        <v-list three-line subheader>
+                          <v-subheader>Thông tin chung</v-subheader>
+                          <v-list-tile>
+                            <v-list-tile-content>
+                              <v-list-tile-title
+                                >Họ và tên độc giả:
+                                {{ defaultData.user.name }}</v-list-tile-title
+                              >
+                            </v-list-tile-content>
+                          </v-list-tile>
+                          <v-list-tile>
+                            <v-list-tile-content>
+                              <v-list-tile-title
+                                >Ngày tạo phiếu:
+                                {{
+                                  defaultData.borrowedDate
+                                }}</v-list-tile-title
+                              >
+                            </v-list-tile-content>
+                          </v-list-tile>
+                          <v-list-tile>
+                            <v-list-tile-content>
+                              <v-list-tile-title
+                                >Số lượng sách mượn:
+                                {{
+                                  defaultData.borrowingItems.length
+                                }}</v-list-tile-title
+                              >
+                            </v-list-tile-content>
+                          </v-list-tile>
+                          <v-list-tile>
+                            <v-list-tile-content>
+                              <v-list-tile-title
+                                >Trạng thái phiếu:
+                                <span v-if="defaultData.status == 0" class="orange--text">Chờ duyệt</span>
+                                <span v-else-if="defaultData.status == 1" class="green--text">Đã xác nhận</span>
+                                <span v-else-if="defaultData.status == 2" class="red--text">Bị từ chối</span>
+                              </v-list-tile-title>
+                            </v-list-tile-content>
+                          </v-list-tile>
+                        </v-list>
+                      </v-flex>
+                      <v-flex xs7>
+                        <v-list three-line subheader>
+                          <v-subheader>Thông tin sách</v-subheader>
+                          <v-list-tile>
+                            <v-list-tile-content>
+                              <v-card
+                                v-for="item in defaultData.borrowingItems"
+                                :key="item.id"
+                                row
+                              >
+                                <v-layout>
+                                  <v-flex xs7>
+                                    <v-card-title primary-title>
+                                      <div>
+                                        <div class="headline">
+                                          {{ item.book.name }}
+                                        </div>
+                                        <div>
+                                          {{ item.book.category.name }}
+                                        </div>
+                                        <div>{{ item.book.publishAt }}</div>
+                                      </div>
+                                    </v-card-title>
+                                  </v-flex>
+                                  <v-flex xs5>
+                                    <v-img
+                                      :src="
+                                        'https://ptdapmback.herokuapp.com/v1/api/auth/files/' +
+                                        item.book.image
+                                      "
+                                      height="125px"
+                                      contain
+                                    ></v-img>
+                                  </v-flex>
+                                </v-layout>
+                                <v-divider light></v-divider>
+                                <v-card-actions>
+                                  <v-layout row>
+                                    <v-flex xs8>
+                                      <h4>Trạng thái</h4>
+                                    </v-flex>
+                                    <v-flex xs4>
+                                      <v-btn color="warning">Chờ duyệt</v-btn>
+                                    </v-flex>
+                                  </v-layout>
+                                </v-card-actions>
+                              </v-card>
+                              <v-spacer></v-spacer>
+                            </v-list-tile-content>
+                          </v-list-tile>
+                        </v-list>
+                      </v-flex>
+                    </v-layout>
+                  </v-card>
+                </v-dialog>
+              </v-layout>
+            </template>
+            <template>
+              <v-layout row justify-center>
+                <v-dialog
+                  v-model="showUpdateDialog"
                   fullscreen
                   hide-overlay
                   transition="dialog-bottom-transition"
@@ -270,10 +395,10 @@
                           </v-list-tile>
                           <v-list-tile>
                             <v-list-tile-content>
-                              <v-list-tile-title 
-                                >Trạng thái phiếu: <span class="green--text">Đã xác nhận</span>
-                                </v-list-tile-title
-                              >
+                              <v-list-tile-title
+                                >Trạng thái phiếu:
+                                <span class="green--text">Đã xác nhận</span>
+                              </v-list-tile-title>
                             </v-list-tile-content>
                           </v-list-tile>
                         </v-list>
@@ -282,54 +407,48 @@
                         <v-list three-line subheader>
                           <v-subheader>Thông tin sách mượn</v-subheader>
                           <v-list-tile>
-                            <v-list-tile-content>
-                              <v-card
-                                v-for="item in defaultData.borrowingItems"
-                                :key="item.id"
-                                row
-                              >
-                                <v-layout>
-                                  <v-flex xs7>
-                                    <v-card-title primary-title>
-                                      <div>
-                                        <div class="headline">
-                                          {{ item.book.name }}
-                                        </div>
-                                        <div>
-                                          {{ item.book.category.name }}
-                                        </div>
-                                        <div>{{ item.book.publishAt }}</div>
-                                      </div>
-                                    </v-card-title>
-                                  </v-flex>
-                                  <v-flex xs5>
-                                    <v-img
-                                      :src="
-                                        'https://ptdapmback.herokuapp.com/v1/api/auth/files/' +
-                                        item.book.image
-                                      "
-                                      height="125px"
-                                      contain
-                                    ></v-img>
-                                  </v-flex>
-                                </v-layout>
-                                <v-divider light></v-divider>
-                                <v-card-actions>
-                                  <v-layout row>
-                                    <v-flex xs8>
-                                      <h4>Trạng thái</h4>
-                                    </v-flex>
-                                    <v-flex v-if="item.status == true" xs4>
-                                      <v-btn color="success" disabled>Đã trả</v-btn>
-                                    </v-flex>
-                                    <v-flex v-if="item.status == true" xs4>
-                                      <v-btn color="cyan" @click="updateConfirm(item.id)">Xác nhận trả</v-btn>
-                                    </v-flex>
-                                  </v-layout>
-                                </v-card-actions>
-                              </v-card>
-                              <v-spacer></v-spacer>
-                            </v-list-tile-content>
+                            <v-layout
+                              v-for="item in defaultData.borrowingItems"
+                              :key="item.id"
+                              row
+                              wrap
+                              class="cartProduct x-grid-lg"
+                            >
+                              <v-flex lg2 sm12 xs12 class="pa-2">
+                                <div class="outImg">
+                                  <img
+                                    :src="
+                                      'https://ptdapmback.herokuapp.com/v1/api/auth/files/' +
+                                      item.book.image
+                                    "
+                                    alt="ảnh Sách"
+                                    class="img"
+                                  />
+                                </div>
+                              </v-flex>
+                              <v-flex lg10 sm12 xs12 class="infoCart pa-2">
+                                <h3 class="name">{{ item.book.name }}</h3>
+                                <span class="author">{{
+                                  item.book.category.name
+                                }}</span>
+                                <span class="author">{{
+                                  item.book.publishAt
+                                }}</span>
+                                <v-btn
+                                  v-if="item.status == true"
+                                  color="success"
+                                  disabled
+                                  >Đã trả</v-btn
+                                >
+                                <v-btn
+                                  v-else
+                                  color="cyan"
+                                  @click="updateConfirm(item.id)"
+                                  >Trả sách</v-btn
+                                >
+                              </v-flex>
+                            </v-layout>
+                            <v-spacer></v-spacer>
                           </v-list-tile>
                         </v-list>
                       </v-flex>
@@ -364,7 +483,7 @@
                 </v-card>
               </v-dialog>
             </template>
-                        <template>
+            <template>
               <v-dialog v-model="showDeleteDialog" persistent max-width="500px">
                 <v-card>
                   <v-card-title>
@@ -582,6 +701,8 @@ export default {
             this.showUpdateDialog = true;
           } else if (requestType == "accept") {
             this.showAcceptDialog = true;
+            }else if (requestType == "detail") {
+            this.showDetailDialog = true;
           } else if (requestType == "reject") {
             this.showRejectDialog = true;
           } else if (requestType == "delete") {
@@ -685,11 +806,13 @@ export default {
       }
     },
     updateConfirm(itemId) {
-        if(itemId != null && itemId > 0){
-            var config = {
+      if (itemId != null && itemId > 0) {
+        var config = {
           method: "put",
           url:
-            "https://ptdapmback.herokuapp.com/v1/api/borrowingItems/"+itemId+"/status?status=true",
+            "https://ptdapmback.herokuapp.com/v1/api/borrowingItems/" +
+            itemId +
+            "/status?status=true",
           headers: {
             Authorization: "Bearer " + localStorage.getItem("accessToken"),
           },
@@ -704,9 +827,9 @@ export default {
           .catch((error) => {
             console.log(error);
           });
-        }else{
-            alert("Đã có lỗi xảy ra, vui lòng thử lại!");
-        }
+      } else {
+        alert("Đã có lỗi xảy ra, vui lòng thử lại!");
+      }
     },
     removeConfirm() {
       if (this.defaultData.id > 0) {
@@ -745,3 +868,98 @@ export default {
   },
 };
 </script>
+<style scoped>
+.outurl {
+  width: 100%;
+  border-bottom: 1px solid #999;
+}
+.url {
+  padding: 0;
+  font-size: 15px;
+  color: #999;
+}
+.header {
+  padding: 10px 0;
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+.headertext {
+  font-size: 14px;
+  color: #777;
+  font-weight: 400;
+  margin-left: 5px;
+}
+.note {
+  margin-top: 10px;
+  color: red;
+  font-size: 14px;
+  display: block;
+}
+.cartProduct {
+  margin-top: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgb(216, 214, 214);
+}
+.outImg {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.img {
+  width: 100%;
+  height: 180px;
+}
+.name {
+  font-weight: 500;
+  color: #333;
+}
+.author {
+  display: block;
+  color: #777;
+  font-size: 16px;
+  margin-top: 5px;
+}
+.btnDelete {
+  width: 150px;
+  padding: 10px 0;
+  text-align: center;
+  margin-top: 10px;
+  box-shadow: 0 0 3px #999;
+  color: red;
+  font-weight: 500;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.btnDelete:hover {
+  background-color: rgb(216, 14, 14);
+  color: white;
+}
+.infoCart {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.Register {
+  display: flex;
+  margin: 20px 0;
+  justify-content: right;
+}
+.btnRegister {
+  padding: 14px 25px;
+  text-align: center;
+  box-shadow: 0 0 3px #999;
+  color: white;
+  background-color: green;
+  font-weight: 500;
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btnRegister:hover {
+  opacity: 0.9;
+}
+</style>
