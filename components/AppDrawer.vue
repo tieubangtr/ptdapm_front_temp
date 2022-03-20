@@ -49,10 +49,10 @@
     </div>
 
     <!-- Quản lí người dùng -->
-    <div class="list" v-if="!this.check">
+    <div class="list">
       <div class="list_menu">
         <div class="list_menu_text">Quản lí người dùng</div>
-        <NuxtLink to="/user/employee" class="list_menu_conponent">
+        <NuxtLink to="/user/employee" class="list_menu_conponent"  v-if="!this.check">
           <v-icon class="list_menu_conponent_icon">assignment_ind</v-icon>
           <div class="list_menu_conponent_name">Nhân viên</div>
         </NuxtLink>
@@ -96,7 +96,7 @@
       },
     },
     data: () => ({
-      check: localStorage.getItem('permission')=='ROLE_USER',
+      check: localStorage.getItem('permission')=='ROLE_ADMIN',
       mini: false,
       menus: menu,
       scrollSettings: {
