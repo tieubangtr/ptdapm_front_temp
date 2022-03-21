@@ -77,19 +77,19 @@ export default {
                 success:'',
                 note:''
             }
-            if(!this.form.password){
+            if(!this.form.password.trim()){
                 this.check.password='Vui lòng nhập dòng này'
                 this.loading=false
             }
-            else if(this.form.password.length<=6){
+            else if(this.form.password.trim().length<=6){
                 this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
                 this.loading=false
             }
-            if(!this.form.passwordOld){
+            if(!this.form.passwordOld.trim()){
                 this.check.passwordOld='Vui lòng nhập dòng này'
                 this.loading=false
             }
-            else if(this.form.password!==this.form.passwordOld){
+            else if(this.form.password.trim()!==this.form.passwordOld.trim()){
                 this.check.passwordOld='Mật khẩu không khớp nhau'
                 this.loading=false
             }
@@ -100,7 +100,7 @@ export default {
             this.form.token=localStorage.getItem('tokenPass')
             e.preventDefault();
             if(!this.check.password&&!this.check.passwordOld){
-                axios.put(`https://ptdapmback.herokuapp.com/v1/api/auth/reset_password?token=${this.form.token}&newPassword=${this.form.password}`)
+                axios.put(`https://ptdapmback.herokuapp.com/v1/api/auth/reset_password?token=${this.form.token}&newPassword=${this.form.password.trim()}`)
                 .then((res)=>{
                     this.check.success='Đổi mật khẩu thành công'
                     localStorage.removeItem('tokenPass')

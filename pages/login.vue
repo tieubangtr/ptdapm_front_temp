@@ -29,7 +29,7 @@
                 </div>
               </v-card-text>
               <div class="btlLogin">
-                <v-btn class="btnbtnlogin" color="primary" type="submit" @click="login" :loading="loading">Login</v-btn>
+                <v-btn class="btnbtnlogin" color="primary" type="submit" @click="login" :loading="loading">Đăng nhập</v-btn>
               </div>
             </v-card>
           </v-flex>
@@ -79,18 +79,22 @@ import axios from 'axios'
               password:'',
               note:'',
           }
-          // this.form.submit=false
-          if(!this.isEmail(this.form.username)){
+          
+          if(!this.form.username.trim()){
+              this.check.username='Vui lòng nhập email'
+              this.loading=false
+          }
+          else if(!this.isEmail(this.form.username.trim())){
               this.check.username='Dòng này phải là email'
-          this.loading=false
+              this.loading=false
           }
-          if(!this.form.password){
-              this.check.password='Vui lòng nhập dòng này'
-          this.loading=false
+          if(!this.form.password.trim()){
+              this.check.password='Vui lòng nhập mật khẩu'
+              this.loading=false
           }
-          else if(this.form.password.length<=6){
+          else if(this.form.password.trim().length<=6){
               this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
-          this.loading=false
+              this.loading=false
           }
       },
       isEmail(email){
@@ -101,6 +105,8 @@ import axios from 'axios'
       async login(e){
         this.loading=true;
         this.validate()
+        this.form.username=this.form.username.trim()
+        this.form.password=this.form.password.trim()
         if(!this.check.username&&!this.check.password){
             axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/login',this.form )
             .then((res)=>{

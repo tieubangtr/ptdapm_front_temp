@@ -123,31 +123,51 @@ export default {
                 birthday:'',
                 gender:'',
             }
-            if(!this.form.name){
+            if(!this.form.name.trim()){
                 this.loading=false
                 this.check.name='Vui lòng nhập dòng này'
             }
-            if(!this.form.phone){
+            else if(this.form.name.trim().length>50){
+                this.loading=false
+                this.check.name='tên vượt quá 50 kí tự'
+            }
+            else if(this.checkName(this.form.name.trim())){
+                this.loading=false
+                this.check.name='Tên không được có kí tự đặc biệt và số'
+            }
+            else if(!this.checkNameNumber(this.form.name.trim())){
+                this.loading=false
+                this.check.name='Tên không được có kí tự đặc biệt và số'
+            }
+            if(!this.form.phone.trim()){
                 this.loading=false
                 this.check.phone='Vui lòng nhập dòng này'
             }
-            else if(!this.isNumber(this.form.phone)){
+            else if(!this.isNumber(this.form.phone.trim())){
                 this.loading=false
                 this.check.phone='Vui lòng nhập số điện thoại'
             }
-            else if(this.form.phone.length<9){
+            else if(this.form.phone.trim().length>10){
                 this.loading=false
-                this.check.phone='Số điện thoại phải trên 8 số'
+                this.check.phone='Số điện thoại không hợp lệ (lớn hơn 8 và nhỏ hơn 10 số)'
             }
-            if(!this.isEmail(this.form.email)){
+            else if(this.form.phone.trim().length<9){
+                this.loading=false
+                this.check.phone='Số điện thoại không hợp lệ (lớn hơn 8 và nhỏ hơn 10 số)'
+            }
+            if(!this.form.email.trim()){
+                this.loading=false
+                this.check.email='Vui lòng nhập dòng này'
+            }
+            else if(!this.isEmail(this.form.email.trim())){
                 this.loading=false
                 this.check.email='Dòng này phải là email'
             }
-            if(!this.form.password){
+            if(!this.form.password.trim()){
                 this.loading=false
                 this.check.password='Vui lòng nhập dòng này'
             }
-            else if(this.form.password.length<=6){
+            else if(this.form.password.trim().length<=6){
                 this.loading=false
                 this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
             }
@@ -155,7 +175,7 @@ export default {
                 this.loading=false
                 this.check.birthday='Vui lòng nhập dòng này'
             }
-            if(!this.form.addr){
+            if(!this.form.addr.trim()){
                 this.loading=false
                 this.check.addr='Vui lòng nhập dòng này'
             }
@@ -168,20 +188,64 @@ export default {
         isNumber(value){
             return /^-?\d+$/.test(value);
         },
+        checkdate(date){
+            let apointment= new Date().toLocaleDateString('en-CA')
+            apointment=apointment.split('-')
+            date=date.split('-')
+            if(date[0]>apointment[0]){
+                return this.check.birthday='Ngày sinh không hợp lệ'
+            }
+            if(date[1]>apointment[1]){
+                return this.check.birthday='Ngày sinh không hợp lệ'
+            }
+            if(date[2]>apointment[2]){
+                return this.check.birthday='Ngày sinh không hợp lệ'
+            }
+        },
+        checkNameNumber(n){
+            for(let i=0;i<n.length;i++){
+                if(this.isNumber(n[i])){
+                    return false
+                }
+            }
+            return true
+        },
+        checkName(string){
+            var format = /[!-\/:-@[-`{-~]/;
+            if(format.test(string)){
+                return true;
+            }else{
+                return false;
+            }
+        },
         async handleSubmit(e){
             this.loading=true
             this.validate()
             e.preventDefault();
+            this.form.name=this.form.name.trim()
+            this.form.phone=this.form.phone.trim()
+            this.form.email=this.form.email.trim()
+            this.form.password=this.form.password.trim()
+            this.form.addr=this.form.addr.trim()
+            this.form.gender=this.form.gender.trim()
+            console.log(this.form.birthday);
+            this.checkdate(this.form.birthday)
+
             if(!this.check.name&&!this.check.phone&&!this.check.email&&!this.check.password&&!this.check.addr&&!this.check.birthday&&!this.check.gender){
                 axios.post('https://ptdapmback.herokuapp.com/v1/api/auth/signup',this.form)
                 .then((res)=>{
+                    console.log(res.data);
                     this.toask=true
                     this.loading=false
                 })
                 .catch((err)=>{
+                    if(err.response.data.apierror.debugMessage=='Email và phone number đã tồn tại'){
+                        this.note='Email hoặc phone number đã tồn tại'
+                    }
+                    else{
+                        this.note='Đăng kí thất bại. Vui lòng kiểm tra lại thông tin!'
+                    }
                     this.loading=false
-                    console.log(err.response.data);
-                    this.note='Đăng kí thất bại. Vui lòng kiểm tra lại thông tin!'
                 })
             }
         },
