@@ -3,7 +3,7 @@
         <Header/>
         <div style="background-color:#f5f5f5;">
             <v-container>
-                <v-layout style="height:60vh">
+                <v-layout style="height:70vh">
                     <v-flex lg5 class="menu">
                         <div class="outImg">
                             <img src="/img/logoDHTL.png" alt="Ảnh đại diện" class="img">
@@ -23,6 +23,11 @@
                     </v-flex>
                     <v-flex lg7 class="infoUser">
                         <h3 class="header">Chỉnh Sửa Hồ Sơ</h3>
+                        <v-text-field  
+                            label="Họ tên" 
+                            type="text"
+                        >
+                        </v-text-field>
                         <v-text-field  
                             label="Email" 
                             type="text"
