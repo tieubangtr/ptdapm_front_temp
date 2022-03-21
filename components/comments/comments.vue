@@ -40,7 +40,7 @@
                                     <div class="list-comment">
                                         <div class="comment-item" v-for="comment in this.comments" :key="comment.id">
                                             <div class="author-comment">
-                                                <h3>{{ comment.user.name }}</h3> - {{ comment. createdAt}}
+                                                <h4>{{ comment.user.name }} - {{ comment. createdAt}} </h4>
                                                 <p> {{ comment.content }} </p>
                                             </div>
                                         </div>
@@ -99,6 +99,7 @@ export default {
                         })
                         .then((response) => {
                             this.comment = ''
+                            this.comments.unshift(response.data)
                         })
                         .catch((error) => {
                             console.log(error.response.data)
@@ -118,8 +119,7 @@ export default {
             }
         })
         .then(response => {
-
-            console.log(response.data)
+            this.comments = response.data
         })
         .catch(error => {
             console.log(error.response.data)
