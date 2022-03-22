@@ -103,7 +103,7 @@ export default {
         },
         handleBorrow(){
             if(JSON.parse(localStorage.getItem('User'))){
-               this.$router.push(`/homepage/borrow?bookId=${this.bookId}`)
+               this.$router.push(`/homepage/borrow?bookId=${this.form.bookId}`)
             }
             else{
                 this.$router.push('/login')
