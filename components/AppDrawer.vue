@@ -70,7 +70,7 @@
         <div class="list_menu_text">Tài Khoản</div>
         <NuxtLink to="/account" class="list_menu_conponent">
           <v-icon class="list_menu_conponent_icon">account_circle</v-icon>
-          <div class="list_menu_conponent_name">Thông tin</div>
+          <div class="list_menu_conponent_name">Tài khoản của bạn</div>
         </NuxtLink>
         <div class="list_menu_conponent" @click="handleLogout">
           <v-icon class="list_menu_conponent_icon">exit_to_app</v-icon>
