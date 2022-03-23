@@ -69,7 +69,7 @@ export default {
             console.log(this.datas);
         })
         .catch((err)=>{
-            // console.log(err.response.data);
+            console.log(err.response.data);
         })
     },
     methods: {
