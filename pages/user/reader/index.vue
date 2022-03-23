@@ -40,10 +40,7 @@
                   <td>{{ props.item.phone }}</td>
                   <td>
                     <v-btn depressed outline icon fab dark color="primary" small @click="getDetail(props.item.id)">
-                      <v-icon>visibility</v-icon>
-                    </v-btn>
-                    <v-btn depressed outline icon fab dark color="orange" small @click="getDetail(props.item.id)">
-                      <v-icon>edit</v-icon>
+                      <v-icon>info</v-icon>
                     </v-btn>
                     <v-btn depressed outline icon fab dark color="pink" small @click="remove(props.item.id)"> 
                       <v-icon>delete</v-icon>
@@ -56,15 +53,15 @@
           <!-- Delete user dialog -->
           <template>
               <!-- Confirm dialog -->
-              <v-dialog v-model="showDialogDeleteConfirm" persistent max-width="500px">
+              <v-dialog v-model="showUserDeleteDialog" persistent max-width="500px">
                 <v-card>
                   <v-card-title>
-                    <span class="headline">Xóa người dùng</span>
+                    <span class="headline">Xóa độc giả</span>
                   </v-card-title>
                   <v-divider></v-divider>
                   <v-spacer></v-spacer>
                   <v-card-text class="d-flex justify-center">
-                    <h4 class="d-inline-block">Xóa xong thì là mất, đừng có đi tìm nhé ?</h4>
+                    <h4 class="d-inline-block">Chắc chắn muốn xóa độc giả này khỏi hệ thống ?</h4>
                   </v-card-text>
                   <v-spacer></v-spacer>
                   <v-card-actions>
@@ -72,7 +69,7 @@
                     <v-btn
                       color="error"
                       text
-                      @click="showDialogDeleteConfirm = false"
+                      @click="showUserDeleteDialog = false"
                     >
                       Hủy bỏ
                     </v-btn>
@@ -86,7 +83,142 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
-              <UserDataForm :visible="showUserDataDialog" @close="showUserDataDialog = false" />
+              <v-dialog v-model="showUserInsertDialog" persistent max-width="500px">
+                <v-card>
+                    <v-card-title>
+                    <span class="headline">Thêm mới nhân viên</span>
+                    </v-card-title>
+                    <v-divider></v-divider>
+                    <v-card-text>
+                      <v-container grid-list-md>
+                          <v-form ref="form">
+                              <v-card-text>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field v-model="userData.name" label="Họ và tên" />
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="email" v-model="userData.email" label="Email"/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field v-model="userData.phone" label="Số điện thoại" />
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="date" v-model="userData.birthday" label="Ngày sinh"/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-select
+                                      v-model="userData.gender"
+                                      :items="gender"
+                                      item-text="gender"
+                                      item-value="gender"
+                                      label="Giới tính"
+                                      persistent-hint
+                                      single-line
+                                      ></v-select>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="text" v-model="userData.addr" label="Địa chỉ"/>
+                                  </v-col>
+                                  </v-row>
+                              </v-card-text>
+                          </v-form>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="error"
+                      text
+                      @click="closeDialog('insert')"
+                    >
+                      Hủy bỏ
+                    </v-btn>
+                    <v-btn
+                      color="success"
+                      text
+                      @click="insertConfirm()"
+                    >
+                      Thêm mới
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="showUserDetailDialog" persistent max-width="500px">
+                <v-card>
+                    <v-card-title>
+                    <span class="headline">Thông tin độc giả</span>
+                    </v-card-title>
+                    <v-divider></v-divider>
+                    <v-card-text>
+                      <v-container grid-list-md>
+                          <v-form ref="form">
+                              <v-card-text>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field v-model="userData.name" label="Họ và tên" readonly/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="email" v-model="userData.email" label="Email" readonly/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field v-model="userData.phone" label="Số điện thoại" readonly/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="date" v-model="userData.birthday" label="Ngày sinh" readonly/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-select
+                                      v-model="userData.gender"
+                                      :items="gender"
+                                      item-text="gender"
+                                      item-value="gender"
+                                      label="Giới tính"
+                                      persistent-hint
+                                      single-line
+                                      readonly
+                                      ></v-select>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="text" v-model="userData.addr" label="Địa chỉ" readonly/>
+                                  </v-col>
+                                  </v-row>
+                              </v-card-text>
+                          </v-form>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="error"
+                      text
+                      @click="closeDialog('detail')"
+                    >
+                      Đóng
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
           </template>
         </v-flex>
       </v-layout>
@@ -95,8 +227,6 @@
 </template>
 
 <script>
-  import {Items as Users} from '@/api/user';
-  import UserDataForm from '@/components/user/UserDataForm'
   import axios from 'axios';
   export default {
     layout: 'dashboard',
@@ -104,21 +234,28 @@
       return {
         search: '',
         listData: [],
+        defaultDate: new Date().toLocaleDateString('en-CA'),
         userData: {
-          "addr": "",
-          "birthday": "",
-          "email": "",
-          "gender": "",
-          "name": "",
-          "password": "1234567",
-          "phone": ""
-        },
-        gender: [
-          { gId: '0', gender: 'Nam' },
-          { gId: '1', gender: 'Nữ' },
-        ],
-        showDialogDeleteConfirm: false,
-        showUserDataDialog: false,
+            "addr": '',
+            "birthday": this.defaultDate,
+            "email": "",
+            "gender": "",
+            "id": 0,
+            "img": "null",
+            "name": "",
+            "noneLocked": true,
+            "password": "1234567",
+            "phone": "",
+            "roles": [
+              {
+                "id": 1
+              }
+            ]
+          },
+        gender: ['Nam', 'Nữ'],
+        showUserInsertDialog: false,
+        showUserDetailDialog: false,
+        showUserDeleteDialog: false,
         currentSelectedUser: -1,
         complex: {
           selected: [],
@@ -151,13 +288,42 @@
         },
       };
     },
-    components:{
-      UserDataForm
-    },
     mounted () {
       this.initialize()
     },
     methods: {
+      setToDefault(){
+        this.userData = {
+          "addr": '',
+          "birthday": "2022-03-12",
+          "email": "",
+          "gender": "",
+          "id": 0,
+          "img": "null",
+          "name": "",
+          "noneLocked": true,
+          "password": "1234567",
+          "phone": "",
+          "roles": [
+            {
+              "id": 1,
+              "name": "ADMIN"
+            }
+          ]
+        }
+      },
+      validate(object){
+        if(object.addr == ''){
+          return false;
+        }else if(object.birthday == ''){
+          return false;
+        }else if(object.phone == '' || object.phone.length > 10){
+          return false;
+        }else if(object.email == ''){
+          return false;
+        }
+        return true;
+      },
       initialize () {
         var data = '';
         var config = {
@@ -190,100 +356,24 @@
           console.log(JSON.stringify(response.data));
           this.currentSelectedUser = response.data.id;
           this.userData = response.data;
-          this.showUserDataDialog = true;
+          this.showUserDetailDialog = true;
         })
         .catch(error => {
           console.log(error);
         });
       },
-      insert(){
-        console.log(this.userData);
-        // if(this.userData != null){
-        //   // var data = JSON.stringify({
-        //   //   "addr": "string",
-        //   //   "birthday": "2022-03-12",
-        //   //   "email": "string",
-        //   //   "gender": "string",
-        //   //   "id": 0,
-        //   //   "img": "null",
-        //   //   "name": "string",
-        //   //   "noneLocked": true,
-        //   //   "password": "string",
-        //   //   "phone": "string",
-        //   //   "roles": [
-        //   //     {
-        //   //       "id": 0,
-        //   //       "name": "ROLE_USER"
-        //   //     }
-        //   //   ]
-        //   // });
-        //   var data = JSON.stringify(this.userData);
-
-        //   var config = {
-        //     method: 'post',
-        //     url: 'https://ptdapmback.herokuapp.com/v1/api/users/',
-        //     headers: { 
-        //       'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
-        //     },
-        //     data : data
-        //   };
-        //   axios(config)
-        //   .then(response => {
-        //     console.log(response)
-        //     //Notice: Success message here, delay ???
-        //     this.userDataDialog = false
-        //     this.$router.go()
-        //   })
-        //   .catch(error => {
-        //     console.log(error);
-        //   });
-        // }
-      },
-      update(){
-        console.log(this.userData);
-        if(this.userData != null){
-          // var data = JSON.stringify({
-          //   "addr": "string",
-          //   "birthday": "2022-03-12",
-          //   "email": "string",
-          //   "gender": "string",
-          //   "id": 0,
-          //   "img": "null",
-          //   "name": "string",
-          //   "noneLocked": true,
-          //   "password": "string",
-          //   "phone": "string",
-          //   "roles": [
-          //     {
-          //       "id": 0,
-          //       "name": "ROLE_USER"
-          //     }
-          //   ]
-          // });
-          var data = JSON.stringify(this.userData);
-
-          var config = {
-            method: 'put',
-            url: 'https://ptdapmback.herokuapp.com/v1/api/users/' + this.currentSelectedUser,
-            headers: { 
-              'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
-            },
-            data : data
-          };
-          axios(config)
-          .then(response => {
-            console.log(response)
-            //Notice: Success message here, delay ???
-            this.showUserDataDialog = false
-            this.$router.go()
-          })
-          .catch(error => {
-            console.log(error);
-          });
+      closeDialog(requestType){
+        this.setToDefault();
+        if(requestType == 'detail'){
+          this.showUserDetailDialog = false;
+        }else if(requestType == 'insert'){
+          this.showUserInsertDialog = false;
+        }else if(requestType == 'delete'){
+          this.showUserDeleteDialog = false;
         }
       },
       remove(userId){
-        this.showDialogDeleteConfirm = true
+        this.showUserDeleteDialog = true
         this.currentSelectedUser = userId
         console.log(userId);
         console.log(this.currentSelectedUser)
@@ -300,14 +390,17 @@
           axios(config)
           .then(response => {
             console.log(response)
-            this.showDialogDeleteConfirm = false
+            this.$toasted.success("Xóa độc giả thành công").goAway(3000);
+            this.showUserDeleteDialog = false;
             //Notice: Do some thing to remove datatable data
           })
           .catch(error => {
             console.log(error);
+            this.$toasted.error("Xóa độc giả không thành công, đã có lỗi xảy ra").goAway(3000);
+            this.showUserDeleteDialog = false;
           });
         }else{
-          this.showDialogDeleteConfirm = false
+          this.showUserDeleteDialog = false
         }
       },
     },

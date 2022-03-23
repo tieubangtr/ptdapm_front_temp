@@ -1,7 +1,7 @@
 <template>
     <div id="page-forms">
         <v-container grid-list-xl fluid>
-            <h1>{{ this.userData.id }}</h1>
+            <h1>Thông tin tài khoản</h1>
             <v-layout row wrap>
                 <v-flex lg6>
                     <v-card class="mb-4">
@@ -13,17 +13,20 @@
                         <v-card-text class="">
                             <v-form>
                                 <v-text-field
+                                    ref="userFullName"
                                     label="Họ và tên"
                                     name="fullname"
                                     v-model= "userData.name"
                                 ></v-text-field>    
                                 <v-text-field
+                                    ref="userEmail"
                                     label="Email"
                                     name="email"
                                     v-model= "userData.email"
                                     disabled
                                 ></v-text-field>    
                                 <v-text-field
+                                    ref="userPhone"
                                     label="Số điện thoại"
                                     v-model= "userData.phone"
                                 ></v-text-field>
@@ -40,6 +43,7 @@
                                 >
                                 </v-select>
                                 <v-text-field
+                                    ref="userAddress"
                                     label="Địa chỉ"
                                     v-model= "userData.addr"
                                 ></v-text-field>        
@@ -127,14 +131,14 @@
                         text
                         @click="showDialogChangePassword = false"
                         >
-                        Hủy bỏ
+                        Hủy
                         </v-btn>
                         <v-btn
-                        color="primary"
+                        color="warning"
                         text
                         @click="updatePasswordConfirm()"
                         >
-                        Xác nhận
+                        Cập nhật
                         </v-btn>
                     </v-card-actions>
                     </v-card>
@@ -162,6 +166,25 @@
             };
         },
         methods:{
+            validate(){
+                let name = this.userData.name.trim();
+                let phone = this.userData.phone;
+                let address = this.userData.addr.trim();
+                if(name == null || name == ''){
+                    this.$refs["userFullName"].$refs.input.focus();
+                    this.$$toasted.error("Họ và tên không hợp lệ").goAway(2000);
+                    return false; 
+                }else if(phone == null || phone == '' || phone.length > 10){
+                    this.$refs["userPhone"].$refs.input.focus();
+                    this.$$toasted.error("Số điện thoại không hợp lệ").goAway(2000);
+                    return false;
+                }else if(address == null || address == ''){
+                    this.$refs["userAddress"].$refs.input.focus();
+                    this.$$toasted.error("Địa chỉ không hợp lệ").goAway(2000);
+                    return false;
+                }
+                return true;
+            },
             getDetail(){
                 var userId = localStorage.getItem('userId');
                 var config = {
@@ -184,7 +207,7 @@
             },
             updateInfo(){
                 console.log(JSON.stringify(this.userData));
-                if(this.userData != null){
+                if(this.userData != null && this.validate()){
                     var data = JSON.stringify(this.userData);
 
                     var config = {
@@ -200,11 +223,15 @@
                     .then(response => {
                         console.log(response)
                         // Notice: Success message here, delay ???
-                        this.$router.go()
+                        this.$toasted.info("Lưu thông tin tài khoản thành công").goAway(3000);
+                        this.$router.go();
                     })
                     .catch((error) => {
+                        this.$toasted.info("Lưu thông tin tài khoản thất bại").goAway(3000);
                         console.log(error.data);
                     });
+                }else{
+                    this.$toasted.info("Thông tin không hợp lệ").goAway(2000);
                 }
             },
             updatePassword(){
@@ -236,8 +263,10 @@
                         console.log(error);
                         alert("Đã có lỗi, hãy kiểm tra lại thông tin");
                     });
+                }else if(oldPassword == "" || newPassword == "" || confirmPassword == ""){
+                    this.$toasted.error("Dữ liệu không được để trống");
                 }else{
-                    alert("Mật khẩu nhập lại không khớp");
+                    this.$toasted.error("Mật khẩu nhập lại không khớp");
                 }
             },
             handleFileImport(){

@@ -82,7 +82,7 @@ export default {
         handleAddcart(){
             if(JSON.parse(localStorage.getItem('User'))){
                 const form={
-                    bookId:+this.$route.query.bookId,
+                    bookId:this.$route.query.bookId,
                     cartId:JSON.parse(localStorage.getItem('User')).id
                 }
                 const forms=JSON.stringify(form)

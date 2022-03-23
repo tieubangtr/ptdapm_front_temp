@@ -24,6 +24,7 @@
                 :headers="complex.headers"
                 :search="search"
                 :items="listData"
+                :items-per-page="10"
                 class="elevation-1"
                 item-key="name"
               >
