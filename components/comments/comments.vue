@@ -14,7 +14,6 @@
             </v-tab-item>
             <v-tab-item value="tab-2">
                 <v-card flat>
-                    <!-- <v-card-text>{{ description }}</v-card-text> -->
                     <v-container grid-list-md>
                         <v-layout row wrap>
                             <v-flex xs6>
@@ -35,23 +34,23 @@
                                 </v-card>
                             </v-flex>
                             <v-flex xs6>
-                                <v-card v-if="this.comments.length == 0">
+                                <v-card v-if="this.comments.content">
                                     <div>
                                         <h2> Sách chưa có bình luận </h2>
                                     </div>
                                 </v-card>
-                                <v-card v-else color="secondary">
+                                <v-card v-else>
                                     <div class="list-comment">
-                                        <div class="comment-item" v-for="comment in this.comments" :key="comment.id">
+                                        <div class="comment-item" v-for="comment in this.comments.content" :key="comment.id">
                                             <div class="author-comment">
-                                                <h4>{{ comment.user.name }} - {{ comment. createdAt}} </h4>
+                                                <h4>{{ comment.user.name }} - {{ comment.createdAt }} </h4>
                                                 <p> {{ comment.content }} </p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="text-xs-center">
                                         <v-pagination
-                                            v-model="page"
+                                            v-model="this.current_page"
                                             :length="this.comments.totalPages"
                                         />
                                     </div>
@@ -128,7 +127,7 @@ export default {
     async mounted () {
         await axios({
             method: 'get',
-            url: `https://ptdapmback.herokuapp.com/v1/api/comments/book/${this.$route.query.bookId}?page=${this.current_page}&limit=5`,
+            url: `https://ptdapmback.herokuapp.com/v1/api/comments/book/${this.$route.query.bookId}?page=${this.current_page}&limit=5`
         })
         .then(response => {
             this.comments = response.data
