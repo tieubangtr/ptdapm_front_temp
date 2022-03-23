@@ -36,6 +36,9 @@
                     </td>
                 </tr>
             </table>
+            <div class="payging" v-if="this.totalPage>=2">
+                <div v-for="(data,index) in dataTotal" :key="index" class="number" @click="handlePayging(data+1)">{{data+1}}</div>
+            </div>
         </v-container>
     </div>
 </template>
@@ -45,26 +48,68 @@ export default {
     data() {
         return {
             datas:[],
+            totalPage:'',
+            dataTotal:[]
         }
     },
     mounted () {
-        axios.get(`https://ptdapmback.herokuapp.com/v1/api/borrowings?page=0&limit=5&sort=id&filter-field=user.id&filter-operator=EQUALS&filter-value=${JSON.parse(localStorage.getItem('User')).id}`,{
+        axios.get(`https://ptdapmback.herokuapp.com/v1/api/borrowings?page=0&limit=4&sort=id&filter-field=user.id&filter-operator=EQUALS&filter-value=${JSON.parse(localStorage.getItem('User')).id}`,{
             headers: {
                 Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`
             }
         })
         .then((res)=>{
             console.log(res.data);
+            this.totalPage=res.data.totalPages
             this.datas=res.data.content
+            this.payging(this.totalPage)
         })
         .catch((err)=>{
             console.log(err.response.data);
         })
+    },
+    methods:{
+        payging(total){
+            for(let i=0;i<total;i++){
+                this.dataTotal.push(i)
+            }
+        },
+        handlePayging(number){
+            axios.get(`https://ptdapmback.herokuapp.com/v1/api/borrowings?page=${number-1}&limit=4&sort=id&filter-field=user.id&filter-operator=EQUALS&filter-value=${JSON.parse(localStorage.getItem('User')).id}`,{
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`
+                }
+            })
+            .then((res)=>{
+                console.log(res.data);
+                this.datas=res.data.content
+            })
+            .catch((err)=>{
+                console.log(err.response.data);
+            })
+        }
     }
 }
 </script>
 
 <style scoped>
+.payging{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:20px 0;
+}
+.number{
+    padding:10px 20px;
+    border-radius:5px ;
+    box-shadow: 0 0 3px #999;
+    margin:0 10px;
+    cursor: pointer;
+}
+.number:hover{
+    background-color:#f5f5f5;
+}
 .book{
     color:green;
 }

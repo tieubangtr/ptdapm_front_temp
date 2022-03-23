@@ -101,13 +101,16 @@ export default {
             else if(this.form.newPassword.trim().length<=6){
                 this.check.newPassword='Mật khẩu phải lớn hơn 6 kí tự'
             }
+            else if(this.form.newPassword.trim()===this.form.password.trim()){
+                this.check.newPassword='Mật khẩu mới không được trùng với mật khẩu cũ'
+            }
             if(this.form.oldNewPassword.trim()!=this.form.newPassword.trim()){
                 this.check.oldNewPassword='Mật khẩu không khớp'
             }
         },
         handleSave(){
             this.validate()
-            if(!this.check.passwords&&!this.check.oldPasswords&&!this.newPasswords){
+            if(!this.check.password&&!this.check.oldNewPassword&&!this.newPassword){
                 var config = {
                     method: "put",
                     url:
