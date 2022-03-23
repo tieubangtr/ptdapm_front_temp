@@ -189,11 +189,11 @@
                         </v-row>
                         <v-row>
                           <v-col cols="12" sm="6">
-                            <v-text-field
-                              type="file"
-                              label="Ảnh minh họa"
-                              @change="onFileUploadChanged"
-                            />
+                            <input 
+                                ref="uploader" 
+                                type="file" 
+                                @change="onFileUploadChanged"
+                            >
                           </v-col>
                         </v-row>
                       </v-card-text>
@@ -394,11 +394,11 @@
                             max-width="500px"
                             
                           />
-                          <v-text-field
-                            type="file"
-                            label="File input"
-                            @change="onFileUploadChanged"
-                          ></v-text-field>
+                          <input 
+                              ref="uploader" 
+                              type="file" 
+                              @change="onFileUploadChanged"
+                          >
                         </v-row>
                       </v-card-text>
                     </v-form>
@@ -616,9 +616,6 @@ export default {
           .then((response) => {
             console.log(response);
             // Notice: Success message here, delay ???
-            for (var value of this.formData.values()) {
-              console.log(value);
-            }
             axios
               .post(
                 "https://ptdapmback.herokuapp.com/v1/api/auth/files",
@@ -626,7 +623,7 @@ export default {
                 {
                   headers: {
                     "Content-Type": "multipart/form-data",
-                    Authorization: "Bearer " + accessToken,
+                    'Authorization': "Bearer " + accessToken,
                   },
                 }
               )
@@ -717,8 +714,6 @@ export default {
       this.formData = new FormData();
       this.formData.append("file", this.selectedFile);
       this.bookData.image = this.selectedFile.name;
-      // var imgUpdate = document.getElementById('update-img');
-      // imgUpdate.src = URL.createObjectURL(this.selectedFile);
     },
   },
 };

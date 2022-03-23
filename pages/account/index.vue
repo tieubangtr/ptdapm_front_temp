@@ -127,14 +127,14 @@
                         text
                         @click="showDialogChangePassword = false"
                         >
-                        Hủy bỏ
+                        Hủy
                         </v-btn>
                         <v-btn
-                        color="primary"
+                        color="warning"
                         text
                         @click="updatePasswordConfirm()"
                         >
-                        Xác nhận
+                        Cập nhật
                         </v-btn>
                     </v-card-actions>
                     </v-card>
