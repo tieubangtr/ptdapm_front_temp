@@ -28,6 +28,7 @@
                 :headers="complex.headers"
                 :search="search"
                 :items="listData"
+                :items-per-page="20"
                 class="elevation-1"
                 item-key="name"
               >
@@ -44,10 +45,7 @@
                   <td>{{ props.item.phone }}</td>
                   <td>
                     <v-btn depressed outline icon fab dark color="primary" small @click="getDetail(props.item.id)">
-                      <v-icon>visibility</v-icon>
-                    </v-btn>
-                    <v-btn depressed outline icon fab dark color="orange" small @click="getDetail(props.item.id)">
-                      <v-icon>edit</v-icon>
+                      <v-icon>info</v-icon>
                     </v-btn>
                     <v-btn depressed outline icon fab dark color="pink" small @click="remove(props.item.id)"> 
                       <v-icon>delete</v-icon>
@@ -60,7 +58,7 @@
           <!-- Delete user dialog -->
           <template>
               <!-- Confirm dialog -->
-              <v-dialog v-model="showDialogDeleteConfirm" persistent max-width="500px">
+              <v-dialog v-model="showUserDeleteDialog" persistent max-width="500px">
                 <v-card>
                   <v-card-title>
                     <span class="headline">Xóa người dùng</span>
@@ -68,7 +66,7 @@
                   <v-divider></v-divider>
                   <v-spacer></v-spacer>
                   <v-card-text class="d-flex justify-center">
-                    <h4 class="d-inline-block">Xóa xong thì là mất, đừng có đi tìm nhé ?</h4>
+                    <h4 class="d-inline-block">Chắc chắn muốn xóa người dùng này khỏi hệ thống ?</h4>
                   </v-card-text>
                   <v-spacer></v-spacer>
                   <v-card-actions>
@@ -76,7 +74,7 @@
                     <v-btn
                       color="error"
                       text
-                      @click="showDialogDeleteConfirm = false"
+                      @click="showUserDeleteDialog = false"
                     >
                       Hủy bỏ
                     </v-btn>
@@ -147,7 +145,7 @@
                     <v-btn
                       color="error"
                       text
-                      @click="closeInsertDialog()"
+                      @click="closeDialog('insert')"
                     >
                       Hủy bỏ
                     </v-btn>
@@ -161,6 +159,71 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
+              <v-dialog v-model="showUserDetailDialog" persistent max-width="500px">
+                <v-card>
+                    <v-card-title>
+                    <span class="headline">Thông tin nhân viên</span>
+                    </v-card-title>
+                    <v-divider></v-divider>
+                    <v-card-text>
+                      <v-container grid-list-md>
+                          <v-form ref="form">
+                              <v-card-text>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field v-model="userData.name" label="Họ và tên" readonly/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="email" v-model="userData.email" label="Email" readonly/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field v-model="userData.phone" label="Số điện thoại" readonly/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="date" v-model="userData.birthday" label="Ngày sinh" readonly/>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-select
+                                      v-model="userData.gender"
+                                      :items="gender"
+                                      item-text="gender"
+                                      item-value="gender"
+                                      label="Giới tính"
+                                      persistent-hint
+                                      single-line
+                                      readonly
+                                      ></v-select>
+                                  </v-col>
+                                  </v-row>
+                                  <v-row>
+                                  <v-col cols="12" sm="6">
+                                      <v-text-field type="text" v-model="userData.addr" label="Địa chỉ" readonly/>
+                                  </v-col>
+                                  </v-row>
+                              </v-card-text>
+                          </v-form>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="error"
+                      text
+                      @click="closeDialog('detail')"
+                    >
+                      Đóng
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
           </template>
         </v-flex>
       </v-layout>
@@ -169,7 +232,6 @@
 </template>
 
 <script>
-  import {Items as Users} from '@/api/user';
   import UserDataForm from '@/components/user/UserDataForm'
   import UserAdd from '@/components/user/UserAdd'
   import axios from 'axios';
@@ -198,9 +260,9 @@
             ]
           },
         gender: ['Nam', 'Nữ'],
-        showDialogDeleteConfirm: false,
-        showUserDataDialog: false,
         showUserInsertDialog: false,
+        showUserDetailDialog: false,
+        showUserDeleteDialog: false,
         currentSelectedUser: -1,
         complex: {
           selected: [],
@@ -262,8 +324,16 @@
         }
       },
       validate(object){
-        delete object.img;
-        return Object.values(object).every(x => x === null || x === '');
+        if(object.addr == ''){
+          return false;
+        }else if(object.birthday == ''){
+          return false;
+        }else if(object.phone == '' || object.phone.length > 10){
+          return false;
+        }else if(object.email == ''){
+          return false;
+        }
+        return true;
       },
       initialize () {
         var data = '';
@@ -297,14 +367,14 @@
           console.log(JSON.stringify(response.data));
           this.currentSelectedUser = response.data.id;
           this.userData = response.data;
-          this.showUserDataDialog = true;
+          this.showUserDetailDialog = true;
         })
         .catch(error => {
           console.log(error);
         });
       },
       insertConfirm(){
-        if(this.userData != null && !this.validate(this.userData)){
+        if(this.userData != null && this.validate(this.userData)){
           var data = JSON.stringify(this.userData);
           console.log(data);
           var config = {
@@ -321,63 +391,29 @@
             console.log(response)
             // Notice: Success message here, delay ???
             this.setToDefault();
+            this.$toasted.success("Thêm mới nhân viên thành công").goAway(2000);
             this.showUserInsertDialog = false;
-            this.$router.go()
+            this.$router.go();
           })
           .catch(error => {
             console.log(error);
           });
+        }else{
+
         }
       },
-      closeInsertDialog(){
+      closeDialog(requestType){
         this.setToDefault();
-        this.showUserInsertDialog = false;
-      },
-      update(){
-        console.log(this.userData);
-        if(this.userData != null){
-          // var data = JSON.stringify({
-          //   "addr": "string",
-          //   "birthday": "2022-03-12",
-          //   "email": "string",
-          //   "gender": "string",
-          //   "id": 0,
-          //   "img": "null",
-          //   "name": "string",
-          //   "noneLocked": true,
-          //   "password": "string",
-          //   "phone": "string",
-          //   "roles": [
-          //     {
-          //       "id": 0,
-          //       "name": "ROLE_USER"
-          //     }
-          //   ]
-          // });
-          var data = JSON.stringify(this.userData);
-
-          var config = {
-            method: 'put',
-            url: 'https://ptdapmback.herokuapp.com/v1/api/users/' + this.currentSelectedUser,
-            headers: { 
-              'Authorization': 'Bearer ' + localStorage.getItem("accessToken")
-            },
-            data : data
-          };
-          axios(config)
-          .then(response => {
-            console.log(response)
-            //Notice: Success message here, delay ???
-            this.showUserDataDialog = false
-            this.$router.go()
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        if(requestType == 'detail'){
+          this.showUserDetailDialog = false;
+        }else if(requestType == 'insert'){
+          this.showUserInsertDialog = false;
+        }else if(requestType == 'delete'){
+          this.showUserDeleteDialog = false;
         }
       },
       remove(userId){
-        this.showDialogDeleteConfirm = true
+        this.showUserDeleteDialog = true
         this.currentSelectedUser = userId
         console.log(userId);
         console.log(this.currentSelectedUser)
@@ -394,15 +430,17 @@
           axios(config)
           .then(response => {
             console.log(response)
-            this.showDialogDeleteConfirm = false;
-            this.$router.go();
+            this.$toasted.success("Xóa người dùng thành công").goAway(3000);
+            this.showUserDeleteDialog = false;
             //Notice: Do some thing to remove datatable data
           })
           .catch(error => {
             console.log(error);
+            this.$toasted.error("Xóa người dùng không thành công, đã có lỗi xảy ra").goAway(3000);
+            this.showUserDeleteDialog = false;
           });
         }else{
-          this.showDialogDeleteConfirm = false
+          this.showUserDeleteDialog = false
         }
       },
     },
