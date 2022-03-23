@@ -125,7 +125,7 @@ import axios from 'axios'
             })
             .catch((err)=>{
               console.log(err.response.data);
-              this.check.password = 'Tài khoản hoặc mật khẩu không chính xác!';
+              this.check.password = 'Email hoặc mật khẩu không chính xác!';
               this.loading = false;
             })
         }

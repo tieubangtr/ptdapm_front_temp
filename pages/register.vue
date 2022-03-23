@@ -129,7 +129,7 @@ export default {
             }
             else if(this.form.name.trim().length>50){
                 this.loading=false
-                this.check.name='tên vượt quá 50 kí tự'
+                this.check.name='Tên vượt quá 50 kí tự'
             }
             else if(this.checkName(this.form.name.trim())){
                 this.loading=false
@@ -155,6 +155,10 @@ export default {
                 this.loading=false
                 this.check.phone='Số điện thoại không hợp lệ (lớn hơn 8 và nhỏ hơn 10 số)'
             }
+            else if(this.form.phone.trim().split('')[0]!=0){
+                this.loading=false
+                this.check.phone='Vui lòng nhập số điện thoại'
+            }
             if(!this.form.email.trim()){
                 this.loading=false
                 this.check.email='Vui lòng nhập dòng này'
@@ -170,6 +174,10 @@ export default {
             else if(this.form.password.trim().length<=6){
                 this.loading=false
                 this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
+            }
+            else if(this.form.password.trim().length>20){
+                this.loading=false
+                this.check.password='Mật khẩu tối đa 20 kí tự'
             }
             if(!this.form.birthday){
                 this.loading=false
@@ -239,8 +247,19 @@ export default {
                     this.loading=false
                 })
                 .catch((err)=>{
-                    if(err.response.data.apierror.debugMessage=='Email và phone number đã tồn tại'){
-                        this.note='Email hoặc phone number đã tồn tại'
+                    if(err.response.data.apierror.debugMessage){
+                        console.log(err.response.data.apierror.debugMessage.split(',')[0]);
+                        if(err.response.data.apierror.debugMessage.split(',')[0]==='Email: đã tồn tại')
+                        {
+                            this.check.email=err.response.data.apierror.debugMessage.split(',')[0]
+                            if(err.response.data.apierror.debugMessage.split(',')[1]){
+                                this.check.phone=err.response.data.apierror.debugMessage.split(',')[1]
+                            }
+                        }
+                        else if(err.response.data.apierror.debugMessage.split(',')[0]==='Phone number: đã tồn tại'){
+                            this.check.phone=err.response.data.apierror.debugMessage.split(',')[0]
+                        }
+                        this.loading=false
                     }
                     else{
                         this.note='Đăng kí thất bại. Vui lòng kiểm tra lại thông tin!'
@@ -251,7 +270,6 @@ export default {
         },
         handleToask(){
             this.toask=false
-            this.$router.push('login')
         }
     }
 }
