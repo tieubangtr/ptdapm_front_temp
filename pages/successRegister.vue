@@ -18,7 +18,7 @@ export default {
         }
     },
     mounted(){
-        axios.get(`http://localhost:8080/v1/api/auth/verify?token=${this.$route.query.token}`)
+        axios.get(`https://ptdapmback.herokuapp.com/v1/api/auth/verify?token=${this.$route.query.token}`)
         .then((res)=>{
             this.success=true
         })

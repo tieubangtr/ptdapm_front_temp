@@ -3,7 +3,7 @@
         <Header/>
         <div style="background-color:#f5f5f5;">
             <v-container>
-                <v-layout class="names" style="height:60vh"> 
+                <v-layout class="names" style="height:70vh"> 
                     <v-flex lg5 class="menu">
                         <div class="outImg">
                             <img src="/img/logoDHTL.png" alt="Ảnh đại diện" class="img">
@@ -57,6 +57,14 @@
                         </v-layout>
                         <v-layout class="name">
                             <v-flex lg3>
+                                Giới tính
+                            </v-flex>
+                            <v-flex lg3>
+                                {{ datas.gender }}
+                            </v-flex>
+                        </v-layout>
+                        <v-layout class="name">
+                            <v-flex lg3>
                                 Địa chỉ
                             </v-flex>
                             <v-flex lg3>
@@ -92,6 +100,7 @@ export default {
         })
         .then((res)=>{
             this.datas=res.data;
+            console.log(this.datas);
         })
         .catch((err)=>{
             console.log(err.response.data);

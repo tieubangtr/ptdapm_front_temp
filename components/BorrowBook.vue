@@ -130,8 +130,6 @@ export default {
     },
     methods: {
         register(){
-            this.check=true
-            this.$emit("update-check", this.check);
             this.date=document.getElementById('payDate').value
             this.form.userId=JSON.parse(localStorage.getItem('User')).id
             const apointment= new Date()
@@ -148,8 +146,8 @@ export default {
             })
             .then((err)=>{
                 console.log(err.data);
-                let myToast = this.$toasted.success("Holla !!");
-                myToast.text("Mượn sách thành công").goAway(2000);
+                this.check=true
+                this.$emit("update-check", this.check);
             })
             .catch((err)=>{
                 console.log(err.response.data);

@@ -54,10 +54,10 @@ export default {
                 email:'',
                 note:''
             }
-            if(!this.form.email){
+            if(!this.form.email.trim()){
                 this.check.email='Vui lòng nhập dòng này'
                 this.loading=false
-            }else if(!this.isEmail(this.form.email)){
+            }else if(!this.isEmail(this.form.email.trim())){
                 this.check.email='Dòng này phải là email'
                 this.loading=false
             }
@@ -73,7 +73,8 @@ export default {
             e.preventDefault();
             if(!this.check.email){
                 try{
-                    axios.post(`https://ptdapmback.herokuapp.com/v1/api/auth/forgotPassword?email=${this.form.email}`,)
+
+                    axios.post(`https://ptdapmback.herokuapp.com/v1/api/auth/forgotPassword?email=${this.form.email.trim()}`,)
                     .then((res)=>{
                         this.loading=false
                         localStorage.setItem('tokenPass',res.data)

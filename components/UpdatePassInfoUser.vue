@@ -3,7 +3,7 @@
         <Header/>
         <div style="background-color:#f5f5f5;">
             <v-container>
-                <v-layout style="height:60vh">
+                <v-layout style="height:70vh">
                     <v-flex lg5 class="menu">
                         <div class="outImg">
                             <img src="/img/logoDHTL.png" alt="Ảnh đại diện" class="img">
@@ -24,29 +24,32 @@
                     <v-flex lg7 class="infoUser">
                         <h3 class="header">Đổi Mật Khẩu Của Bạn</h3>
                         <v-text-field  
-                            label="Mật khẩu hiện tại" 
+                            label="Mật khẩu cũ" 
                             type="password"
-                            v-model="password"
+                            v-model="form.password"
+                            @focus="check.password=''"
                         >
                         </v-text-field>
-                        <!-- <div class="validation">{{this.check.password}}</div> -->
+                        <div class="validation">{{this.check.password}}</div>
                         <v-text-field  
                             label="Mật khẩu mới" 
                             type="password"
-                            v-model="newPassword"
+                            v-model="form.newPassword"
+                            @focus="check.newPassword=''"
                         >
                         </v-text-field>
-                        <!-- <div class="validation">{{this.check.newPassword}}</div> -->
+                        <div class="validation">{{this.check.newPassword}}</div>
                         <v-text-field 
                             label="Nhập lại mật khẩu mới" 
                             type="password"
-                            v-model="newOldPassword"
+                            v-model="form.oldNewPassword"
+                            @focus="check.oldNewPassword=''"
                         >
-                        <!-- <div class="validation">{{this.check.newOldPassword}}</div> -->
                         </v-text-field>
+                        <div class="validation">{{this.check.oldNewPassword}}</div>
                         <div class="btnGroup">
                             <span class="cancel">Hủy</span>
-                            <span class="save" @click="handleSave">Lưu</span>
+                            <span class="save" @click="handleSave">Cập nhật</span>
                         </div>
                     </v-flex>
                 </v-layout>
@@ -70,48 +73,45 @@ export default {
                 idUser:JSON.parse(localStorage.getItem('User')).id,
                 password:'',
                 newPassword:'',
-                newOldPassword:''
+                oldNewPassword:''
             },
-            // check:{
-            //     passwords:'',
-            //     newPasswords:'',
-            //     newOldPasswords:''
-            // }
+            check:{
+                password:'',
+                newPassword:'',
+                oldNewPassword:''
+            }
         }
     },
     methods: {
-        // validate(){
-        //     this.check={
-        //         passwords:'',
-        //         newPasswords:'',
-        //         newOldPasswords:''
-        //     }
-        //     if(!this.form.password){
-        //         this.check.passwords='Vui lòng nhập dòng này'
-        //     }
-        //     else if(this.form.password.length<=6){
-        //         this.check.passwords='Mật khẩu phải lớn hơn 6 kí tự'
-        //     }
-        //     if(!this.form.newPassword){
-        //         this.check.newPasswords='Vui lòng nhập dòng này'
-        //     }
-        //     else if(this.form.newPassword.length<=6){
-        //         this.check.newPasswords='Mật khẩu phải lớn hơn 6 kí tự'
-        //     }
-        //     if(!this.form.newOldPassword){
-        //         this.check.newOldPasswords='Vui lòng nhập dòng này'
-        //     }
-        //     else if(this.form.newPassword!==this.form.newOldPassword){
-        //         this.check.newOldPasswords='Mật khẩu không khớp nhau'
-        //     }
-        // },
+        validate(){
+            this.check={
+                password:'',
+                newPassword:'',
+                oldNewPassword:''
+            }
+            if(!this.form.password.trim()){
+                this.check.password='Vui lòng nhập dòng này'
+            }
+            else if(this.form.password.trim().length<=6){
+                this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
+            }
+            if(!this.form.newPassword.trim()){
+                this.check.newPassword='Vui lòng nhập dòng này'
+            }
+            else if(this.form.newPassword.trim().length<=6){
+                this.check.newPassword='Mật khẩu phải lớn hơn 6 kí tự'
+            }
+            if(this.form.oldNewPassword.trim()!=this.form.newPassword.trim()){
+                this.check.oldNewPassword='Mật khẩu không khớp'
+            }
+        },
         handleSave(){
-            // this.validate()
-            // if(!this.check.passwords&&!this.check.newOldPasswords&&!this.newPasswords){
+            this.validate()
+            if(!this.check.passwords&&!this.check.oldPasswords&&!this.newPasswords){
                 var config = {
                     method: "put",
                     url:
-                        `https://ptdapmback.herokuapp.com/v1/api/users/${JSON.parse(localStorage.getItem('User')).id}/password?newPassword=${this.newPassword}&oldPassword=${this.password}`,
+                        `https://ptdapmback.herokuapp.com/v1/api/users/${JSON.parse(localStorage.getItem('User')).id}/password?newPassword=${this.form.newPassword.trim()}&oldPassword=${this.form.password.trim()}`,
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('User')).token,
@@ -123,10 +123,11 @@ export default {
                     myToast.text("Đổi mật khẩu thành công").goAway(2000);
                 })
                 .catch((error) => {
+                    console.log(error.response.data);
                     let myToast = this.$toasted.error("Holla !!");
                     myToast.text("Đổi mật khẩu thất bại").goAway(2000);
                 });
-            // }
+            }
         }
     }
 }

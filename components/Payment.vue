@@ -26,8 +26,12 @@
                     </td>
                     <td>
                         <div class="id">
-                            <div v-for="(borrow,index) in data.borrowingItems" :key="index" class="book" v-show="!borrow.book.status">Đang mượn</div>
-                            <div v-for="(borrow,index) in data.borrowingItems" :key="index" v-show="borrow.book.status">Đã trả</div>
+                            <div class="id">
+                                <div v-for="(borrow,index) in data.borrowingItems" :key="index" >
+                                    <span v-if="!borrow.status " class="book">Đang mượn</span>
+                                    <span v-if="borrow.status ">Đã trả</span>
+                                </div>
+                            </div>
                         </div>
                     </td>
                 </tr>

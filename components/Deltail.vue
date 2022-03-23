@@ -39,10 +39,14 @@
                 </v-layout>
             </v-flex>
         </v-layout>
+        <div class="tabs">
+            <Comment :description="this.datas.content" :bookId="this.datas.id"/>
+        </div>
     </v-container>
 </template>
 <script>
 import axios from 'axios'
+import Comment from './comments/comments.vue'
 export default {
     data(){
         return {
@@ -65,14 +69,14 @@ export default {
             console.log(this.datas);
         })
         .catch((err)=>{
-            console.log(err.response.data);
+            // console.log(err.response.data);
         })
     },
     methods: {
         handleAddcart(){
             if(JSON.parse(localStorage.getItem('User'))){
                 const form={
-                    bookId:+this.$route.query.bookId,
+                    bookId:this.$route.query.bookId,
                     cartId:JSON.parse(localStorage.getItem('User')).id
                 }
                 const forms=JSON.stringify(form)
@@ -99,12 +103,15 @@ export default {
         },
         handleBorrow(){
             if(JSON.parse(localStorage.getItem('User'))){
-               this.$router.push(`/homepage/borrow?bookId=${this.datas.id}`)
+               this.$router.push(`/homepage/borrow?bookId=${this.form.bookId}`)
             }
             else{
                 this.$router.push('/login')
             }
         }
+    },
+    components: {
+        Comment
     }
 }
 </script>
