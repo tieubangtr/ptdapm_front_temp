@@ -61,6 +61,10 @@ export default {
                 this.check.email='Dòng này phải là email'
                 this.loading=false
             }
+            else if(this.form.email.trim().length>30){
+                this.loading=false
+                this.check.email='Email không quá 30 kí tự'
+            }
         },
         isEmail(email){
             return email.match(

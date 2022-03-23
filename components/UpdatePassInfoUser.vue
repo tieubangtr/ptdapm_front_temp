@@ -95,6 +95,10 @@ export default {
             else if(this.form.password.trim().length<=6){
                 this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
             }
+            else if(this.form.password.trim().length>20){
+                this.loading=false
+                this.check.password='Mật khẩu tối đa 20 kí tự'
+            }
             if(!this.form.newPassword.trim()){
                 this.check.newPassword='Vui lòng nhập dòng này'
             }
@@ -102,10 +106,18 @@ export default {
                 this.check.newPassword='Mật khẩu phải lớn hơn 6 kí tự'
             }
             else if(this.form.newPassword.trim()===this.form.password.trim()){
-                this.check.newPassword='Mật khẩu mới không được trùng với mật khẩu cũ'
+                this.check.newPassword='Mật khẩu mới trùng với mật khẩu cũ. Mời nhập lại'
+            }
+            else if(this.form.newPassword.trim().length>20){
+                this.loading=false
+                this.check.newPassword='Mật khẩu tối đa 20 kí tự'
             }
             if(this.form.oldNewPassword.trim()!=this.form.newPassword.trim()){
                 this.check.oldNewPassword='Mật khẩu không khớp'
+            }
+            else if(this.form.oldNewPassword.trim().length>20){
+                this.loading=false
+                this.check.oldNewPassword='Mật khẩu tối đa 20 kí tự'
             }
         },
         handleSave(){
@@ -127,8 +139,14 @@ export default {
                 })
                 .catch((error) => {
                     console.log(error.response.data);
-                    let myToast = this.$toasted.error("Holla !!");
-                    myToast.text("Đổi mật khẩu thất bại").goAway(2000);
+                    if(error.response.data.apierror.debugMessage=='Old password is not correct'){
+                        let myToast = this.$toasted.error("Holla !!");
+                        myToast.text("Nhập sai mật khẩu cũ").goAway(2000);
+                    }
+                    else{
+                        let myToast = this.$toasted.error("Holla !!");
+                        myToast.text("Đổi mật khẩu thất bại").goAway(2000);
+                    }
                 });
             }
         }
