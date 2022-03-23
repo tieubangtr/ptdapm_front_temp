@@ -1,7 +1,6 @@
 <template>
     <v-container>
         <v-tabs>
-            <v-tabs-slider color="gray"></v-tabs-slider>
             <v-tab href="#tab-1">
                 Sự miêu tả
             </v-tab>
@@ -36,7 +35,12 @@
                                 </v-card>
                             </v-flex>
                             <v-flex xs6>
-                                <v-card color="secondary">
+                                <v-card v-if="this.comments.length == 0">
+                                    <div>
+                                        <h2> Sách chưa có bình luận </h2>
+                                    </div>
+                                </v-card>
+                                <v-card v-else color="secondary">
                                     <div class="list-comment">
                                         <div class="comment-item" v-for="comment in this.comments" :key="comment.id">
                                             <div class="author-comment">
@@ -44,6 +48,12 @@
                                                 <p> {{ comment.content }} </p>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="text-xs-center">
+                                        <v-pagination
+                                            v-model="page"
+                                            :length="this.comments.totalPages"
+                                        />
                                     </div>
                                 </v-card>
                             </v-flex>
@@ -70,7 +80,8 @@ export default {
             },
             user: JSON.parse(localStorage.getItem('User')),
             comments: [],
-            book_id: this.bookId
+            book_id: this.bookId,
+            current_page: 0
         }
     },
     methods: {
@@ -82,41 +93,42 @@ export default {
             }
         },
         async submitForm() {
-            if(this.validate_comment()) {
-                await axios({
-                            method: 'post',
-                            url: 'https://ptdapmback.herokuapp.com/v1/api/comments',
-                            data: {
-                                bookId: this.bookId,
-                                content: this.comment,
-                                parentId: 0,
-                                userId: this.user.id
-                            },
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${this.user.token}`
-                            }
-                        })
-                        .then((response) => {
-                            this.comment = ''
-                            this.comments.unshift(response.data)
-                        })
-                        .catch((error) => {
-                            console.log(error.response.data)
-                        })
+            if (this.user) {
+                if(this.validate_comment()) {
+                    await axios({
+                                method: 'post',
+                                url: 'https://ptdapmback.herokuapp.com/v1/api/comments',
+                                data: {
+                                    bookId: this.bookId,
+                                    content: this.comment,
+                                    id: 0,
+                                    parentId: 0,
+                                    userId: this.user.id
+                                },
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${this.user.token}`
+                                }
+                            })
+                            .then((response) => {
+                                this.comment = ''
+                                this.comments.unshift(response.data)
+                            })
+                            .catch((error) => {
+                                console.log(error.response.data)
+                            })
+                } else {
+                    this.validate.comment = 'Bình luận không được để trống' 
+                }
             } else {
-                this.validate.comment = 'Bình luận không được để trống' 
+                this.$router.push('/login')
             }
         }
     },
     async mounted () {
         await axios({
             method: 'get',
-            url: `https://ptdapmback.herokuapp.com/v1/api/comments/book/${this.$route.query.bookId}`,
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${this.user.token}`
-            }
+            url: `https://ptdapmback.herokuapp.com/v1/api/comments/book/${this.$route.query.bookId}?page=${this.current_page}&limit=5`,
         })
         .then(response => {
             this.comments = response.data
