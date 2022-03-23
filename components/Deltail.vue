@@ -62,8 +62,14 @@ export default {
     mounted (){
         axios.get(`https://ptdapmback.herokuapp.com/v1/api/books/${this.form.bookId}`)
         .then((res)=>{
+            console.log(res.data);
             this.datas=res.data
-            this.author=res.data.authors[0].name
+            if(res.data.authors[0]){
+                this.author=res.data.authors[0].name
+            }
+            else{
+                this.author='Chưa có tác giả'
+            }
             this.category=res.data.category.name
             this.publisher=res.data.publisher.name
             console.log(this.datas);
