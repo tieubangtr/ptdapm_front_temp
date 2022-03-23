@@ -85,8 +85,12 @@ import axios from 'axios'
               this.loading=false
           }
           else if(!this.isEmail(this.form.username.trim())){
-              this.check.username='Dòng này phải là email'
+              this.check.username='Email không hợp lệ'
               this.loading=false
+          }
+          else if(this.form.username.trim().length>30){
+              this.loading=false
+              this.check.username='Email không quá 30 kí tự'
           }
           if(!this.form.password.trim()){
               this.check.password='Vui lòng nhập mật khẩu'
@@ -95,6 +99,10 @@ import axios from 'axios'
           else if(this.form.password.trim().length<=6){
               this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
               this.loading=false
+          }
+          else if(this.form.password.trim().length>20){
+              this.loading=false
+              this.check.password='Mật khẩu tối đa 20 kí tự'
           }
       },
       isEmail(email){

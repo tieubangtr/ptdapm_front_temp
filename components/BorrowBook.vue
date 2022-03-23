@@ -52,7 +52,7 @@
                                 </div>
                             </v-flex>
                             <v-flex lg8 sm12 xs12 class="infoCart pa-2">
-                                <h3 class="name">{{name}}</h3>
+                                <h3 class="name">{{datas.name}}</h3>
                                 <span class="author">{{author}}</span>
                                 <span class="author">ID:{{publisher}}</span>
                             </v-flex>
@@ -104,8 +104,13 @@ export default {
         .then((res)=>{
             console.log(res.data);
             this.datas=res.data
-            this.author=res.data.authors[0].name,
-            this.name=res.data.name,
+            if(res.data.authors[0]){
+                this.author=res.data.authors[0].name
+            }
+            else{
+                this.author='chưa có tác giả'
+            }
+            console.log(res.data.publisher);
             this.publisher=res.data.publisher.name
 
             
@@ -123,6 +128,24 @@ export default {
             .catch((err)=>{
                 console.log(err.response.data);
             })
+            // var config = {
+            //     method: "get",
+            //     url:
+            //         `https://ptdapmback.herokuapp.com/v1/api/users/${JSON.parse(localStorage.getItem('User')).id}`,
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('User')).token,
+            //     },
+            // };
+            // axios(config)
+            // .then((res) => {
+            //     console.log(res.data);
+            //     this.getData.name=res.data.name;
+            //     this.getData.addr=res.data.addr;
+            // })
+            // .catch((error) => {
+            //     console.log(error.response.data);
+            // });
         })
         .catch((err)=>{
             console.log(err.response.data);

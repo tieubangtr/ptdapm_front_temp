@@ -2,7 +2,7 @@
     <div class="out">
         <div class="outurl">
             <v-container>
-                <div class="url">Trang chủ > Giỏ hàng</div>
+                <div class="url">Trang chủ > Giỏ sách</div>
             </v-container>
         </div>
         <v-container>
@@ -20,7 +20,9 @@
                 </v-flex>
                 <v-flex lg10 sm12 xs12 class="infoCart pa-2">
                     <h3 class="name">{{data.book.name}}</h3>
-                    <span class="author">{{data.book.authors[0].name}}</span>
+                    <span class="author" v-for="(author,index) in data.book.authors" :key="index">
+                        {{ author.name }}
+                    </span>
                     <span class="author">ID:{{data.id}}</span>
                     <span class="btnDelete" @click="handleDelete(data.id,index)">Xóa sách</span>
                 </v-flex>
@@ -63,7 +65,9 @@ export default {
             }
         })
         .then((res)=>{
-            this.datas=res.data.content[0].cartItems
+            if(res.data.content[0].cartItems){
+                this.datas=res.data.content[0].cartItems
+            }
             console.log(this.datas);
             console.log(res.data);
         })
@@ -81,7 +85,7 @@ export default {
             .then((res)=>{
                 console.log(res);
                 let myToast = this.$toasted.success("Holla !!");
-                myToast.text("Xóa sản phẩm thành công").goAway(2000);
+                myToast.text("Xóa sách khỏi giỏ thành công").goAway(2000);
                 console.log(index);
                 this.datas.splice(index,1)
             })

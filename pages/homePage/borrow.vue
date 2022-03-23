@@ -10,7 +10,7 @@
     <div v-if="this.checkRegister" class="background"></div>
     <div v-if="this.checkRegister" class="dialog">
       <div class="main">
-        <span class="text">Phiếu mượn của bạn đang chờ xác nhận từ thủ thư</span>
+        <span class="text">phiếu mượn đang được chờ xác nhận</span>
         <button class="btn" @click="checkRegister=false">Đồng ý</button>
       </div>
     </div>
