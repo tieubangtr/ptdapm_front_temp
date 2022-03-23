@@ -406,8 +406,9 @@
                       </v-flex>
                       <v-flex xs7>
                         <v-list three-line subheader>
-                          <v-subheader>Thông tin sách mượn</v-subheader>
-                          <v-list-tile>
+                          <!-- <v-subheader>Thông tin sách mượn</v-subheader> -->
+                          <div class="infoBook">Thông tin sách mượn</div>
+                          <v-list-tile class="top">
                             <v-layout
                               v-for="item in defaultData.borrowingItems"
                               :key="item.id"
@@ -448,10 +449,14 @@
                                   >Trả sách</v-btn
                                 >
                               </v-flex>
+                              <v-divider></v-divider>
+                              
                             </v-layout>
                             <v-spacer></v-spacer>
                           </v-list-tile>
+                          
                         </v-list>
+                        
                       </v-flex>
                     </v-layout>
                   </v-card>
@@ -870,6 +875,13 @@ export default {
 };
 </script>
 <style scoped>
+.top{
+  margin:100px 0;
+}
+.infoBook{
+  width: 100%;
+  margin:20px 0;
+}
 .outurl {
   width: 100%;
   border-bottom: 1px solid #999;
@@ -900,7 +912,7 @@ export default {
   display: block;
 }
 .cartProduct {
-  margin-top: 20px;
+  margin-top: 50px;
   padding: 10px 0;
   border-bottom: 1px solid rgb(216, 214, 214);
 }
@@ -912,7 +924,7 @@ export default {
 }
 .img {
   width: 100%;
-  height: 180px;
+  height: 120px;
 }
 .name {
   font-weight: 500;
