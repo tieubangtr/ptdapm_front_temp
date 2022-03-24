@@ -14,7 +14,7 @@
                                 <span class="name">
                                     {{ this.user.username }}
                                     <ul class="list">
-                                        <NuxtLink to='/InfoUser' style="text-decoration: none;"><li class="item">Tài khoản của tôi</li></NuxtLink>
+                                        <NuxtLink to='/InfoUser' style="text-decoration: none;"><li class="item">Tài khoản của bạn</li></NuxtLink>
                                         <li @click="handleLogout" class="item">Đăng xuất</li>
                                     </ul>
                                 </span> 

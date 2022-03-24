@@ -58,22 +58,27 @@ export default {
     },
     mounted (){
         // this.getData=JSON.stringify(this.getData)
-        axios.get(`https://ptdapmback.herokuapp.com/v1/api/carts?page=0&limit=5&sort=id&filter-field=user.id&filter-operator=EQUALS&filter-value=${this.form.userId}`,{
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`,
-            }
-        })
-        .then((res)=>{
-            if(res.data.content[0].cartItems){
-                this.datas=res.data.content[0].cartItems
-            }
-            console.log(this.datas);
-            console.log(res.data);
-        })
-        .catch((err)=>{
-            console.log(err.response.data);
-        })
+        if(JSON.parse(localStorage.getItem('User'))){
+            axios.get(`https://ptdapmback.herokuapp.com/v1/api/carts?page=0&limit=5&sort=id&filter-field=user.id&filter-operator=EQUALS&filter-value=${this.form.userId}`,{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`,
+                }
+            })
+            .then((res)=>{
+                if(res.data.content[0].cartItems){
+                    this.datas=res.data.content[0].cartItems
+                }
+                console.log(this.datas);
+                console.log(res.data);
+            })
+            .catch((err)=>{
+                console.log(err.response.data);
+            })
+        }
+        else{
+            this.$router.push('/login')
+        }
     },
     methods:{
         handleDelete(id,index){
