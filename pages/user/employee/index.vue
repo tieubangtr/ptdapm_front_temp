@@ -498,6 +498,7 @@ export default {
             console.log(response);
             this.$toasted.success("Xóa nhân viên thành công").goAway(3000);
             this.showUserDeleteDialog = false;
+            this.$router.go();
             //Notice: Do some thing to remove datatable data
           })
           .catch((error) => {
