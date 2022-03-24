@@ -129,15 +129,15 @@ export default {
             }
             else if(this.form.name.trim().length>50){
                 this.loading=false
-                this.check.name='Tên vượt quá 50 kí tự'
+                this.check.name='Nhập sai định dạng'
             }
             else if(this.checkName(this.form.name.trim())){
                 this.loading=false
-                this.check.name='Tên không được có kí tự đặc biệt và số'
+                this.check.name='Nhập sai định dạng'
             }
             else if(!this.checkNameNumber(this.form.name.trim())){
                 this.loading=false
-                this.check.name='Tên không được có kí tự đặc biệt và số'
+                this.check.name='Nhập sai định dạng'
             }
             if(!this.form.phone.trim()){
                 this.loading=false
@@ -145,19 +145,19 @@ export default {
             }
             else if(!this.isNumber(this.form.phone.trim())){
                 this.loading=false
-                this.check.phone='Vui lòng nhập số điện thoại'
+                this.check.phone='Nhập sai định dạng'
             }
             else if(this.form.phone.trim().length>10){
                 this.loading=false
-                this.check.phone='Số điện thoại không hợp lệ (lớn hơn 8 và nhỏ hơn 10 số)'
+                this.check.phone='Nhập sai định dạng'
             }
             else if(this.form.phone.trim().length<9){
                 this.loading=false
-                this.check.phone='Số điện thoại không hợp lệ (lớn hơn 8 và nhỏ hơn 10 số)'
+                this.check.phone='Nhập sai định dạng'
             }
             else if(this.form.phone.trim().split('')[0]!=0){
                 this.loading=false
-                this.check.phone='Vui lòng nhập số điện thoại'
+                this.check.phone='Nhập sai định dạng'
             }
             if(!this.form.email.trim()){
                 this.loading=false
@@ -169,7 +169,7 @@ export default {
             }
             else if(!this.isEmail(this.form.email.trim())){
                 this.loading=false
-                this.check.email='Dòng này phải là email'
+                this.check.email='Nhập sai định dạng'
             }
             if(!this.form.password.trim()){
                 this.loading=false
@@ -177,11 +177,11 @@ export default {
             }
             else if(this.form.password.trim().length<=6){
                 this.loading=false
-                this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
+                this.check.password='Nhập sai định dạng'
             }
             else if(this.form.password.trim().length>20){
                 this.loading=false
-                this.check.password='Mật khẩu tối đa 20 kí tự'
+                this.check.password='Nhập sai định dạng'
             }
             if(!this.form.birthday){
                 this.loading=false
@@ -209,13 +209,13 @@ export default {
             apointment=apointment.split('-')
             date=date.split('-')
             if(date[0]>apointment[0]){
-                return this.check.birthday='Ngày sinh không hợp lệ'
+                return this.check.birthday='Nhập sai định dạng'
             }
             if(date[1]>apointment[1]){
-                return this.check.birthday='Ngày sinh không hợp lệ'
+                return this.check.birthday='Nhập sai định dạng'
             }
             if(date[2]>apointment[2]){
-                return this.check.birthday='Ngày sinh không hợp lệ'
+                return this.check.birthday='Nhập sai định dạng'
             }
         },
         checkNameNumber(n){
@@ -259,13 +259,13 @@ export default {
                         console.log(err.response.data.apierror.debugMessage.split(',')[0]);
                         if(err.response.data.apierror.debugMessage.split(',')[0]==='Email: đã tồn tại')
                         {
-                            this.check.email=err.response.data.apierror.debugMessage.split(',')[0]
+                            this.check.email='Thông tin trùng, yêu cầu nhập lại'
                             if(err.response.data.apierror.debugMessage.split(',')[1]){
-                                this.check.phone=err.response.data.apierror.debugMessage.split(',')[1]
+                                this.check.phone='Thông tin trùng, yêu cầu nhập lại'
                             }
                         }
                         else if(err.response.data.apierror.debugMessage.split(',')[0]==='Phone number: đã tồn tại'){
-                            this.check.phone=err.response.data.apierror.debugMessage.split(',')[0]
+                            this.check.phone='Thông tin trùng, yêu cầu nhập lại'
                         }
                         this.loading=false
                     }
