@@ -49,7 +49,7 @@
                                     v-model= "userData.addr"
                                 ></v-text-field>        
                                 <div class="form-btn">
-                                    <v-btn outline @click="exitUpdate()" color="pink">Lưu</v-btn>
+                                    <v-btn outline @click="exitUpdate()" color="pink">Hủy</v-btn>
                                     <v-btn outline @click="updateInfo()" color="primary">Lưu</v-btn>
                                     <v-btn outline @click="updatePassword()" color="orange">Đổi mật khẩu</v-btn>
                                 </div>
