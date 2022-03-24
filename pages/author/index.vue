@@ -237,10 +237,11 @@ export default {
       return new Date(date).toLocaleDateString('en-GB');
     },
     validate(){
+        this.defaultData.name = this.defaultData.name.trim()
         var name = this.defaultData.name;
         console.log(name);
         console.log(!/^[a-zA-Z_ ]*$/.test(name.trim()));
-        if(name.trim() == "" || name.trim() == null || !/^[a-zA-Z_ ]*$/.test(name.trim())){
+        if(name == "" || name == null || /['`~!@#$%^&*()_|+-=?;:'",.<>\{\}\[\]\\\/]/.test(name)){
           this.$toasted.error("Tên tác giả không hợp lệ").goAway(3000);
           this.$refs["name"].$refs.input.focus();
           return false;

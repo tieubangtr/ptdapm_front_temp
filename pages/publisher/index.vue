@@ -120,7 +120,7 @@
                               ref="name"
                               v-model="defaultData.name"
                               label="Tên nhà xuất bản"
-                              maxlength="50"
+                              maxlength="255"
                             />
                           </v-col>
                         </v-row>
@@ -159,7 +159,7 @@
                               ref="name"
                               v-model="defaultData.name"
                               label="Tên nhà xuất bản"
-                              maxlength="50"
+                              maxlength="255"
                             />
                           </v-col>
                         </v-row>
@@ -237,8 +237,9 @@ export default {
       return new Date(date).toLocaleDateString('en-GB');
     },
     validate(){
-        var name = this.defaultData.name;
-        if(name.trim() == "" || name.trim() == null || !/^[a-zA-Z_ ]*$/.test(name.trim())){
+        var name = this.defaultData.name.trim();
+        this.defaultData.name = this.defaultData.name.trim()
+        if(name == "" || name == null || /['`~!@#$%^&*()_|+-=?;:'",.<>\{\}\[\]\\\/]/.test(name)){
           this.$toasted.error("Tên nhà xuất bản không hợp lệ").goAway(3000);
           this.$refs["name"].$refs.input.focus();
           return false;

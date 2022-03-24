@@ -120,7 +120,7 @@
                               ref="name"
                               v-model="defaultData.name"
                               label="Tên thể loại"
-                              maxlength="50"
+                              maxlength="255"
                             />
                           </v-col>
                         </v-row>
@@ -159,7 +159,7 @@
                               ref="name"
                               v-model="defaultData.name"
                               label="Tên thể loại"
-                              maxlength="50"
+                              maxlength="255"
                             />
                           </v-col>
                         </v-row>
@@ -237,8 +237,9 @@ export default {
       return new Date(date).toLocaleDateString('en-GB');
     },
     validate(){
-        var name = this.defaultData.name;
-        if(name.trim() == "" || name.trim() == null || !/^[a-zA-Z_ ]*$/.test(name.trim())){
+        this.defaultData.name = this.defaultData.name.trim();
+        var categoryName = this.defaultData.name.trim();
+        if(categoryName == "" || categoryName == null || /['`~!@#$%^&*()_|+-=?;:'",.<>\{\}\[\]\\\/]/.test(categoryName)){
           this.$toasted.error("Tên thể loại không hợp lệ").goAway(3000);
           this.$refs["name"].$refs.input.focus();
           return false;
@@ -302,6 +303,7 @@ export default {
       console.log(JSON.stringify(this.defaultData));
       if (this.defaultData != null && this.validate()) {
         var data = JSON.stringify(this.defaultData);
+        this.defaultData.name = this.defaultData.name.trim();
         console.log(data);
         // console.log(this.validate(this.defaultData));
         var config = {
