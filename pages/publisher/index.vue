@@ -238,7 +238,7 @@ export default {
     },
     validate(){
         var name = this.defaultData.name;
-        if(name.trim() == "" || name.trim() == null || !/^[a-zA-Z]+$/.test(name.trim())){
+        if(name.trim() == "" || name.trim() == null || !/^[a-zA-Z_ ]*$/.test(name.trim())){
           this.$toasted.error("Tên nhà xuất bản không hợp lệ").goAway(3000);
           this.$refs["name"].$refs.input.focus();
           return false;

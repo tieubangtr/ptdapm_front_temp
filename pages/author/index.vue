@@ -238,7 +238,9 @@ export default {
     },
     validate(){
         var name = this.defaultData.name;
-        if(name.trim() == "" || name.trim() == null || !/^[a-zA-Z]+$/.test(name.trim())){
+        console.log(name);
+        console.log(!/^[a-zA-Z_ ]*$/.test(name.trim()));
+        if(name.trim() == "" || name.trim() == null || !/^[a-zA-Z_ ]*$/.test(name.trim())){
           this.$toasted.error("Tên tác giả không hợp lệ").goAway(3000);
           this.$refs["name"].$refs.input.focus();
           return false;
@@ -359,6 +361,7 @@ export default {
           .then((response) => {
             console.log(response);
             //Notice: Success message here, delay ???
+            this.$toasted.success("Cập nhật thông tin tác giả thành công").goAway(3000);
             this.showdefaultDataDialog = false;
             this.$router.go();
           })
@@ -379,6 +382,7 @@ export default {
         axios(config)
           .then(response => {
             console.log(response);
+            this.$toasted.success("Xóa tác giả thành công").goAway(3000);
             this.showDeleteDialog = false;
             this.$router.go();
             //Notice: Do some thing to remove datatable data
