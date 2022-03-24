@@ -58,7 +58,7 @@ export default {
                 this.check.email='Vui lòng nhập dòng này'
                 this.loading=false
             }else if(!this.isEmail(this.form.email.trim())){
-                this.check.email='Dòng này phải là email'
+                this.check.email='Email không hợp lệ'
                 this.loading=false
             }
             else if(this.form.email.trim().length>30){
@@ -87,7 +87,7 @@ export default {
                     .catch((err)=>{
                         this.loading=false
                         console.log(err.response.data);
-                        this.check.email ='Email không chính xác, vui lòng kiểm tra lại'
+                        this.check.email ='Email không chính xác'
                     })
                 }
                 catch(err){
