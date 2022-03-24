@@ -746,10 +746,12 @@ export default {
             console.log(response);
             //Notice: Success message here, delay ???
             this.showAcceptDialog = false;
+            this.$toasted.success("Xác nhận phiếu mượn trả thành công").goAway(3000);
             this.$router.go();
           })
           .catch((error) => {
             console.log(error);
+            this.$toasted.error("Xác nhận phiếu mượn trả thất bại").goAway(3000);
           });
       }
     },
@@ -773,10 +775,13 @@ export default {
             console.log(response);
             //Notice: Success message here, delay ???
             this.showRejectDialog = false;
+            this.$toasted.success("Phiếu mượn trả đã bị từ chối").goAway(3000);
             this.$router.go();
           })
           .catch((error) => {
             console.log(error);
+            this.$toasted.error("Từ chối phiếu mượn trả thất bại").goAway(3000);
+
           });
       }
     },
@@ -799,9 +804,11 @@ export default {
             console.log(response);
             //Notice: Success message here, delay ???
             this.showDeleleDialog = false;
+            this.$toasted.success("Xóa phiếu mượn trả thành công").goAway(3000);
             this.$router.go();
           })
           .catch((error) => {
+            this.$toasted.error("Xóa phiếu mượn trả thất bại").goAway(3000);
             console.log(error);
           });
       }
