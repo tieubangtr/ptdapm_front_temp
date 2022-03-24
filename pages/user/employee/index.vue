@@ -454,6 +454,7 @@ export default {
             this.showUserInsertDialog = false;
             this.$router.go();
           }).catch((error) =>{
+            console.log(error.response.data);
             if(error.response.data.apierror.debugMessage != ''){
                 this.$toasted.error(error.response.data.apierror.debugMessage).goAway(3000);
               }else{
@@ -502,7 +503,7 @@ export default {
             //Notice: Do some thing to remove datatable data
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
             if(error.response.data.apierror.debugMessage != ''){
               this.$toasted.error(error.response.data.apierror.debugMessage).goAway(3000);
             }else{
