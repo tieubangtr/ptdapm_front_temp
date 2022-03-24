@@ -49,6 +49,7 @@
                                     v-model= "userData.addr"
                                 ></v-text-field>        
                                 <div class="form-btn">
+                                    <v-btn outline @click="exitUpdate()" color="pink">Lưu</v-btn>
                                     <v-btn outline @click="updateInfo()" color="primary">Lưu</v-btn>
                                     <v-btn outline @click="updatePassword()" color="orange">Đổi mật khẩu</v-btn>
                                 </div>
@@ -234,6 +235,9 @@
                 }else{
                     this.$toasted.info("Thông tin không hợp lệ").goAway(2000);
                 }
+            },
+            exitUpdate(){
+                this.$router.go();
             },
             updatePassword(){
                 this.showDialogChangePassword = true;
