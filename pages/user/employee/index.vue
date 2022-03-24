@@ -453,7 +453,7 @@ export default {
             this.$toasted.success("Thêm mới nhân viên thành công").goAway(2000);
             this.showUserInsertDialog = false;
             this.$router.go();
-          }).catch(error =>{
+          }).catch((error) =>{
             if(error.response.data.apierror.debugMessage != ''){
                 this.$toasted.error(error.response.data.apierror.debugMessage).goAway(3000);
               }else{
