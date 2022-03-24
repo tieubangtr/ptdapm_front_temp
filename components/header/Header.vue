@@ -83,15 +83,24 @@ export default {
     },
     methods: {
         handleLogout () {
-            axios.put(`https://ptdapmback.herokuapp.com/v1/api/users/${JSON.parse(localStorage.getItem('User')).id}/logout`)
-                .then((res)=>{
-                    console.log('logout');
-                })
-                .catch((err)=>{
-                    console.log(err.response.data);
-                })
-            localStorage.clear()
-            this.$router.push('/login')
+            var config = {
+                method: "put",
+                url:
+                    `https://ptdapmback.herokuapp.com/v1/api/users/${JSON.parse(localStorage.getItem('User')).id}/logout`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('User')).token,
+                },
+            };
+            axios(config)
+            .then((res)=>{
+                console.log('logout');
+                localStorage.clear()
+                this.$router.push('/login')
+            })
+            .catch((err)=>{
+                console.log(err.response.data);
+            })
         },
         handleCart(){
             if(JSON.parse(localStorage.getItem('User'))){
