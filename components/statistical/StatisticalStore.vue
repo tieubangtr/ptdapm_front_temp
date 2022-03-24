@@ -9,13 +9,13 @@
                 <th>Nhà Xuất Bản</th>
                 <th>Số lượng sách còn</th>
             </tr>
-            <tr v-for="(book,index) in this.dataBook" :key="index">
-                <td>{{index}}</td>
-                <td>{{book.name}}</td>
-                <td><img class="img" :src='("https://ptdapmback.herokuapp.com/v1/api/auth/files/"+book.image)' alt=""></td>
-                <td>{{book.category.name}}</td>
-                <td>{{book.publisher.name}}</td>
-                <td>{{arr[index]}}</td>
+            <tr v-for="(data,index) in this.datas" :key="index">
+                <td>{{index+1}}</td>
+                <td>{{data.name}}</td>
+                <td><img class="img" :src='("https://ptdapmback.herokuapp.com/v1/api/auth/files/"+data.image)' alt=""></td>
+                <td>{{data.category.name}}</td>
+                <td>{{data.publisher.name}}</td>
+                <td>{{data.count}}</td>
             </tr>
         </table>
     </div>
@@ -26,12 +26,10 @@ export default {
     data(){
         return {
             datas:[],
-            dataBook:[],
-            arr:[]
         }
     },
     mounted () {
-        axios.get(`https://ptdapmback.herokuapp.com/v1/api/auth/statistics/borrowingGt`,{
+        axios.get(`https://ptdapmback.herokuapp.com/v1/api/auth/statistics/bookExist`,{
                 headers: {
                     Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`
                 }
@@ -39,17 +37,6 @@ export default {
             .then((res)=>{
                 console.log(res.data);
                 this.datas=res.data
-                for (var i in this.datas) {
-                    console.log(('bookId: ' + i + ', number: ' + this.datas[i]))
-                    axios.get(`https://ptdapmback.herokuapp.com/v1/api/books/${i}`)
-                    .then((res)=>{
-                        this.dataBook.push(res.data)
-                    })
-                    .catch((err)=>{
-                        console.log(err.response.data);
-                    })
-                    this.arr.push(this.datas[i])
-                } 
                 
             })
             .catch((err)=>{
