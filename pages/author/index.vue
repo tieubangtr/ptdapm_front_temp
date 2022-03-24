@@ -81,7 +81,7 @@
                 <v-spacer></v-spacer>
                 <v-card-text class="d-flex justify-center">
                   <h4 class="d-inline-block">
-                    Xóa xong thì là mất, đừng có đi tìm nhé ?
+                    Chắc chắn muốn xóa tác giả này ?
                   </h4>
                 </v-card-text>
                 <v-spacer></v-spacer>
@@ -117,8 +117,10 @@
                         <v-row>
                           <v-col cols="12" sm="6">
                             <v-text-field
+                              ref="name"
                               v-model="defaultData.name"
                               label="Tên tác giả"
+                              maxlength="50"
                             />
                           </v-col>
                         </v-row>
@@ -132,7 +134,7 @@
                     Hủy bỏ
                   </v-btn>
                   <v-btn color="success" text @click="insertConfirm()">
-                    Thêm mới
+                    Thêm
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -154,8 +156,10 @@
                         <v-row>
                           <v-col cols="12" sm="6">
                             <v-text-field
+                              ref="name"
                               v-model="defaultData.name"
                               label="Tên tác giả"
+                              maxlength="50"
                             />
                           </v-col>
                         </v-row>
@@ -232,6 +236,17 @@ export default {
     standardDateFormat(date){
       return new Date(date).toLocaleDateString('en-GB');
     },
+    validate(){
+        var name = this.defaultData.name;
+        console.log(name);
+        console.log(!/^[a-zA-Z_ ]*$/.test(name.trim()));
+        if(name.trim() == "" || name.trim() == null || !/^[a-zA-Z_ ]*$/.test(name.trim())){
+          this.$toasted.error("Tên tác giả không hợp lệ").goAway(3000);
+          this.$refs["name"].$refs.input.focus();
+          return false;
+        }
+        return true;
+    },
     setToDefault() {
       this.defaultData = {
         createdAt: "",
@@ -241,10 +256,6 @@ export default {
         updatedAt: "",
         updatedBy: 0
       }
-    },
-    validate(object) {
-      delete object.img;
-      return Object.values(object).every((x) => x === null || x === "");
     },
     initialize() {
         var accessToken = localStorage.getItem("accessToken");
@@ -291,7 +302,7 @@ export default {
     },
     insertConfirm() {
       console.log(JSON.stringify(this.defaultData));
-      if (this.defaultData != null /*&& !this.validate(this.defaultData)*/) {
+      if (this.defaultData != null && this.validate()) {
         var data = JSON.stringify(this.defaultData);
         console.log(data);
         // console.log(this.validate(this.defaultData));
@@ -310,10 +321,13 @@ export default {
             // Notice: Success message here, delay ???
             this.setToDefault();
             this.showInsertDialog = false;
+            this.$toasted.success("Thêm tác giả thành công").goAway(3000);
             this.$router.go();
           })
           .catch((error) => {
-            console.log(error);
+            console.log();
+            this.$toasted.error(error.response.data.apierror.debugMessage).goAway(3000);
+            this.$refs["name"].$refs.input.focus();
           });
       }
     },
@@ -328,25 +342,8 @@ export default {
       }
     },
     updateConfirm() {
-      if (this.defaultData != null) {
-        // var data = JSON.stringify({
-        //   "addr": "string",
-        //   "birthday": "2022-03-12",
-        //   "email": "string",
-        //   "gender": "string",
-        //   "id": 0,
-        //   "img": "null",
-        //   "name": "string",
-        //   "noneLocked": true,
-        //   "password": "string",
-        //   "phone": "string",
-        //   "roles": [
-        //     {
-        //       "id": 0,
-        //       "name": "ROLE_USER"
-        //     }
-        //   ]
-        // });
+      if (this.defaultData != null && this.validate()) {
+
         var data = JSON.stringify(this.defaultData);
         console.log(data);
         var accessToken = localStorage.getItem("accessToken");
@@ -364,6 +361,7 @@ export default {
           .then((response) => {
             console.log(response);
             //Notice: Success message here, delay ???
+            this.$toasted.success("Cập nhật thông tin tác giả thành công").goAway(3000);
             this.showdefaultDataDialog = false;
             this.$router.go();
           })
@@ -384,6 +382,7 @@ export default {
         axios(config)
           .then(response => {
             console.log(response);
+            this.$toasted.success("Xóa tác giả thành công").goAway(3000);
             this.showDeleteDialog = false;
             this.$router.go();
             //Notice: Do some thing to remove datatable data

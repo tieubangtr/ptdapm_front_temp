@@ -29,12 +29,6 @@
               >
                 <template slot="items" slot-scope="props">
                   <td>{{ props.item.id }}</td>
-                  <td>
-                    <v-avatar size="32">
-                      <img v-if="props.item.avatar != null" :src="props.item.avatar" alt="">
-                      <img v-else src="~/static/img/images.jpg" alt="">
-                    </v-avatar>
-                  </td>
                   <td>{{ props.item.name }}</td>
                   <td>{{ props.item.email }}</td>
                   <td>{{ props.item.phone }}</td>
@@ -263,10 +257,6 @@
             {
               text: '#',
               value: 'id'
-            },
-            {
-              text: 'Ảnh đại diện',
-              value: 'avatar'
             },
             {
               text: 'Họ và tên',

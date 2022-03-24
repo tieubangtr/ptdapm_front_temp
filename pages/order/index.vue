@@ -291,53 +291,50 @@
                       </v-flex>
                       <v-flex xs7>
                         <v-list three-line subheader>
-                          <v-subheader>Thông tin sách</v-subheader>
-                          <v-list-tile>
-                            <v-list-tile-content>
-                              <v-card
-                                v-for="item in defaultData.borrowingItems"
-                                :key="item.id"
-                                row
-                              >
-                                <v-layout>
-                                  <v-flex xs7>
-                                    <v-card-title primary-title>
-                                      <div>
-                                        <div class="headline">
-                                          {{ item.book.name }}
-                                        </div>
-                                        <div>
-                                          {{ item.book.category.name }}
-                                        </div>
-                                        <div>{{ item.book.publishAt }}</div>
-                                      </div>
-                                    </v-card-title>
-                                  </v-flex>
-                                  <v-flex xs5>
-                                    <v-img
-                                      :src="
-                                        'https://ptdapmback.herokuapp.com/v1/api/auth/files/' +
-                                        item.book.image
-                                      "
-                                      height="125px"
-                                      contain
-                                    ></v-img>
-                                  </v-flex>
-                                </v-layout>
-                                <v-divider light></v-divider>
-                                <v-card-actions>
-                                  <v-layout row>
-                                    <v-flex xs8>
-                                      <h4>Trạng thái</h4>
-                                    </v-flex>
-                                    <v-flex xs4>
-                                      <v-btn color="warning">Chờ duyệt</v-btn>
-                                    </v-flex>
-                                  </v-layout>
-                                </v-card-actions>
-                              </v-card>
-                              <v-spacer></v-spacer>
-                            </v-list-tile-content>
+                          <!-- <v-subheader>Thông tin sách mượn</v-subheader> -->
+                          <div class="infoBook">Thông tin sách mượn</div>
+                          <v-list-tile class="top">
+                            <v-layout
+                              v-for="item in defaultData.borrowingItems"
+                              :key="item.id"
+                              row
+                              wrap
+                              class="cartProduct x-grid-lg"
+                            >
+                              <v-flex lg2 sm12 xs12 class="pa-2">
+                                <div class="outImg">
+                                  <img
+                                    :src="
+                                      'https://ptdapmback.herokuapp.com/v1/api/auth/files/' +
+                                      item.book.image
+                                    "
+                                    alt="ảnh Sách"
+                                    class="img"
+                                  />
+                                </div>
+                              </v-flex>
+                              <v-flex lg10 sm12 xs12 class="infoCart pa-2">
+                                <h3 class="name">{{ item.book.name }}</h3>
+                                <span class="author">{{
+                                  item.book.category.name
+                                }}</span>
+                                <span class="author">{{
+                                  item.book.publishAt
+                                }}</span>
+                                <v-btn
+                                  v-if="item.status == true"
+                                  color="success"
+                                  >Đã trả</v-btn
+                                >
+                                <v-btn
+                                  v-else
+                                  color="warning"
+                                  >Chưa trả</v-btn
+                                >
+                              </v-flex>
+                              <v-divider></v-divider>
+                            </v-layout>
+                            <v-spacer></v-spacer>
                           </v-list-tile>
                         </v-list>
                       </v-flex>
@@ -454,9 +451,7 @@
                             </v-layout>
                             <v-spacer></v-spacer>
                           </v-list-tile>
-                          
                         </v-list>
-                        
                       </v-flex>
                     </v-layout>
                   </v-card>
@@ -751,11 +746,19 @@ export default {
             console.log(response);
             //Notice: Success message here, delay ???
             this.showAcceptDialog = false;
+            this.$toasted.success("Xác nhận phiếu mượn trả thành công").goAway(3000);
             this.$router.go();
           })
           .catch((error) => {
             console.log(error);
-          });
+            if(error.response.data.apierror.debugMessage != ''){
+              this.$toasted.error(error.response.data.apierror.debugMessage).goAway(3000);
+            }else{
+              this.$toasted
+            .error("Xác nhận phiếu mượn trả thất bại")
+            .goAway(3000);
+            }
+        });
       }
     },
     rejectConfirm() {
@@ -778,10 +781,17 @@ export default {
             console.log(response);
             //Notice: Success message here, delay ???
             this.showRejectDialog = false;
+            this.$toasted.success("Phiếu mượn trả đã bị từ chối").goAway(3000);
             this.$router.go();
           })
           .catch((error) => {
-            console.log(error);
+            if(error.response.data.apierror.debugMessage != ''){
+              this.$toasted.error(error.response.data.apierror.debugMessage).goAway(3000);
+            }else{
+              this.$toasted
+            .error("Từ chối phiếu mượn trả không thành công, đã có lỗi xảy ra")
+            .goAway(3000);
+            }
           });
       }
     },
@@ -802,13 +812,20 @@ export default {
         axios(config)
           .then((response) => {
             console.log(response);
-            //Notice: Success message here, delay ???
-            this.showDeleleDialog = false;
+            this.$toasted.success("Xóa phiếu mượn trả thành công").goAway(2000);
+            this.showDeleteDialog = false;
             this.$router.go();
+            //Notice: Do some thing to remove datatable data
           })
           .catch((error) => {
-            console.log(error);
-          });
+            if(error.response.data.apierror.debugMessage != ''){
+              this.$toasted.error(error.response.data.apierror.debugMessage).goAway(3000);
+            }else{
+              this.$toasted
+            .error("Xóa phiếu mượn trả không thành công, đã có lỗi xảy ra")
+            .goAway(3000);
+            }
+        });
       }
     },
     updateConfirm(itemId) {
@@ -827,49 +844,22 @@ export default {
           .then((response) => {
             console.log(response);
             this.showUpdateDialog = false;
+            this.$toasted.success("Cập nhật thông tin phiếu thành công").goAway(3000);
             this.$router.go();
             //Notice: Do some thing to remove datatable data
           })
           .catch((error) => {
-            console.log(error);
+            if(error.response.data.apierror.debugMessage != ''){
+              this.$toasted.error(error.response.data.apierror.debugMessage).goAway(3000);
+            }else{
+              this.$toasted
+            .error("Cập nhật thông tin phiếu thất bại")
+            .goAway(3000);
+            }
           });
       } else {
         alert("Đã có lỗi xảy ra, vui lòng thử lại!");
       }
-    },
-    removeConfirm() {
-      if (this.defaultData.id > 0) {
-        var config = {
-          method: "delete",
-          url:
-            "https://ptdapmback.herokuapp.com/v1/api/books/" +
-            this.defaultData.id,
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("accessToken"),
-          },
-        };
-        axios(config)
-          .then((response) => {
-            console.log(response);
-            this.showDeleteDialog = false;
-            this.$router.go();
-            //Notice: Do some thing to remove datatable data
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        this.showDeleteDialog = false;
-      }
-    },
-    onFileUploadChanged(e) {
-      this.selectedFile = e.target.files[0];
-      console.log(this.selectedFile);
-      this.formData = new FormData();
-      this.formData.append("file", this.selectedFile);
-      this.defaultData.image = this.selectedFile.name;
-      var imgUpdate = document.getElementById("update-img");
-      imgUpdate.src = URL.createObjectURL(this.selectedFile);
     },
   },
 };

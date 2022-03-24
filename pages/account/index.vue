@@ -29,6 +29,7 @@
                                     ref="userPhone"
                                     label="Số điện thoại"
                                     v-model= "userData.phone"
+                                    maxlength="10"
                                 ></v-text-field>
                                 <v-text-field
                                     label="Ngày sinh"
@@ -48,7 +49,7 @@
                                     v-model= "userData.addr"
                                 ></v-text-field>        
                                 <div class="form-btn">
-                                    <v-btn outline @click="updateInfo()" color="primary">Lưu thay đổi</v-btn>
+                                    <v-btn outline @click="updateInfo()" color="primary">Lưu</v-btn>
                                     <v-btn outline @click="updatePassword()" color="orange">Đổi mật khẩu</v-btn>
                                 </div>
                             </v-form>
@@ -172,15 +173,15 @@
                 let address = this.userData.addr.trim();
                 if(name == null || name == ''){
                     this.$refs["userFullName"].$refs.input.focus();
-                    this.$$toasted.error("Họ và tên không hợp lệ").goAway(2000);
+                    this.$toasted.error("Họ và tên không hợp lệ").goAway(2000);
                     return false; 
-                }else if(phone == null || phone == '' || phone.length > 10){
+                }else if(phone == null || phone == ''){
                     this.$refs["userPhone"].$refs.input.focus();
-                    this.$$toasted.error("Số điện thoại không hợp lệ").goAway(2000);
+                    this.$toasted.error("Số điện thoại không hợp lệ").goAway(2000);
                     return false;
                 }else if(address == null || address == ''){
                     this.$refs["userAddress"].$refs.input.focus();
-                    this.$$toasted.error("Địa chỉ không hợp lệ").goAway(2000);
+                    this.$toasted.error("Địa chỉ không hợp lệ").goAway(2000);
                     return false;
                 }
                 return true;
