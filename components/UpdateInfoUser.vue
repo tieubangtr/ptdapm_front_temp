@@ -55,7 +55,7 @@
                         </v-text-field>
                         <div class="btnGroup">
                             <span class="cancel">Hủy</span>
-                            <span class="save">Lưu</span>
+                            <span class="save">Cập nhật</span>
                         </div>
                     </v-flex>
                 </v-layout>
