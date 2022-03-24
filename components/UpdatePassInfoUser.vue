@@ -136,6 +136,25 @@ export default {
                 .then((response) => {
                     let myToast = this.$toasted.success("Holla !!");
                     myToast.text("Đổi mật khẩu thành công").goAway(2000);
+                    //logout api
+                    var config1 = {
+                        method: "put",
+                        url:
+                            `https://ptdapmback.herokuapp.com/v1/api/users/${JSON.parse(localStorage.getItem('User')).id}/logout`,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('User')).token,
+                        },
+                    };
+                    axios(config1)
+                    .then((res)=>{
+                        console.log('logout');
+                        localStorage.clear()
+                        this.$router.push('/login')
+                    })
+                    .catch((err)=>{
+                        console.log(err.response.data);
+                    })
                 })
                 .catch((error) => {
                     console.log(error.response.data);
