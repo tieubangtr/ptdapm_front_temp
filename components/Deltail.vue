@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <div class="url">Trang chủ > Deltail</div>
+        <div class="url">Trang chủ > Chi tiết sản phẩm</div>
         <v-layout row wrap class="x-grid-lg">
             <v-flex lg6 sm12 xs12 class="pa-2">
                 <div class="outImg">
@@ -95,12 +95,12 @@ export default {
                 .then((res)=>{
                     console.log(res.data);
                     let myToast = this.$toasted.success("Holla !!");
-                    myToast.text("Thêm sản phẩm vào giỏ hàng thành công").goAway(2000);
+                    myToast.text("Thêm sách vào giỏ thành công").goAway(2000);
                 })
                 .catch((err)=>{
                     console.log(err.response.data);
                     let myToast = this.$toasted.error("Holla !!");
-                    myToast.text("Sản phẩm đã có trong giỏ hàng").goAway(2000);
+                    myToast.text("Đã tồn tại sách trong giỏ").goAway(2000);
                 })
             }
             else{

@@ -163,6 +163,10 @@ export default {
                 this.loading=false
                 this.check.email='Vui lòng nhập dòng này'
             }
+            else if(this.form.email.trim().length>30){
+                this.loading=false
+                this.check.email='Email không quá 30 kí tự'
+            }
             else if(!this.isEmail(this.form.email.trim())){
                 this.loading=false
                 this.check.email='Dòng này phải là email'
@@ -186,6 +190,10 @@ export default {
             if(!this.form.addr.trim()){
                 this.loading=false
                 this.check.addr='Vui lòng nhập dòng này'
+            }
+            else if(this.form.addr.trim().length>30){
+                this.loading=false
+                this.check.addr='Địa chỉ không quá 30 kí tự'
             }
         },
         isEmail(email){

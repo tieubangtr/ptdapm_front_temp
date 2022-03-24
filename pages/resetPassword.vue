@@ -85,6 +85,10 @@ export default {
                 this.check.password='Mật khẩu phải lớn hơn 6 kí tự'
                 this.loading=false
             }
+            else if(this.form.password.trim().length>20){
+                this.loading=false
+                this.check.password='Mật khẩu tối đa 20 kí tự'
+            }
             if(!this.form.passwordOld.trim()){
                 this.check.passwordOld='Vui lòng nhập dòng này'
                 this.loading=false
@@ -92,6 +96,10 @@ export default {
             else if(this.form.password.trim()!==this.form.passwordOld.trim()){
                 this.check.passwordOld='Mật khẩu không khớp nhau'
                 this.loading=false
+            }
+            else if(this.form.passwordOld.trim().length>20){
+                this.loading=false
+                this.check.passwordOld='Mật khẩu tối đa 20 kí tự'
             }
         },
         handleSubmit(e){
