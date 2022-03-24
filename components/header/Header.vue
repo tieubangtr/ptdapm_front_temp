@@ -52,7 +52,14 @@
                         <v-icon size="35px">notifications</v-icon>
                     </div>
                     <div class="book-borrow-item">
-                        <v-icon @click="handleCart" size="35px">shopping_cart</v-icon>
+                        <v-badge color="red">
+                            <template v-slot:badge>
+                                <span>{{total_item_books()}}</span>
+                            </template>
+                            <NuxtLink style="text-decoration: none;" to="/homepage/cart">
+                                <v-icon size="35px">shopping_cart</v-icon>
+                            </NuxtLink>
+                        </v-badge>
                     </div>
                     <NuxtLink v-if="roles" to='/dashboard' class="admin">Admin</NuxtLink>
                 </v-flex>
@@ -67,18 +74,7 @@ export default {
         return {
             user:JSON.parse(localStorage.getItem('User')),
             searchForm:'',
-            roles:true
-        }
-    },
-    mounted (){
-        if(JSON.parse(localStorage.getItem('User'))){
-            if(JSON.parse(localStorage.getItem('User')).roles[0]=='ROLE_USER'){
-                this.roles=false
-                console.log('oke');
-            }
-        }
-        else{
-            this.roles=false
+            datas: []
         }
     },
     methods: {
@@ -102,13 +98,25 @@ export default {
                 console.log(err.response.data);
             })
         },
-        handleCart(){
-            if(JSON.parse(localStorage.getItem('User'))){
-                this.$router.push('/homepage/cart')
-            }
-            else{
-                this.$router.push('/login')
-            }
+        total_item_books () {
+            return this.datas.length
+        }
+    },
+    mounted () {
+        if(JSON.parse(localStorage.getItem('User'))) {
+            axios.get('https://ptdapmback.herokuapp.com/v1/api/cartItems?page=0&limit=5&sort=id',{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`,
+                }
+            })
+            .then((res)=>{
+                this.datas=res.data.content
+                console.log(this.datas);
+            })
+            .catch((err)=>{
+                console.log(err.response.data);
+            })
         }
     }
 }

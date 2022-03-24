@@ -1,9 +1,6 @@
 <template>
   <div id="pageDashboard">
     <Header/>
-    <v-banner>
-      <v-img :src="require('../../assets/images/banner.jpeg')" />
-    </v-banner>
     <Menu/>
     <Deltail/>
     <Footter/>

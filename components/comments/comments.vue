@@ -1,6 +1,9 @@
 <template>
     <v-container>
-        <v-tabs>
+        <v-tabs v-if="$fetchState.pending"> 
+            <p> Comment is loading ... </p>
+        </v-tabs>
+        <v-tabs v-else>
             <v-tab href="#tab-1">
                 Sự miêu tả
             </v-tab>
@@ -34,7 +37,7 @@
                                 </v-card>
                             </v-flex>
                             <v-flex xs6>
-                                <v-card v-if="this.comments.content">
+                                <v-card v-if="this.comments.content.lengh == 0">
                                     <div>
                                         <h2> Sách chưa có bình luận </h2>
                                     </div>
@@ -111,7 +114,7 @@ export default {
                             })
                             .then((response) => {
                                 this.comment = ''
-                                this.comments.unshift(response.data)
+                                location.reload();
                             })
                             .catch((error) => {
                                 console.log(error.response.data)
@@ -124,7 +127,7 @@ export default {
             }
         }
     },
-    async mounted () {
+    async fetch() {
         await axios({
             method: 'get',
             url: `https://ptdapmback.herokuapp.com/v1/api/comments/book/${this.$route.query.bookId}?page=${this.current_page}&limit=5`
