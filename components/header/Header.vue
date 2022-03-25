@@ -122,6 +122,7 @@ export default {
         display:none;
         position:absolute;
         box-shadow: 0 0 3px #333;
+        z-index: 100;
     }
     .item{
         padding:10px;
