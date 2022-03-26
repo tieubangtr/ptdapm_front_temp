@@ -42,11 +42,7 @@ export default {
     var config = {
       method: "get",
       url:
-          `https://ptdapmback.herokuapp.com/v1/api/categories?page=0&limit=100&sort=id`,
-      headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('User')).token,
-      },
+          `https://ptdapmback.herokuapp.com/v1/api/categories?page=0&limit=100&sort=id`
     };
     axios(config)
     .then((res)=>{
