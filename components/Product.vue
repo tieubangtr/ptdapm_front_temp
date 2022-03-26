@@ -23,7 +23,7 @@
                                 <img class="imgOut_img" :src='("https://ptdapmback.herokuapp.com/v1/api/auth/files/"+data.image)' alt="">
                             </div>
                             <div class="parent">
-                                <!-- <div class="nameAuthor">Tác giả : {{ data.authors[0].name }} </div> -->
+                                <div class="nameAuthor">Tác giả : {{ data.authors.map( e => e.name).join(', ') }} </div>
                                 <div class="nameBook">
                                     {{ data.name }}
                                 </div>
