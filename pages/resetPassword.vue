@@ -107,8 +107,10 @@ export default {
             this.validate()
             this.form.token=localStorage.getItem('tokenPass')
             e.preventDefault();
+            console.log(this.form);
+            console.log(this.$route.query.token);
             if(!this.check.password&&!this.check.passwordOld){
-                axios.put(`https://ptdapmback.herokuapp.com/v1/api/auth/reset_password?token=${this.form.token}&newPassword=${this.form.password.trim()}`)
+                axios.put(`https://ptdapmback.herokuapp.com/v1/api/auth/reset_password?token=${this.$route.query.token}&newPassword=${this.form.password.trim()}`)
                 .then((res)=>{
                     this.check.success='Đổi mật khẩu thành công'
                     localStorage.removeItem('tokenPass')
@@ -117,6 +119,7 @@ export default {
                 .catch((err)=>{
                     this.check.note='Đổi mật khẩu không thành công!Vui lòng kiểm tra lại'
                     this.loading=false
+                    console.log(err.response.data);
                 })
             }
         }
