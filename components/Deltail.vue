@@ -65,7 +65,7 @@ export default {
             console.log(res.data);
             this.datas=res.data
             if(res.data.authors[0]){
-                this.author=res.data.authors[0].name
+                this.author=res.data.authors.map(e => e.name).join(', ')
             }
             else{
                 this.author='Chưa có tác giả'
