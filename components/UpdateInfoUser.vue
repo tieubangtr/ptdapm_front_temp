@@ -86,6 +86,7 @@ export default {
     },
     methods: {
         async updateFrom() {
+            const myToast = this.$toasted.error("Holla !!");
             await axios ({
                 method: 'PUT',
                 url: `https://ptdapmback.herokuapp.com/v1/api/users/${this.user.id}`,
@@ -100,7 +101,8 @@ export default {
                 this.object = res.data;
             })
             .catch((err)=>{
-                console.log(err.response.data);
+                const error = err.response.data.apierror.subErrors.map(e => e.message).join(', ')
+                myToast.text(error).goAway(5000);
             })
         }
     },
