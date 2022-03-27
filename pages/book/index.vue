@@ -92,7 +92,7 @@
                 <v-spacer></v-spacer>
                 <v-card-text class="d-flex justify-center">
                   <h4 class="d-inline-block">
-                    Xóa xong thì là mất, đừng có đi tìm nhé ?
+                    Chắc chắn muốn xóa sách này ?
                   </h4>
                 </v-card-text>
                 <v-spacer></v-spacer>
@@ -122,6 +122,7 @@
                             <v-text-field
                               v-model="bookData.name"
                               label="Tên sách"
+                              maxlength="255"
                             />
                           </v-col>
                         </v-row>
@@ -191,7 +192,8 @@
                           <v-col cols="12" sm="6">
                             <input 
                                 ref="uploader" 
-                                type="file" 
+                                type="file"
+                                accept="image/*"
                                 @change="onFileUploadChanged"
                             >
                           </v-col>
@@ -395,6 +397,7 @@
                             
                           />
                           <input 
+                              accept="image/*"
                               ref="uploader" 
                               type="file" 
                               @change="onFileUploadChanged"
@@ -504,7 +507,7 @@ export default {
       return resultString;
     },
     setToDefault() {
-      this.bookData = {
+        this.bookData = {
         id: -1,
         createdBy: -1,
         createdAt: "",
@@ -515,14 +518,40 @@ export default {
         count: 0,
         publishAt: 2000,
         content: "",
+        categoryId: -1,
+        publisherId: -1,
         category: {},
         publisher: {},
         authors: [],
       };
     },
-    validate(object) {
-      delete object.img;
-      return Object.values(object).every((x) => x === null || x === "");
+    validate(){
+        if(this.bookData.name == null || this.bookData.name == '' || /['`~!@#$%^&*()_|+-=?;:'",.<>\{\}\[\]\\\/]/.test(this.bookData.name)){
+            this.$toasted.error("Tên sách không hợp lệ").goAway(2000);
+            return false; 
+        }else if(this.bookData.categoryId == null || this.bookData.categoryId == -1){
+            this.$toasted.error("Thể loại không hợp lệ").goAway(2000);
+            return false;
+        }else if(this.bookData.count == 0 || this.bookData.count == '0'){
+            this.$toasted.error("Số lượng sách không hợp lệ").goAway(2000);
+            return false;
+        }else if(this.bookData.authors.length == 0 || this.bookData.count == null || !/^[0-9]*$/.test(this.bookData.count)){
+            this.$toasted.error("Tác giả không hợp lệ").goAway(2000);
+            return false;
+        }else if(this.bookData.publisherId == -1 || this.bookData.publisherId == null){
+            this.$toasted.error("Nhà xuất bản sách không hợp lệ").goAway(2000);
+            return false;
+        }else if(this.bookData.publishAt == null || this.bookData.publishAt == '' || !/^[0-9]*$/.test(this.bookData.publishAt)){
+            this.$toasted.error("Năm xuất bản không hợp lệ").goAway(2000);
+            return false;
+        }else if(this.bookData.content == null || this.bookData.content == '' || /['`~!@#$%^&*()_|+-=?;:'",.<>\{\}\[\]\\\/]/.test(this.bookData.content)){
+            this.$toasted.error("Mô tả sách không hợp lệ").goAway(2000);
+            return false;
+        }else if(this.bookData.image == null || this.bookData.image == ''){
+            this.$toasted.error("Ảnh sách không hợp lệ").goAway(2000);
+            return false;
+        }
+        return true;
     },
     initialize() {
       var accessToken = localStorage.getItem("accessToken");
@@ -598,7 +627,7 @@ export default {
     },
     insertConfirm() {
       console.log(JSON.stringify(this.bookData));
-      if (this.bookData != null /*&& !this.validate(this.bookData)*/) {
+      if (this.bookData != null && this.validate(this.bookData)) {
         var data = JSON.stringify(this.bookData);
         var accessToken = localStorage.getItem("accessToken");
         console.log(this.validate(this.bookData));
@@ -628,11 +657,19 @@ export default {
               )
               .then((response) => {
                 console.log(JSON.stringify(response.data));
+                this.showInsertDialogDialog = false;
                 this.$router.go();
               })
               .catch((error) => {
-                console.log(error);
-                alert("Lỗi rồi cha nội, check console đi !");
+                console.log(error.response.data);
+                if(error.response.data.apierror.debugMessage != ''){
+                  this.$toasted.error(error.response.data.apierror.debugMessage).goAway(3000);
+                }else{
+                  this.$toasted
+                .error("Thêm sách không thành công, đã có lỗi xảy ra")
+                .goAway(3000);
+                }
+                this.showUserDeleteDialog = false;
               });
             this.setToDefault();
             this.showInsertDialog = false;
@@ -655,7 +692,7 @@ export default {
       }
     },
     updateConfirm() {
-      if (this.bookData != null && this.bookData.id > 0) {
+      if (this.bookData != null && this.bookData.id > 0 && this.validate()) {
         this.bookData.categoryId = this.bookData.category.id;
         this.bookData.publisherId = this.bookData.publisher.id;
         var data = JSON.stringify(this.bookData);
