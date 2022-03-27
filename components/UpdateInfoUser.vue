@@ -21,7 +21,10 @@
                             <div class="text">Đổi mật khẩu</div>
                         </NuxtLink>
                     </v-flex>
-                    <v-flex lg7 class="infoUser">
+                    <v-flex v-if="$fetchState.pending" lg-7 class="infoUser">
+                        Đang load dữ liệu...
+                    </v-flex>
+                    <v-flex v-else lg7 class="infoUser">
                         <h3 class="header">Chỉnh Sửa Hồ Sơ</h3>
                         <v-text-field  
                             label="Họ tên" 
@@ -93,16 +96,16 @@ export default {
                 }
             })
             .then((res)=>{
+                myToast.text("Cập nhập thành công").goAway(2000);
                 this.object = res.data;
-                alert('Cập nhập thành công')
             })
             .catch((err)=>{
                 console.log(err.response.data);
             })
         }
     },
-    mounted(){
-        axios.get(`https://ptdapmback.herokuapp.com/v1/api/users/${this.user.id}`,{
+    async fetch(){
+        await axios.get(`https://ptdapmback.herokuapp.com/v1/api/users/${this.user.id}`,{
             headers: {
                 Authorization: `Bearer ${this.user.token}`
             }
