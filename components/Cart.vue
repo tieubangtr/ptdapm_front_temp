@@ -57,7 +57,6 @@ export default {
         }
     },
     mounted (){
-        // this.getData=JSON.stringify(this.getData)
         if(JSON.parse(localStorage.getItem('User'))){
             axios.get(`https://ptdapmback.herokuapp.com/v1/api/carts?page=0&limit=5&sort=id&filter-field=user.id&filter-operator=EQUALS&filter-value=${this.form.userId}`,{
                 headers: {
