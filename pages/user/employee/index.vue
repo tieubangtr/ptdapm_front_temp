@@ -19,7 +19,7 @@
               ></v-text-field>
               <v-btn text color="primary" @click="showUserInsertDialog = true">
                 <v-icon>add</v-icon>
-                Thêm mới
+                Thêm
               </v-btn>
             </v-toolbar>
             <v-divider></v-divider>
@@ -367,7 +367,7 @@ export default {
         roles: [
           {
             id: 1,
-            name: "ADMIN",
+            name: "ROLE_ADMIN",
           },
         ],
       };
@@ -390,6 +390,9 @@ export default {
         return false;
       } else if (this.userData.name == "" || this.userData.name == null) {
         this.$toasted.error("Họ và tên không hợp lệ").goAway(2000);
+        return false;
+      } else if (this.userData.gender == "" || this.userData.gender == null) {
+        this.$toasted.error("Giới tính không hợp lệ").goAway(2000);
         return false;
       }
       return true;
@@ -434,6 +437,7 @@ export default {
     },
     insertConfirm() {
       if (this.userData != null && this.validate()) {
+        this.userData.name = this.userData.name.trim();
         var data = JSON.stringify(this.userData);
         console.log(data);
         var config = {
@@ -456,6 +460,7 @@ export default {
           }).catch((error) =>{
             console.log(error.response.data);
             if(error.response.data.apierror.debugMessage != ''){
+                console.log(error.response.data.apierror.debugMessage);
                 this.$toasted.error(error.response.data.apierror.debugMessage).goAway(3000);
               }else{
                 this.$toasted

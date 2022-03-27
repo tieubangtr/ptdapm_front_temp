@@ -257,13 +257,9 @@ export default {
       }
     },
     initialize() {
-        var accessToken = localStorage.getItem("accessToken");
         var config = {
           method: "get",
           url: "https://ptdapmback.herokuapp.com/v1/api/categories?page=0&limit=100&sort=id",
-          headers: {
-            'Authorization': 'Bearer ' + accessToken,
-          },
         };
 
       axios(config)
