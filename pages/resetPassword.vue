@@ -93,13 +93,13 @@ export default {
                 this.check.passwordOld='Vui lòng nhập dòng này'
                 this.loading=false
             }
-            else if(this.form.password.trim()!==this.form.passwordOld.trim()){
-                this.check.passwordOld='Mật khẩu không khớp nhau'
-                this.loading=false
-            }
             else if(this.form.passwordOld.trim().length>20){
                 this.loading=false
                 this.check.passwordOld='Mật khẩu tối đa 20 kí tự'
+            }
+            else if(this.form.password.trim()!==this.form.passwordOld.trim()){
+                this.check.passwordOld='Mật khẩu không khớp nhau'
+                this.loading=false
             }
         },
         handleSubmit(e){
@@ -110,7 +110,8 @@ export default {
             console.log(this.form);
             console.log(this.$route.query.token);
             if(!this.check.password&&!this.check.passwordOld){
-                axios.put(`https://ptdapmback.herokuapp.com/v1/api/auth/reset_password?token=${this.$route.query.token}&newPassword=${this.form.password.trim()}`)
+                axios.put(`https://ptdapmback.herokuapp.com/v1/api/auth/reset_password?token=${this.$route.query.token
+                }&newPassword=${this.form.password.trim()}`)
                 .then((res)=>{
                     this.check.success='Đổi mật khẩu thành công'
                     localStorage.removeItem('tokenPass')
