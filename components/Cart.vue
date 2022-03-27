@@ -82,23 +82,27 @@ export default {
     },
     methods:{
         handleDelete(id,index){
-            axios.delete(`https://ptdapmback.herokuapp.com/v1/api/cartItems/${id}`,{
-                headers: {
-                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`
-                }
-            })
-            .then((res)=>{
-                console.log(res);
-                let myToast = this.$toasted.success("Holla !!");
-                myToast.text("Xóa sách khỏi giỏ thành công").goAway(2000);
-                console.log(index);
-                this.datas.splice(index,1)
-            })
-            .catch((err)=>{
-                console.log(err.response.data);
-                let myToast = this.$toasted.error("Holla !!");
-                myToast.text("Xóa sản phẩm thất bại").goAway(2000);
-            })
+            if (confirm("Bạn có chắc chắn muốn xóa Sách!") == true) {
+                axios.delete(`https://ptdapmback.herokuapp.com/v1/api/cartItems/${id}`,{
+                    headers: {
+                        Authorization: `Bearer ${JSON.parse(localStorage.getItem('User')).token}`
+                    }
+                })
+                .then((res)=>{
+                    console.log(res);
+                    let myToast = this.$toasted.success("Holla !!");
+                    myToast.text("Xóa sách khỏi giỏ thành công").goAway(2000);
+                    console.log(index);
+                    this.datas.splice(index,1)
+                })
+                .catch((err)=>{
+                    console.log(err.response.data);
+                    let myToast = this.$toasted.error("Holla !!");
+                    myToast.text("Xóa sản phẩm thất bại").goAway(2000);
+                })
+            } else {
+                console.log('no');
+            }
         }
     }
 }
