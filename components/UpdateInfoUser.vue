@@ -86,7 +86,7 @@ export default {
     },
     methods: {
         async updateFrom() {
-            const myToast = this.$toasted.error("Holla !!");
+            const myToast = this.$toasted.error("Cập nhập thất bại");
             await axios ({
                 method: 'PUT',
                 url: `https://ptdapmback.herokuapp.com/v1/api/users/${this.user.id}`,
@@ -101,7 +101,7 @@ export default {
                 this.object = res.data;
             })
             .catch((err)=>{
-                const error = err.response.data.apierror.subErrors.map(e => e.message).join(', ')
+                const error = err.response.data.apierror.subErrors.map(e => e.message).join("\n")
                 myToast.text(error).goAway(5000);
             })
         }
