@@ -62,11 +62,7 @@ export default {
     async fetch() {
         await axios ({
             method: 'get',
-            url: `https://ptdapmback.herokuapp.com/v1/api/books?page=0&limit=10&sort=-id&filter-value=${this.search}`,
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${this.user.token}`
-            }
+            url: `https://ptdapmback.herokuapp.com/v1/api/books?page=0&limit=10&sort=-id&filter-value=${this.search}`
         })
         .then(response => {
             this.data = response.data
