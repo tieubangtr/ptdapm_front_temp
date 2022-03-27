@@ -218,7 +218,7 @@ export default {
       let name = this.userData.name.trim();
       let phone = this.userData.phone;
       let address = this.userData.addr.trim();
-      let birthday = this.userData.birthday();
+      let birthday = this.userData.birthday;
       if (
         name == null ||
         name == "" ||
