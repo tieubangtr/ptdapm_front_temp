@@ -26,36 +26,42 @@
                         <v-text-field  
                             label="Họ tên" 
                             type="text"
+                            v-model="object.name"
                         >
                         </v-text-field>
                         <v-text-field  
                             label="Email" 
                             type="text"
+                            v-model="object.email"
                         >
                         </v-text-field>
                         <v-text-field  
                             label="Số Điện Thoại" 
                             type="text"
+                            v-model="object.phone"
                         >
                         </v-text-field>
                         <v-text-field 
                             label="Giới tính" 
                             type="text"
+                            v-model="object.gender"
                         >
                         </v-text-field>
                         <v-text-field  
                             label="Ngày Sinh" 
                             type="date"
+                            v-model="object.birthday"
                         >
                         </v-text-field>
                         <v-text-field  
                             label="Địa Chỉ" 
                             type="text"
+                            v-model="object.addr"
                         >
                         </v-text-field>
                         <div class="btnGroup">
                             <span class="cancel">Hủy</span>
-                            <span class="save">Cập nhật</span>
+                            <span class="save" @click="updateFrom()">Cập nhật</span>
                         </div>
                     </v-flex>
                 </v-layout>
@@ -69,6 +75,46 @@
   import Footter from './footter'
   import axios from 'axios'
 export default {
+    data() {
+        return {
+            user: JSON.parse(localStorage.getItem('User')),
+            object: {}
+        }
+    },
+    methods: {
+        async updateFrom() {
+            await axios ({
+                method: 'PUT',
+                url: `https://ptdapmback.herokuapp.com/v1/api/users/${this.user.id}`,
+                data: this.object,
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${this.user.token}`
+                }
+            })
+            .then((res)=>{
+                this.object = res.data;
+                alert('Cập nhập thành công')
+            })
+            .catch((err)=>{
+                console.log(err.response.data);
+            })
+        }
+    },
+    mounted(){
+        axios.get(`https://ptdapmback.herokuapp.com/v1/api/users/${this.user.id}`,{
+            headers: {
+                Authorization: `Bearer ${this.user.token}`
+            }
+        })
+        .then((res)=>{
+            this.object=res.data;
+            console.log(this.datas);
+        })
+        .catch((err)=>{
+            console.log(err.response.data);
+        })
+    },
     components: {
       Header,
       Footter
