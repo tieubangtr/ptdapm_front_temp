@@ -3,7 +3,7 @@
         <v-tabs>
             <v-tabs-slider color="gray"></v-tabs-slider>
             <v-tab href="#tab-1" style="margin-right:10%">
-                Sách đã mượn
+                Sách đang cho mượn
             </v-tab>
             <v-tab href="#tab-2" style="margin-right:10%">
                 Sách quá hạn
