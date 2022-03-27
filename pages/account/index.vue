@@ -232,8 +232,6 @@
                         this.$toasted.info("Lưu thông tin tài khoản thất bại").goAway(3000);
                         console.log(error.data);
                     });
-                }else{
-                    this.$toasted.info("Thông tin không hợp lệ").goAway(2000);
                 }
             },
             exitUpdate(){

@@ -540,8 +540,7 @@ export default {
         });
       axios
         .get(
-          "https://ptdapmback.herokuapp.com/v1/api/categories?page=0&limit=100&sort=id",
-          { headers: { Authorization: accessToken } }
+          "https://ptdapmback.herokuapp.com/v1/api/categories?page=0&limit=100&sort=id"
         )
         .then((response) => {
           this.listCategory = response.data.content;
